@@ -1,0 +1,124 @@
+{
+  "schema_version": "1.0",
+  "state": "WORKING",
+  "behavior": "SEATED",
+  "reason": "上半身锚点位于初始坐席区域",
+  "session_id": "5c24a2c9d6334428b58c8d860861940c",
+  "active": true,
+  "session_start": 6540.547554546,
+  "session_end": null,
+  "review": false,
+  "work_seconds": 61.25492625999959,
+  "rest_seconds": 0.0,
+  "unknown_seconds": 12.018643020000127,
+  "pending_seconds": 0.0,
+  "start_pending_seconds": 0,
+  "completed_sessions": 0,
+  "thresholds": {
+    "start_seconds": 10,
+    "short_away_seconds": 60,
+    "stop_absent_seconds": 300,
+    "missing_grace_seconds": 3,
+    "max_observation_age": 1.5,
+    "keypoint_confidence": 0.4,
+    "dedup_iou": 0.4,
+    "dedup_distance": 0.03,
+    "image_size": [
+      2560,
+      1440
+    ],
+    "regions": {
+      "station": [
+        [
+          1664,
+          0
+        ],
+        [
+          2559,
+          0
+        ],
+        [
+          2559,
+          1439
+        ],
+        [
+          1664,
+          1439
+        ]
+      ],
+      "seat": [
+        [
+          2125,
+          331
+        ],
+        [
+          2559,
+          331
+        ],
+        [
+          2559,
+          893
+        ],
+        [
+          2125,
+          893
+        ]
+      ]
+    }
+  },
+  "run_id": "07a54537914346bab96b5f11c3da1d56",
+  "frame_ref": {
+    "session_id": "1dd85b048a7f4222bea43867e38c5e8c",
+    "receive_sequence": 1874,
+    "pts_ns": "94107207509",
+    "receive_monotonic_ns": "6613656351433"
+  },
+  "algorithm_error": null,
+  "roi_provisional": true,
+  "camera_changed": false,
+  "regions": {
+    "station": [
+      [
+        1664,
+        0
+      ],
+      [
+        2559,
+        0
+      ],
+      [
+        2559,
+        1439
+      ],
+      [
+        1664,
+        1439
+      ]
+    ],
+    "seat": [
+      [
+        2125,
+        331
+      ],
+      [
+        2559,
+        331
+      ],
+      [
+        2559,
+        893
+      ],
+      [
+        2125,
+        893
+      ]
+    ]
+  },
+  "image_size": [
+    2560,
+    1440
+  ],
+  "last_observation_monotonic_seconds": 6613.656351433,
+  "server_monotonic_seconds": 6613.821208309,
+  "server_wall_time_ms": 1793783979710.6968
+}

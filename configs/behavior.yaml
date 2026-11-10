@@ -1,0 +1,38 @@
+image_size:
+- 2560
+- 1440
+regions:
+  station:
+  - - 1664
+    - 0
+  - - 2559
+    - 0
+  - - 2559
+    - 1439
+  - - 1664
+    - 1439
+  seat:
+  - - 2125
+    - 331
+  - - 2559
+    - 331
+  - - 2559
+    - 893
+  - - 2125
+    - 893
+start_seconds: 10
+short_away_seconds: 60
+stop_absent_seconds: 300
+missing_grace_seconds: 3
+max_observation_age: 1.5
+keypoint_confidence: 0.4
+dedup_iou: 0.4
+dedup_distance: 0.03
+revision: 8
+privacy:
+  enabled: true
+display:
+  boxes: true
+  regions: true
+  keypoints: false
+roi_configured: false

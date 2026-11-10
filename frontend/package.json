@@ -1,0 +1,8 @@
+{
+  "name": "jetson-worktime-frontend-handoff",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {"dev": "node server.mjs", "mock": "node server.mjs --mock", "test": "node --test test/*.test.mjs"},
+  "engines": {"node": ">=20"}
+}

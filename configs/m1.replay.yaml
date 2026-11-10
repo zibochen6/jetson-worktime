@@ -1,0 +1,33 @@
+source_id: station-1
+source:
+  type: file
+  path: tests/fixtures/media/camera-h265.mp4
+  rtsp_env: RTSP_URL
+  codec: h265
+  sample_hz: 5
+  queue_limit: 1
+  timeout_seconds: 5
+  max_reconnects: 3
+model:
+  path: models/yolo11n-pose.pt
+  device: cuda:0
+  imgsz: 640
+tracker: bytetrack.yaml
+roi:
+  coordinate_system: original_image_pixels
+  image_size:
+  - 2560
+  - 1440
+  calibrated: false
+  regions:
+    station:
+    - - 0
+      - 0
+    - - 2559
+      - 0
+    - - 2559
+      - 1439
+    - - 0
+      - 1439
+output_dir: outputs/m1/replay
+log_level: INFO

@@ -1,0 +1,177 @@
+{
+  "schema_version": "1.0",
+  "available": true,
+  "fresh": true,
+  "age_ms": 149.253073,
+  "algorithm_error": null,
+  "observation": {
+    "observation_id": "07a54537914346bab96b5f11c3da1d56-1dd85b048a7f4222bea43867e38c5e8c-1874",
+    "run_id": "07a54537914346bab96b5f11c3da1d56",
+    "frame": {
+      "stream_session_id": "1dd85b048a7f4222bea43867e38c5e8c",
+      "receive_sequence": 1874,
+      "pts_ns": "94107207509",
+      "receive_monotonic_ns": "6613656351433",
+      "source_width": 2560,
+      "source_height": 1440,
+      "jpeg_width": 1280,
+      "jpeg_height": 720,
+      "color_format": "BGR"
+    },
+    "inference": {
+      "started_monotonic_ns": "6613695453234",
+      "completed_monotonic_ns": "6613782794247",
+      "local_processing_ms": 87.341013,
+      "local_receive_to_result_ms": 126.442814,
+      "accepted": true,
+      "observation_valid": true,
+      "behavior": "SEATED",
+      "reason": "上半身锚点位于初始坐席区域"
+    },
+    "persons": [
+      {
+        "person_track_id": 1,
+        "bbox_xyxy": [
+          1689.3798828125,
+          8.367554664611816,
+          2521.856201171875,
+          1415.6185302734375
+        ],
+        "valid": true,
+        "keypoints": [
+          {
+            "x": 2444.70849609375,
+            "y": 349.9576721191406,
+            "confidence": 0.9079534411430359
+          },
+          {
+            "x": 2501.611083984375,
+            "y": 298.958251953125,
+            "confidence": 0.7501137852668762
+          },
+          {
+            "x": 2440.64208984375,
+            "y": 277.82879638671875,
+            "confidence": 0.5048749446868896
+          },
+          {
+            "x": 2560.0,
+            "y": 319.9303894042969,
+            "confidence": 0.3815675377845764
+          },
+          {
+            "x": null,
+            "y": null,
+            "confidence": 0.030204446986317635
+          },
+          {
+            "x": 2560.0,
+            "y": 692.4124755859375,
+            "confidence": 0.4640895426273346
+          },
+          {
+            "x": 2480.30712890625,
+            "y": 476.6092529296875,
+            "confidence": 0.969804584980011
+          },
+          {
+            "x": 2494.85498046875,
+            "y": 1196.317626953125,
+            "confidence": 0.46091127395629883
+          },
+          {
+            "x": 2209.50390625,
+            "y": 710.3556518554688,
+            "confidence": 0.9831336140632629
+          },
+          {
+            "x": 2146.05517578125,
+            "y": 973.9305419921875,
+            "confidence": 0.8700510859489441
+          },
+          {
+            "x": 1929.6875,
+            "y": 654.1766357421875,
+            "confidence": 0.9891709685325623
+          },
+          {
+            "x": 2425.318115234375,
+            "y": 1292.33642578125,
+            "confidence": 0.4024384915828705
+          },
+          {
+            "x": 2336.253662109375,
+            "y": 1151.7784423828125,
+            "confidence": 0.8277223110198975
+          },
+          {
+            "x": null,
+            "y": null,
+            "confidence": 0.1449853628873825
+          },
+          {
+            "x": 1899.5274658203125,
+            "y": 1051.807861328125,
+            "confidence": 0.42633897066116333
+          },
+          {
+            "x": null,
+            "y": null,
+            "confidence": 0.027553711086511612
+          },
+          {
+            "x": null,
+            "y": null,
+            "confidence": 0.08007077872753143
+          }
+        ],
+        "confidence": 0.9214594960212708,
+        "upper_body_anchor": [
+          2520.153564453125,
+          584.5108642578125
+        ]
+      }
+    ],
+    "regions": {
+      "station": [
+        [
+          1664,
+          0
+        ],
+        [
+          2559,
+          0
+        ],
+        [
+          2559,
+          1439
+        ],
+        [
+          1664,
+          1439
+        ]
+      ],
+      "seat": [
+        [
+          2125,
+          331
+        ],
+        [
+          2559,
+          331
+        ],
+        [
+          2559,
+          893
+        ],
+        [
+          2125,
+          893
+        ]
+      ]
+    },
+    "roi_provisional": true,
+    "camera_changed": false,
+    "matching_frame_url": "/api/v1/observations/frame.jpg?observation_id=07a54537914346bab96b5f11c3da1d56-1dd85b048a7f4222bea43867e38c5e8c-1874"
+  }
+}

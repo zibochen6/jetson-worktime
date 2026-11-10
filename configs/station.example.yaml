@@ -1,0 +1,18 @@
+source:
+  type: file
+  path: tests/fixtures/media/test.mp4
+  rtsp_env: RTSP_URL
+  codec: h264
+  sample_hz: 5
+  queue_limit: 1
+  timeout_seconds: 10
+model:
+  path: models/yolo11n-pose.pt
+  device: cuda:0
+  imgsz: 640
+tracker: bytetrack.yaml
+roi:
+  note: example, not calibrated
+  polygon: [[0, 0], [640, 0], [640, 480], [0, 480]]
+output_dir: outputs
+log_level: INFO

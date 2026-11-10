@@ -1,0 +1,16 @@
+roi:
+  coordinate_system: original_image_pixels
+  image_size:
+  - 2560
+  - 1440
+  calibrated: false
+  regions:
+    station:
+    - - 0
+      - 0
+    - - 2559
+      - 0
+    - - 2559
+      - 1439
+    - - 0
+      - 1439

@@ -1,0 +1,38 @@
+[
+  {
+    "filename": "torch-2.7.0-cp310-cp310-linux_aarch64.whl",
+    "size": 266741529,
+    "sha256": "6eff643c0a7acda92734cc798338f733ff35c7df1a4434576f5ff7c66fc97319",
+    "name": "torch",
+    "version": "2.7.0",
+    "requires_dist": [
+      "filelock",
+      "typing-extensions>=4.10.0",
+      "setuptools; python_version >= \"3.12\"",
+      "sympy>=1.13.3",
+      "networkx",
+      "jinja2",
+      "fsspec",
+      "optree>=0.13.0; extra == \"optree\"",
+      "opt-einsum>=3.3; extra == \"opt-einsum\""
+    ],
+    "wheel": "Wheel-Version: 1.0\nGenerator: setuptools (75.8.2)\nRoot-Is-Purelib: false\nTag: cp310-cp310-linux_aarch64\n\n",
+    "source": "https://pypi.jetson-ai-lab.dev/jp6/cu126/+f/6ef/f643c0a7acda9/torch-2.7.0-cp310-cp310-linux_aarch64.whl"
+  },
+  {
+    "filename": "torchvision-0.22.0-cp310-cp310-linux_aarch64.whl",
+    "size": 5324865,
+    "sha256": "7e273be5d71914c03dfb8b05a96d5e5115807471677d069cef3020ba02f59b7d",
+    "name": "torchvision",
+    "version": "0.22.0",
+    "requires_dist": [
+      "numpy",
+      "torch",
+      "pillow!=8.3.*,>=5.3.0",
+      "gdown>=4.7.3; extra == \"gdown\"",
+      "scipy; extra == \"scipy\""
+    ],
+    "wheel": "Wheel-Version: 1.0\nGenerator: setuptools (84.2.1)\nRoot-Is-Purelib: false\nTag: cp310-cp310-linux_aarch64\n\n",
+    "source": "locally built from https://github.com/pytorch/vision/archive/refs/tags/v0.22.0.tar.gz; see torchvision-build.log"
+  }
+]

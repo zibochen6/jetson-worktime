@@ -1,0 +1,22 @@
+source_id: station-1
+source:
+  type: rtsp
+  path: outputs/person-static.mp4
+  rtsp_env: RTSP_URL
+  codec: h265
+  sample_hz: 5
+  queue_limit: 1
+  timeout_seconds: 5
+  max_reconnects: 3
+model:
+  path: models/yolo11n-pose.pt
+  device: cuda:0
+  imgsz: 640
+tracker: bytetrack.yaml
+roi:
+  coordinate_system: original_image_pixels
+  image_size: [0, 0]
+  calibrated: false
+  regions: {}
+output_dir: outputs/m1/live
+log_level: INFO

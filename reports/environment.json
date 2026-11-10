@@ -1,0 +1,173 @@
+{
+  "generated": "2026-11-02T14:30:21.533732+08:00",
+  "hostname": "seeed-desktop",
+  "architecture": "aarch64",
+  "python": "3.10.12 (main, Nov  6 2024, 20:22:13) [GCC 11.4.0]",
+  "executable": "/home/seeed/workspace/jetson-worktime/.venv/bin/python",
+  "modules": {
+    "torch": {
+      "version": "2.7.0",
+      "path": "/home/seeed/workspace/jetson-worktime/.venv/lib/python3.10/site-packages/torch/__init__.py"
+    },
+    "torchvision": {
+      "version": "0.22.0",
+      "path": "/home/seeed/workspace/jetson-worktime/.venv/lib/python3.10/site-packages/torchvision/__init__.py"
+    },
+    "numpy": {
+      "version": "1.26.4",
+      "path": "/home/seeed/workspace/jetson-worktime/.venv/lib/python3.10/site-packages/numpy/__init__.py"
+    },
+    "cv2": {
+      "version": "4.11.0",
+      "path": "/home/seeed/workspace/jetson-worktime/.venv/lib/python3.10/site-packages/cv2/__init__.py"
+    },
+    "gi": {
+      "version": "3.42.1",
+      "path": "/usr/lib/python3/dist-packages/gi/__init__.py"
+    },
+    "tensorrt": {
+      "version": "10.3.0",
+      "path": "/usr/lib/python3.10/dist-packages/tensorrt/__init__.py"
+    },
+    "ultralytics": {
+      "version": "8.3.161",
+      "path": "/home/seeed/workspace/jetson-worktime/.venv/lib/python3.10/site-packages/ultralytics/__init__.py"
+    }
+  },
+  "sources": {
+    "seeed": "https://github.com/Seeed-Projects/reComputer-Jetson-for-Beginners/tree/main/3-Basic-Tools-and-Getting-Started/3.5-Pytorch",
+    "torch": "https://pypi.jetson-ai-lab.io/jp6/cu126/torch/",
+    "torchvision_source": "https://github.com/pytorch/vision/tree/v0.22.0",
+    "model": "https://github.com/ultralytics/assets/releases/download/v8.3.0/yolo11n-pose.pt",
+    "person_image": "https://ultralytics.com/images/bus.jpg"
+  },
+  "artifacts": {
+    "models/bus.jpg": {
+      "size": 137419,
+      "sha256": "c02019c4979c191eb739ddd944445ef408dad5679acab6fd520ef9d434bfbc63"
+    },
+    "models/yolo11n-pose.pt": {
+      "size": 6255593,
+      "sha256": "869e83fcdffdc7371fa4e34cd8e51c838cc729571d1635e5141e3075e9319dc0"
+    },
+    "vendor/wheels/torchvision-0.22.0-cp310-cp310-linux_aarch64.whl": {
+      "size": 5324865,
+      "sha256": "7e273be5d71914c03dfb8b05a96d5e5115807471677d069cef3020ba02f59b7d"
+    },
+    "vendor/wheels/torch-2.7.0-cp310-cp310-linux_aarch64.whl": {
+      "size": 266741529,
+      "sha256": "6eff643c0a7acda92734cc798338f733ff35c7df1a4434576f5ff7c66fc97319"
+    }
+  },
+  "acceptance": {
+    "gpu": "PASS",
+    "cuda_nms": "PASS",
+    "video": "PASS",
+    "pose_tracking": "PASS",
+    "rtsp": "NOT RUN",
+    "sync_repeat": "PASS"
+  },
+  "limitations": [
+    "Static image video tests only ID persistence; no real-world accuracy claim.",
+    "No camera RTSP validation.",
+    "No workpiece detection or activity timing."
+  ],
+  "system": [
+    {
+      "command": [
+        "dpkg-query",
+        "-W",
+        "nvidia-l4t-core",
+        "nvidia-l4t-gstreamer",
+        "nvidia-jetpack",
+        "libcudnn9-cuda-12",
+        "libnvinfer10",
+        "python3-gst-1.0"
+      ],
+      "output": "libcudnn9-cuda-12\t9.3.0.75-1\nlibnvinfer10\t10.3.0.30-1+cuda12.5\nnvidia-jetpack\t6.2.1+b38\nnvidia-l4t-core\t36.4.3-20250107174145\nnvidia-l4t-gstreamer\t36.4.7-20250918154033\npython3-gst-1.0\t1.20.1-1\n",
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "/usr/local/cuda/bin/nvcc",
+        "--version"
+      ],
+      "output": "nvcc: NVIDIA (R) Cuda compiler driver\nCopyright (c) 2005-2024 NVIDIA Corporation\nBuilt on Wed_Aug_14_10:14:07_PDT_2024\nCuda compilation tools, release 12.6, V12.6.68\nBuild cuda_12.6.r12.6/compiler.34714021_0\n",
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "/home/seeed/.local/bin/uv",
+        "--version"
+      ],
+      "output": "uv 0.13.6 (aarch64-unknown-linux-gnu)\n",
+      "exit_code": 0
+    }
+  ],
+  "m1_gstreamer_recheck": {
+    "generated": "2026-11-03T14:46:40.976260+08:00",
+    "gstreamer_framework": "GStreamer 1.20.3",
+    "packages": {
+      "command": [
+        "dpkg-query",
+        "-W",
+        "nvidia-jetpack",
+        "nvidia-l4t-core",
+        "nvidia-l4t-gstreamer"
+      ],
+      "exit_code": 0,
+      "output": "nvidia-jetpack\t6.2.1+b38\nnvidia-l4t-core\t36.4.3-20250107174145\nnvidia-l4t-gstreamer\t36.4.7-20250918154033\n"
+    },
+    "apt_origins": {
+      "command": [
+        "apt-cache",
+        "policy",
+        "nvidia-jetpack",
+        "nvidia-l4t-core",
+        "nvidia-l4t-gstreamer"
+      ],
+      "exit_code": 0,
+      "output": "nvidia-jetpack:\n  Installed: 6.2.1+b38\n  Candidate: 6.2.1+b38\n  Version table:\n *** 6.2.1+b38 600\n        600 https://repo.download.nvidia.com/jetson/common r36.4/main arm64 Packages\n        100 /var/lib/dpkg/status\n     6.2+b77 600\n        600 https://repo.download.nvidia.com/jetson/common r36.4/main arm64 Packages\n     6.1+b123 600\n        600 https://repo.download.nvidia.com/jetson/common r36.4/main arm64 Packages\nnvidia-l4t-core:\n  Installed: 36.4.3-20250107174145\n  Candidate: 36.4.7-20250918154033\n  Version table:\n     36.4.7-20250918154033 600\n        600 https://repo.download.nvidia.com/jetson/t234 r36.4/main arm64 Packages\n     36.4.4-20250616085344 600\n        600 https://repo.download.nvidia.com/jetson/t234 r36.4/main arm64 Packages\n *** 36.4.3-20250107174145 600\n        600 https://repo.download.nvidia.com/jetson/t234 r36.4/main arm64 Packages\n        100 /var/lib/dpkg/status\n     36.4.0-20240912212859 600\n        600 https://repo.download.nvidia.com/jetson/t234 r36.4/main arm64 Packages\nnvidia-l4t-gstreamer:\n  Installed: 36.4.7-20250918154033\n  Candidate: 36.4.7-20250918154033\n  Version table:\n *** 36.4.7-20250918154033 600\n        600 https://repo.download.nvidia.com/jetson/common r36.4/main arm64 Packages\n        100 /var/lib/dpkg/status\n     36.4.4-20250616085344 600\n        600 https://repo.download.nvidia.com/jetson/common r36.4/main arm64 Packages\n     36.4.3-20250107174145 600\n        600 https://repo.download.nvidia.com/jetson/common r36.4/main arm64 Packages\n     36.4.0-20240912212859 600\n        600 https://repo.download.nvidia.com/jetson/common r36.4/main arm64 Packages\n"
+    },
+    "plugins": {
+      "nvv4l2decoder": {
+        "filename": "/usr/lib/aarch64-linux-gnu/gstreamer-1.0/libgstnvvideo4linux2.so",
+        "plugin_version": "1.14.0",
+        "package_owner": {
+          "command": [
+            "dpkg-query",
+            "-S",
+            "/usr/lib/aarch64-linux-gnu/gstreamer-1.0/libgstnvvideo4linux2.so"
+          ],
+          "exit_code": 0,
+          "output": "nvidia-l4t-gstreamer: /usr/lib/aarch64-linux-gnu/gstreamer-1.0/libgstnvvideo4linux2.so\n"
+        },
+        "mapped_library": [
+          "/usr/lib/aarch64-linux-gnu/gstreamer-1.0/libgstnvvideo4linux2.so",
+          "/usr/lib/aarch64-linux-gnu/gstreamer-1.0/libgstnvvideo4linux2.so",
+          "/usr/lib/aarch64-linux-gnu/gstreamer-1.0/libgstnvvideo4linux2.so",
+          "/usr/lib/aarch64-linux-gnu/gstreamer-1.0/libgstnvvideo4linux2.so"
+        ]
+      },
+      "nvvidconv": {
+        "filename": "/usr/lib/aarch64-linux-gnu/gstreamer-1.0/libgstnvvidconv.so",
+        "plugin_version": "1.2.3",
+        "package_owner": {
+          "command": [
+            "dpkg-query",
+            "-S",
+            "/usr/lib/aarch64-linux-gnu/gstreamer-1.0/libgstnvvidconv.so"
+          ],
+          "exit_code": 0,
+          "output": "nvidia-l4t-gstreamer: /usr/lib/aarch64-linux-gnu/gstreamer-1.0/libgstnvvidconv.so\n"
+        },
+        "mapped_library": [
+          "/usr/lib/aarch64-linux-gnu/gstreamer-1.0/libgstnvvidconv.so",
+          "/usr/lib/aarch64-linux-gnu/gstreamer-1.0/libgstnvvidconv.so",
+          "/usr/lib/aarch64-linux-gnu/gstreamer-1.0/libgstnvvidconv.so",
+          "/usr/lib/aarch64-linux-gnu/gstreamer-1.0/libgstnvvidconv.so"
+        ]
+      }
+    }
+  }
+}

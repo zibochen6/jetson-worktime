@@ -1,0 +1,12 @@
+.venv/
+.env
+vendor/wheels/*.whl
+vendor/build/
+vendor/*.tar.gz
+models/
+outputs/
+__pycache__/
+*.pyc
+tests/fixtures/media/*.mp4
+tests/fixtures/media/*.jpg
+tests/fixtures/media/*.png

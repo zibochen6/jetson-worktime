@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0",
+  "codec": "h265",
+  "decoder": "nvv4l2decoder",
+  "preview_max_fps": 12,
+  "preview_has_project_overlay": false,
+  "status": "online",
+  "sequence": 731,
+  "width": 2560,
+  "height": 1440,
+  "source_fps": 20.0,
+  "jpeg_width": 1280,
+  "jpeg_height": 720,
+  "stream_session_id": "1dd85b048a7f4222bea43867e38c5e8c",
+  "receive_sequence": 1873,
+  "pts_ns": "94057206972",
+  "age_ms": 107.53232299975934
+}

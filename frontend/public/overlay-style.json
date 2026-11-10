@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "reference_width": 1280,
+  "colors": {
+    "station": "#90a4ae",
+    "seat": "#00d5b0",
+    "person": "#2de2c3",
+    "anchor": "#ffbd5c",
+    "label_background": "#0b1920",
+    "label_text": "#f1f7f8"
+  },
+  "defaults": {"boxes": true, "regions": true, "keypoints": false},
+  "seat_fill_alpha": 0.04,
+  "label_alpha": 0.78,
+  "font_size": 14,
+  "font_min": 11,
+  "font_max": 22,
+  "line_width": 1,
+  "corner_width": 2,
+  "corner_fraction": 0.16,
+  "corner_min": 8,
+  "corner_max": 28,
+  "point_radius": 2,
+  "anchor_radius": 4,
+  "label_padding_x": 8,
+  "label_padding_y": 4,
+  "label_gap": 4,
+  "margin": 4,
+  "dash_length": 8,
+  "dash_gap": 6,
+  "label_radius": 5,
+  "skeleton_edges": [[5,6],[5,7],[7,9],[6,8],[8,10],[5,11],[6,12],[11,12],[11,13],[13,15],[12,14],[14,16]]
+}
