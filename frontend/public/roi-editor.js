@@ -1,4 +1,4 @@
-import {overlayStyle} from './overlay.js';
+import {overlayStyle, visualizationDefaults} from './overlay.js';
 import {LocalizedError} from './i18n.js';
 import {containRect} from './api.js';
 
@@ -221,10 +221,11 @@ export class RoiEditor {
     for (const name of ['station', 'seat']) {
       const points = name === this.region && this.draft.length ? this.draft : this.regions[name];
       if (!points.length) continue;
-      const color = overlayStyle.colors[name];
+      const visualization = this.visualization ?? visualizationDefaults();
+      const color = visualization.colors[name];
       context.strokeStyle = color;
       context.fillStyle = color;
-      context.globalAlpha = name === this.region ? .1 : overlayStyle.seat_fill_alpha;
+      context.globalAlpha = visualization[name+'_fill_alpha'];
       context.lineWidth = (name === this.region ? 2.5 : 1.5) * displayScale;
       context.setLineDash(name === this.region ? [] : [6 * displayScale, 4 * displayScale]);
       context.beginPath();

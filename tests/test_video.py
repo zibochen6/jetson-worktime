@@ -21,6 +21,36 @@ class VideoTests(unittest.TestCase):
   self.assertFalse(select_video_stream(video,'h264'))
  def test_pts(self):
   self.assertIsNone(pts_or_none(Gst.CLOCK_TIME_NONE));self.assertEqual(pts_or_none(123),123)
+ def test_rtsp_funnel_accepts_extra_ssrc_and_releases_its_pad(self):
+  pipeline=MagicMock()
+  pipeline.set_state.return_value=Gst.StateChangeReturn.SUCCESS
+  caps=Gst.Caps.from_string('application/x-rtp,media=video,encoding-name=H265')
+  with patch('jetson_worktime.video.Gst.parse_launch',return_value=pipeline) as parse:
+   reader=VideoReader('rtsp://private',codec='h265',rtsp=True)
+  self.assertIn('rtpfunnel',parse.call_args.args[0])
+  self.assertTrue(reader._select_stream(None,0,caps))
+  self.assertFalse(reader._select_stream(None,1,caps))
+  pad=MagicMock();pad.name='recv_rtp_src_0_0_98'
+  pad.is_linked.return_value=False;pad.get_current_caps.return_value=caps
+  pad.link.return_value=Gst.PadLinkReturn.OK
+  reader._link_rtsp_pad(None,pad)
+  self.assertEqual(reader.extra_ssrc_links,1)
+  reader._unlink_rtsp_pad(None,pad)
+  self.assertEqual(reader.rtp_links,{})
+  pipeline.get_by_name('video_funnel').release_request_pad.assert_called_once()
+ def test_rtsp_funnel_rejects_nonvideo_and_releases_failed_link(self):
+  reader=VideoReader.__new__(VideoReader)
+  reader.closed=False;reader.codec='h265';reader.pipeline=MagicMock();reader.rtp_links={}
+  reader.extra_ssrc_links=0;reader.sample_error=None
+  pad=MagicMock();pad.name='source';pad.is_linked.return_value=False
+  pad.get_current_caps.return_value=Gst.Caps.from_string('application/x-rtp,media=audio,encoding-name=PCMA')
+  reader._link_rtsp_pad(None,pad)
+  reader.pipeline.get_by_name.assert_not_called()
+  pad.get_current_caps.return_value=Gst.Caps.from_string('application/x-rtp,media=video,encoding-name=H265')
+  pad.link.return_value=Gst.PadLinkReturn.NOFORMAT
+  reader._link_rtsp_pad(None,pad)
+  reader.pipeline.get_by_name('video_funnel').release_request_pad.assert_called_once()
+  self.assertEqual(reader.rtp_links,{})
  def test_bad_codec(self):
   with self.assertRaises(ValueError): VideoReader('x',codec='bad')
  def test_usb_formats_use_v4l2_and_live_latest_frame(self):

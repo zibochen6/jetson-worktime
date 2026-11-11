@@ -41,3 +41,31 @@ nohup .venv/bin/python -u scripts/preview.py > logs/preview.log 2>&1 < /dev/null
 ```
 
 测试覆盖开工回溯、59秒返回、61秒休息、长时未观察到人、附近活动、多帧率一致性、重复人体框、多人/尺寸异常、短缺失、未知、迟到/重复结果、重连、手动操作等。真实相机已观察到稳定在位自动开工及页面时间增长。59/61/300秒边界用可控时间序列验证；尚未完成有标注的真实坐下/起身/离开/返回准确率评估，不用于正式考勤或绩效。
+
+## 会话操作员绑定与返回确认
+
+每个新会话绑定一名内部操作员。自动开始要求同一可跟踪候选在在位区连续满足开工确认时间。之后只依据本次操作员的证据累计时间，其他人的出现不会清空离开起点。
+
+ByteTrack ID 仅用于同一视频流内的保守连续关联。自动返回要求相同 ID、距最后可靠观测不超过 missing_grace_seconds、人体框面积比 0.5–2，且 IoU 至少 0.2 或上半身锚点位移不超过上一人体框对角线的 50%。人员交叉竞争、长缺失或新 ID 需要人工确认。持续可见的操作员在工位附近活动时保留现有附近活动规则。
+
+输入不可靠时记未知，保存离开起点，暂停有效离开确认时间。有效画面中的其他人员不会暂停或重置原操作员的缺失确认。达到 stop_absent_seconds 后会话结束，结束时间回溯至原操作员缺失的起点。长缺失后的原人员返回可能需要人工确认，轨迹关联不能保证员工身份正确。
+
+页面的更多操作提供“确认操作员返回”。确认面板展示隐私处理后的配对图像及候选轨迹，自动刷新。只能确认当前新鲜、在位的人员。过期观测、切流、配置变化、会话已结束或重复确认均返回 409。
+
+状态与观测增加可选 ownership，包含 operator_id、track_id、run_id、stream_session_id、state、needs_confirmation、candidates、ignored_track_ids、away_since、absent_since、away_seconds、absent_seconds、end_remaining_seconds。内部操作员标识仅在该会话内有效。persons 增加 is_session_operator 与 ownership_zone。
+
+POST /api/v1/work/actions 的确认请求为以下结构。
+
+```json
+{"action":"confirm_return","session_id":"当前工作会话","observation_id":"新鲜观测","stream_session_id":"当前视频流会话","config_revision":18,"track_id":7}
+```
+
+人工确认从所选观测接收时间生效，保留真实未知区间。事件记录 operator_bound、operator_association_changed、other_person_ignored、operator_return_confirmed，结束事件包含人员关联与结算区间。配置阈值继续使用设备当前设置。
+
+观测回放使用同一人员归属入口。存在人工确认时同时提供对应事件文件。
+
+```bash
+.venv/bin/python scripts/replay_behavior.py --input outputs/behavior/<run_id>/observations.jsonl --events outputs/behavior/<run_id>/events.jsonl --output /tmp/ownership-replay.jsonl
+```
+
+旧记录缺少轨迹证据时标记 UNVERIFIED，不将其作为人员区分验收证据。回放应提供采集时对应的配置文件。真实多人交叉准确率仍需要带标注的现场片段验证。

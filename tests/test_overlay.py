@@ -35,7 +35,8 @@ class IndustrialOverlayTests(unittest.TestCase):
   from jetson_worktime.settings import DISPLAY_DEFAULTS
   self.assertEqual(DISPLAY_DEFAULTS,STYLE['defaults'])
   self.assertFalse(DISPLAY_DEFAULTS['keypoints'])
-  self.assertEqual(COLORS['seat'],(176,213,0))
+  self.assertEqual(COLORS['seat'],(36,191,251))
+  self.assertEqual(len({COLORS[key] for key in ('station','seat','person','skeleton','keypoint','anchor')}),6)
   metrics=dimensions(1280)
   self.assertEqual(len(corner_segments((100,100,500,600),metrics)),4)
   self.config['display']=dict(boxes=True,regions=False,keypoints=False)
@@ -48,7 +49,7 @@ class IndustrialOverlayTests(unittest.TestCase):
   original=np.full((720,1280,3),100,np.uint8)
   self.config['display']=dict(boxes=False,regions=True,keypoints=False)
   regions=draw_overlay(original.copy(),[],self.config)
-  self.assertLessEqual(int(np.abs(regions[300,1150].astype(int)-100).max()),5)
+  self.assertLessEqual(int(np.abs(regions[300,1150].astype(int)-100).max()),40)
   self.assertFalse(np.array_equal(regions[300,1150],original[300,1150]))
   self.config['display']=dict(boxes=True,regions=False,keypoints=True)
   self.assertTrue(np.array_equal(draw_overlay(original.copy(),[self.person],self.config,fresh=False),original))

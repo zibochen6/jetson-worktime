@@ -36,7 +36,7 @@ test('captured real responses agree with OpenAPI schemas',async()=>{
 test('every mock scenario agrees with the same production contract',()=>{
  validate(settingsFixture(),spec.components.schemas.DeviceSettings,'settings');
  validate(systemMetricsFixture(),spec.components.schemas.SystemMetrics,'systemMetrics');
- for(const name of ['idle','start','working','away','rest','done','unknown','offline','algorithm','moved']){
+ for(const name of ['idle','start','working','away','rest','done','unknown','offline','algorithm','moved','owner_return']){
   const f=fixtures(name);validate(f.camera,spec.components.schemas.Camera,name+'.camera');validate(f.work,spec.components.schemas.WorkStatus,name+'.work');validate(f.envelope,spec.components.schemas.ObservationEnvelope,name+'.observations');
  }
 });

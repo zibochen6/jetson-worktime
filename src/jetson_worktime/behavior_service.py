@@ -8,7 +8,8 @@ import time
 import uuid
 
 from .api import ObservationCache, make_observation
-from .behavior import SessionEngine, classify
+from .behavior import SessionEngine
+from .ownership import spatially_continuous, valid_track_id
 from .detection import detection_settings, filter_persons, TRACKING_CONFIDENCE
 from .media import protect_frame
 from .overlay import draw_overlay, encode_overlays
@@ -25,7 +26,8 @@ class BehaviorService:
         self.condition = threading.Condition()
         self.latest = None
         self.stop = threading.Event()
-        self.engine = SessionEngine(self.config)
+        self.run_id = uuid.uuid4().hex
+        self.engine = SessionEngine(self.config, run_id=self.run_id)
         self.persons = []
         self.frame_ref = {}
         self.error = None
@@ -40,9 +42,9 @@ class BehaviorService:
         self.observations = ObservationCache(8)
         self.media_condition = threading.Condition(self.lock)
         self.media = None
+        self.transport = None
         self.media_sequence = 0
         self.publish_times = deque(maxlen=60)
-        self.run_id = uuid.uuid4().hex
         self.output = root/'outputs/behavior'/self.run_id
         self.output.mkdir(parents=True)
         self.event_file = (self.output/'events.jsonl').open('a', buffering=1)
@@ -84,6 +86,8 @@ class BehaviorService:
             self.condition.notify()
 
     def invalidate_media(self):
+        if self.transport:
+            self.transport.invalidate()
         self.media = None
         self.observations = ObservationCache(8)
         self.persons = []
@@ -137,7 +141,7 @@ class BehaviorService:
                     self.error = 'StorageError'
                 pending_events = self.engine.events[:]
                 completed = self.engine.completed
-                self.engine = SessionEngine(config)
+                self.engine = SessionEngine(config, run_id=self.run_id)
                 self.engine.completed = completed
                 self.engine.events = pending_events
                 if roi_request:
@@ -183,11 +187,16 @@ class BehaviorService:
                           config_revision=self.config['revision'], privacy_applied=self.config['privacy']['enabled'])
             return result
 
-    def action(self, action):
+    def action(self, action, payload=None):
         with self.lock:
             if action == 'start' and self.config.get('camera_source') and not self.config['roi_configured']:
                 raise LocalizedError('source.roiRequired')
-            if action == 'confirm_camera':
+            if action == 'confirm_return':
+                with self.store.output_policy() as policy:
+                    if policy['revision'] != self.config['revision']:
+                        raise LocalizedError('ownership.staleConfirmation')
+                    self._confirm_return(payload or {})
+            elif action == 'confirm_camera':
                 self.camera_changed = False
                 self.guard_reset = True
                 self.log(dict(event='camera_position_confirmed', monotonic_seconds=time.monotonic()))
@@ -195,6 +204,36 @@ class BehaviorService:
                 self.engine.manual(action, time.monotonic())
             self.flush()
             return self.snapshot()
+
+    def _confirm_return(self, payload):
+        """Validate both the selected evidence and the latest candidate under lock."""
+        now = time.monotonic()
+        track_id = payload.get('track_id')
+        current = self.engine.current
+        pair = self.observations.frame(payload.get('observation_id', ''))
+        if (not current or not pair or not valid_track_id(track_id)
+                or not self.connected or self.error or self.camera_changed
+                or payload.get('session_id') != current['session_id']
+                or type(payload.get('config_revision')) is not int
+                or payload['config_revision'] != self.config['revision']
+                or payload.get('stream_session_id') != self.source_session
+                or not self.engine.ownership or not self.engine.ownership.needs_confirmation):
+            raise LocalizedError('ownership.staleConfirmation')
+        observation = pair[0]
+        observed_at = int(observation['frame']['receive_monotonic_ns']) / 1e9
+        if (observation['config_revision'] != self.config['revision']
+                or observation['frame']['stream_session_id'] != self.source_session
+                or not observation['inference']['accepted'] or observation.get('camera_changed')
+                or now-observed_at > self.config['max_observation_age']
+                or self.engine.last_obs is None or now-self.engine.last_obs > self.config['max_observation_age']):
+            raise LocalizedError('ownership.staleConfirmation')
+        selected = [p for p in observation['persons'] if p.get('person_track_id') == track_id
+                    and p.get('ownership_zone') == 'SEATED']
+        latest = [p for p in self.persons if p.get('person_track_id') == track_id
+                  and p.get('ownership_zone') == 'SEATED']
+        if len(selected) != 1 or len(latest) != 1 or not spatially_continuous(selected[0], latest[0]):
+            raise LocalizedError('ownership.staleConfirmation')
+        self.engine.confirm_return(latest[0], observed_at, now, observation_id=observation['observation_id'])
 
     def monitor(self):
         while not self.stop.wait(1):
@@ -318,7 +357,7 @@ class BehaviorService:
             all_persons = extract_persons(result)
             protected = protect_frame(frame, all_persons, config)
             height, width = frame.shape[:2]
-            label, reason, persons = classify(filter_persons(all_persons, config), width, height, config)
+            filtered_persons = filter_persons(all_persons, config)
             with self.lock:
                 if self.stop.is_set() or revision != self.config['revision'] or not self.connected or stream != self.source_session:
                     continue
@@ -327,11 +366,17 @@ class BehaviorService:
                     if policy['revision'] != revision:
                         continue
                     self.guard(frame, protected)
+                    blocked_reason = None
                     if config.get('camera_source') and not config['roi_configured']:
-                        label, reason = 'UNKNOWN', reason_text('source.roiRequired')
+                        blocked_reason = reason_text('source.roiRequired')
                     elif self.camera_changed:
-                        label, reason = 'UNKNOWN', reason_text('reason.moved')
-                    accepted = self.engine.observe(received/1e9, label, stream, now=time.monotonic(), reason=reason)
+                        blocked_reason = reason_text('reason.moved')
+                    accepted = self.engine.observe_persons(received/1e9, filtered_persons, width, height,
+                        stream, now=time.monotonic(), sequence=meta['receive_sequence'], blocked_reason=blocked_reason)
+                    if not accepted:
+                        continue
+                    persons = self.engine.persons
+                    label, reason = self.engine.raw, self.engine.reason
                     self.persons = persons
                     self.frame_ref = dict(meta, pts_ns=pts, receive_monotonic_ns=received)
                     self.error = None
@@ -343,16 +388,23 @@ class BehaviorService:
                     observation = make_observation(self.run_id, meta, pts, received, started, completed,
                                                    width, height, preview.shape[1], preview.shape[0],
                                                    persons, label, reason, accepted, config, self.camera_changed)
+                    observation['ownership'] = self.engine.snapshot(time.monotonic())['ownership']
                     self.observations.publish(observation, jpeg.tobytes())
                     self.observation_file.write(json.dumps(dict(
                         observation_id=observation['observation_id'], run_id=self.run_id,
                         config_revision=revision, privacy_applied=config['privacy']['enabled'], detection=detection,
                         inference_started_monotonic_ns=started, inference_complete_monotonic_ns=completed,
                         **self.frame_ref, width=width, height=height, behavior=label, reason=reason,
-                        accepted=accepted, persons=persons), ensure_ascii=False)+'\n')
+                        accepted=accepted, persons=persons, ownership=observation['ownership'],
+                        camera_changed=self.camera_changed, roi_configured=config['roi_configured'],
+                        reason_code=observation['inference']['reason_code'],
+                        reason_params=observation['inference']['reason_params']), ensure_ascii=False)+'\n')
                     annotated_locales = encode_overlays(
                         preview, persons, config, fresh=accepted,
                         regions_match=config['image_size'] == [width, height])
+                    if self.transport:
+                        self.transport.submit(protected, persons, config, accepted,
+                                              config["image_size"] == [width, height], received, self.frame_ref.copy())
                     self.media_sequence += 1
                     self.media = dict(jpeg=jpeg.tobytes(), annotated=annotated_locales['zh-CN'], annotated_locales=annotated_locales,
                                       received=received, meta=meta.copy(), revision=revision,
@@ -379,6 +431,8 @@ class BehaviorService:
             self.media_condition.notify_all()
         with self.condition:
             self.condition.notify_all()
+        if self.transport:
+            self.transport.close()
         for thread in self.threads:
             thread.join(timeout=5)
         self.event_file.close()

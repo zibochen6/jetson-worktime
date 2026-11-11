@@ -1,15 +1,1806 @@
 {
-  "openapi": "3.1.0",
+  "components": {
+    "schemas": {
+      "Action": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "start",
+              "end",
+              "review",
+              "confirm_camera",
+              "confirm_return"
+            ]
+          },
+          "session_id": {
+            "type": "string"
+          },
+          "observation_id": {
+            "type": "string"
+          },
+          "stream_session_id": {
+            "type": "string"
+          },
+          "config_revision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "track_id": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "action": {
+                  "const": "confirm_return"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "session_id",
+                "observation_id",
+                "stream_session_id",
+                "config_revision",
+                "track_id"
+              ]
+            }
+          }
+        ]
+      },
+      "Camera": {
+        "type": "object",
+        "properties": {
+          "schema_version": {
+            "type": "string",
+            "const": "1.0"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "connecting",
+              "online",
+              "reconnecting"
+            ]
+          },
+          "sequence": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "width": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "height": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "jpeg_width": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "jpeg_height": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "source_fps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "stream_session_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "receive_sequence": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "pts_ns": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9]+$",
+                "description": "Decimal nanoseconds; lossless JavaScript string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "age_ms": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "codec": {
+            "enum": [
+              "h264",
+              "h265",
+              "yuyv",
+              "mjpeg"
+            ]
+          },
+          "decoder": {
+            "enum": [
+              "nvv4l2decoder",
+              "software"
+            ]
+          },
+          "preview_max_fps": {
+            "type": "number"
+          },
+          "preview_has_project_overlay": {
+            "type": "boolean",
+            "const": false
+          },
+          "config_revision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "privacy_applied": {
+            "type": "boolean"
+          },
+          "output_fps": {
+            "type": "number",
+            "minimum": 0
+          },
+          "algorithm_error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "regions_match": {
+            "type": "boolean"
+          },
+          "camera_changed": {
+            "type": "boolean"
+          },
+          "source_type": {
+            "enum": [
+              "rtsp",
+              "usb"
+            ]
+          },
+          "device_name": {
+            "type": "string"
+          },
+          "connection_error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "video": {
+            "type": "object",
+            "properties": {
+              "webrtc_available": {
+                "type": "boolean"
+              },
+              "preview": {
+                "type": "object"
+              },
+              "fallback": {
+                "type": "object"
+              },
+              "error": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "epoch": {
+                "type": "integer"
+              }
+            }
+          }
+        },
+        "required": [
+          "schema_version",
+          "status",
+          "sequence",
+          "width",
+          "height",
+          "jpeg_width",
+          "jpeg_height",
+          "source_fps",
+          "stream_session_id",
+          "receive_sequence",
+          "pts_ns",
+          "age_ms",
+          "codec",
+          "decoder",
+          "preview_max_fps",
+          "preview_has_project_overlay"
+        ]
+      },
+      "CameraDevices": {
+        "type": "object",
+        "required": [
+          "schema_version",
+          "devices"
+        ],
+        "properties": {
+          "schema_version": {
+            "const": "1.0"
+          },
+          "devices": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "device",
+                "name",
+                "formats"
+              ],
+              "properties": {
+                "device": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "formats": {
+                  "type": "array",
+                  "items": {
+                    "enum": [
+                      "yuyv",
+                      "mjpeg",
+                      "h264"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "CameraSource": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": [
+              "type",
+              "url",
+              "username",
+              "codec"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "rtsp"
+              },
+              "url": {
+                "type": "string",
+                "description": "RTSP URL without credentials in read responses."
+              },
+              "username": {
+                "type": "string"
+              },
+              "codec": {
+                "enum": [
+                  "h264",
+                  "h265"
+                ]
+              },
+              "password_set": {
+                "type": "boolean"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "type",
+              "device",
+              "format"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "usb"
+              },
+              "device": {
+                "type": "string"
+              },
+              "format": {
+                "enum": [
+                  "yuyv",
+                  "mjpeg",
+                  "h264"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "CameraSourceInput": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": [
+              "type",
+              "url",
+              "username",
+              "codec"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "rtsp"
+              },
+              "url": {
+                "type": "string",
+                "description": "RTSP URL without credentials in read responses."
+              },
+              "username": {
+                "type": "string"
+              },
+              "codec": {
+                "enum": [
+                  "h264",
+                  "h265"
+                ]
+              },
+              "password": {
+                "type": "string",
+                "description": "Write-only. Blank preserves existing password only for the same URL and username."
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "type",
+              "device",
+              "format"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "const": "usb"
+              },
+              "device": {
+                "type": "string"
+              },
+              "format": {
+                "enum": [
+                  "yuyv",
+                  "mjpeg",
+                  "h264"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "CameraTestRequest": {
+        "type": "object",
+        "required": [
+          "expected_revision",
+          "camera_source"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "expected_revision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "camera_source": {
+            "$ref": "#/components/schemas/CameraSourceInput"
+          }
+        }
+      },
+      "CameraTestResult": {
+        "type": "object",
+        "required": [
+          "schema_version",
+          "test_token",
+          "expires_in_seconds",
+          "width",
+          "height"
+        ],
+        "properties": {
+          "schema_version": {
+            "const": "1.0"
+          },
+          "test_token": {
+            "type": "string"
+          },
+          "expires_in_seconds": {
+            "type": "integer"
+          },
+          "width": {
+            "type": "integer"
+          },
+          "height": {
+            "type": "integer"
+          }
+        }
+      },
+      "DetectionSettings": {
+        "type": "object",
+        "required": [
+          "person_confidence",
+          "keypoint_confidence"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "person_confidence": {
+            "type": "number",
+            "minimum": 0.1,
+            "maximum": 1,
+            "default": 0.1,
+            "description": "Minimum score for business timing and person overlays. Privacy uses conservative candidates."
+          },
+          "keypoint_confidence": {
+            "type": "number",
+            "minimum": 0.25,
+            "maximum": 1,
+            "default": 0.4,
+            "description": "Minimum keypoint score for presence and pose overlays. Independent from privacy localization."
+          }
+        }
+      },
+      "DeviceSettings": {
+        "type": "object",
+        "required": [
+          "schema_version",
+          "revision",
+          "privacy",
+          "display",
+          "timing",
+          "defaults",
+          "regions",
+          "image_size",
+          "roi_configured",
+          "camera"
+        ],
+        "properties": {
+          "schema_version": {
+            "const": "1.0"
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "privacy": {
+            "$ref": "#/components/schemas/PrivacySettings"
+          },
+          "display": {
+            "$ref": "#/components/schemas/DisplaySettings"
+          },
+          "timing": {
+            "$ref": "#/components/schemas/TimingSettings"
+          },
+          "defaults": {
+            "$ref": "#/components/schemas/TimingSettings"
+          },
+          "regions": {
+            "type": "object",
+            "required": [
+              "station",
+              "seat"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "station": {
+                "type": "array",
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "minItems": 2,
+                  "maxItems": 2
+                },
+                "minItems": 3,
+                "maxItems": 32
+              },
+              "seat": {
+                "type": "array",
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "minItems": 2,
+                  "maxItems": 2
+                },
+                "minItems": 3,
+                "maxItems": 32
+              }
+            }
+          },
+          "image_size": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 2
+            },
+            "minItems": 2,
+            "maxItems": 2
+          },
+          "roi_configured": {
+            "type": "boolean"
+          },
+          "camera": {
+            "$ref": "#/components/schemas/Camera"
+          },
+          "camera_source": {
+            "$ref": "#/components/schemas/CameraSource"
+          },
+          "detection": {
+            "$ref": "#/components/schemas/DetectionSettings"
+          },
+          "detection_defaults": {
+            "$ref": "#/components/schemas/DetectionSettings"
+          },
+          "visualization": {
+            "$ref": "#/components/schemas/VisualizationSettings"
+          },
+          "visualization_defaults": {
+            "$ref": "#/components/schemas/VisualizationSettings"
+          }
+        }
+      },
+      "DisplaySettings": {
+        "type": "object",
+        "required": [
+          "boxes",
+          "regions",
+          "keypoints"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "boxes": {
+            "type": "boolean"
+          },
+          "regions": {
+            "type": "boolean"
+          },
+          "keypoints": {
+            "type": "boolean"
+          },
+          "station": {
+            "type": "boolean",
+            "description": "Station overlay, boundary and label. Legacy regions value is inherited when absent."
+          },
+          "seat": {
+            "type": "boolean",
+            "description": "Presence overlay, boundary and label. Legacy regions value is inherited when absent."
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "schema_version": {
+            "type": "string",
+            "const": "1.0"
+          },
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string"
+              },
+              "message": {
+                "type": "string"
+              },
+              "message_key": {
+                "type": "string"
+              },
+              "message_params": {
+                "type": "object",
+                "additionalProperties": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "boolean"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              }
+            },
+            "required": [
+              "code",
+              "message"
+            ]
+          }
+        },
+        "required": [
+          "schema_version",
+          "error"
+        ]
+      },
+      "Frame": {
+        "type": "object",
+        "properties": {
+          "stream_session_id": {
+            "type": "string"
+          },
+          "receive_sequence": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "pts_ns": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9]+$",
+                "description": "Decimal nanoseconds; lossless JavaScript string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "receive_monotonic_ns": {
+            "type": "string",
+            "pattern": "^[0-9]+$",
+            "description": "Decimal nanoseconds; lossless JavaScript string"
+          },
+          "source_width": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "source_height": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "jpeg_width": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "jpeg_height": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "color_format": {
+            "type": "string",
+            "const": "BGR"
+          }
+        },
+        "required": [
+          "stream_session_id",
+          "receive_sequence",
+          "pts_ns",
+          "receive_monotonic_ns",
+          "source_width",
+          "source_height",
+          "jpeg_width",
+          "jpeg_height",
+          "color_format"
+        ]
+      },
+      "Inference": {
+        "type": "object",
+        "properties": {
+          "started_monotonic_ns": {
+            "type": "string",
+            "pattern": "^[0-9]+$",
+            "description": "Decimal nanoseconds; lossless JavaScript string"
+          },
+          "completed_monotonic_ns": {
+            "type": "string",
+            "pattern": "^[0-9]+$",
+            "description": "Decimal nanoseconds; lossless JavaScript string"
+          },
+          "local_processing_ms": {
+            "type": "number"
+          },
+          "local_receive_to_result_ms": {
+            "type": "number"
+          },
+          "accepted": {
+            "type": "boolean"
+          },
+          "observation_valid": {
+            "type": "boolean"
+          },
+          "behavior": {
+            "type": "string",
+            "enum": [
+              "SEATED",
+              "NEARBY",
+              "MISSING",
+              "ABSENT",
+              "UNKNOWN"
+            ]
+          },
+          "reason": {
+            "type": "string"
+          },
+          "reason_code": {
+            "type": "string"
+          },
+          "reason_params": {
+            "type": "object",
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
+        },
+        "required": [
+          "started_monotonic_ns",
+          "completed_monotonic_ns",
+          "local_processing_ms",
+          "local_receive_to_result_ms",
+          "accepted",
+          "observation_valid",
+          "behavior",
+          "reason"
+        ]
+      },
+      "Keypoint": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "y": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "confidence": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "x",
+          "y",
+          "confidence"
+        ]
+      },
+      "Observation": {
+        "properties": {
+          "camera_changed": {
+            "type": "boolean"
+          },
+          "config_revision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "detection": {
+            "$ref": "#/components/schemas/DetectionSettings"
+          },
+          "display": {
+            "$ref": "#/components/schemas/DisplaySettings"
+          },
+          "frame": {
+            "$ref": "#/components/schemas/Frame"
+          },
+          "inference": {
+            "$ref": "#/components/schemas/Inference"
+          },
+          "matching_frame_url": {
+            "type": "string"
+          },
+          "observation_id": {
+            "type": "string"
+          },
+          "ownership": {
+            "$ref": "#/components/schemas/Ownership"
+          },
+          "persons": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Person"
+            }
+          },
+          "privacy_applied": {
+            "type": "boolean"
+          },
+          "regions": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 2,
+                "maxItems": 2
+              },
+              "minItems": 3
+            }
+          },
+          "roi_provisional": {
+            "type": "boolean"
+          },
+          "run_id": {
+            "type": "string"
+          },
+          "visualization": {
+            "$ref": "#/components/schemas/VisualizationSettings"
+          }
+        },
+        "required": [
+          "observation_id",
+          "run_id",
+          "frame",
+          "inference",
+          "persons",
+          "regions",
+          "roi_provisional",
+          "camera_changed",
+          "matching_frame_url"
+        ],
+        "type": "object"
+      },
+      "ObservationEnvelope": {
+        "type": "object",
+        "properties": {
+          "schema_version": {
+            "type": "string",
+            "const": "1.0"
+          },
+          "available": {
+            "type": "boolean"
+          },
+          "fresh": {
+            "type": "boolean"
+          },
+          "age_ms": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "algorithm_error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "observation": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Observation"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "config_revision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "privacy_applied": {
+            "type": "boolean"
+          },
+          "max_observation_age_ms": {
+            "type": "number",
+            "minimum": 100
+          }
+        },
+        "required": [
+          "schema_version",
+          "available",
+          "fresh",
+          "age_ms",
+          "algorithm_error",
+          "observation"
+        ]
+      },
+      "Ownership": {
+        "type": "object",
+        "properties": {
+          "operator_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "track_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "run_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "stream_session_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "UNBOUND",
+              "CANDIDATE",
+              "TRACKED",
+              "MISSING",
+              "CONFIRMATION_REQUIRED",
+              "INPUT_UNKNOWN",
+              "UNVERIFIED",
+              "ENDED"
+            ]
+          },
+          "needs_confirmation": {
+            "type": "boolean"
+          },
+          "candidates": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "track_id",
+                "bbox_xyxy",
+                "zone"
+              ],
+              "properties": {
+                "track_id": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "bbox_xyxy": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 4,
+                  "maxItems": 4
+                },
+                "zone": {
+                  "const": "SEATED"
+                }
+              }
+            }
+          },
+          "ignored_track_ids": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "away_since": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "absent_since": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "away_seconds": {
+            "type": "number",
+            "minimum": 0
+          },
+          "absent_seconds": {
+            "type": "number",
+            "minimum": 0
+          },
+          "end_remaining_seconds": {
+            "minimum": 0,
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "operator_id",
+          "track_id",
+          "state",
+          "needs_confirmation",
+          "candidates",
+          "ignored_track_ids",
+          "away_seconds",
+          "absent_seconds",
+          "end_remaining_seconds"
+        ]
+      },
+      "Person": {
+        "type": "object",
+        "properties": {
+          "person_track_id": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "bbox_xyxy": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 4,
+            "maxItems": 4
+          },
+          "confidence": {
+            "type": "number"
+          },
+          "valid": {
+            "type": "boolean"
+          },
+          "keypoints": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Keypoint"
+            },
+            "minItems": 17,
+            "maxItems": 17
+          },
+          "upper_body_anchor": {
+            "anyOf": [
+              {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 2,
+                "maxItems": 2
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "is_session_operator": {
+            "type": "boolean"
+          },
+          "ownership_zone": {
+            "enum": [
+              "SEATED",
+              "NEARBY",
+              "OUTSIDE",
+              "UNKNOWN"
+            ]
+          }
+        },
+        "required": [
+          "person_track_id",
+          "bbox_xyxy",
+          "confidence",
+          "valid",
+          "keypoints",
+          "upper_body_anchor"
+        ]
+      },
+      "PrivacySettings": {
+        "type": "object",
+        "required": [
+          "enabled"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "enabled": {
+            "type": "boolean"
+          }
+        }
+      },
+      "SettingsUpdate": {
+        "type": "object",
+        "required": [
+          "expected_revision"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "expected_revision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "privacy": {
+            "$ref": "#/components/schemas/PrivacySettings"
+          },
+          "display": {
+            "$ref": "#/components/schemas/DisplaySettings"
+          },
+          "timing": {
+            "$ref": "#/components/schemas/TimingSettings"
+          },
+          "regions": {
+            "type": "object",
+            "required": [
+              "station",
+              "seat"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "station": {
+                "type": "array",
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "minItems": 2,
+                  "maxItems": 2
+                },
+                "minItems": 3,
+                "maxItems": 32
+              },
+              "seat": {
+                "type": "array",
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "minItems": 2,
+                  "maxItems": 2
+                },
+                "minItems": 3,
+                "maxItems": 32
+              }
+            }
+          },
+          "image_size": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 2
+            },
+            "minItems": 2,
+            "maxItems": 2
+          },
+          "reference_frame": {
+            "type": "object",
+            "required": [
+              "stream_session_id",
+              "image_size"
+            ],
+            "properties": {
+              "stream_session_id": {
+                "type": "string"
+              },
+              "image_size": {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "minimum": 2
+                },
+                "minItems": 2,
+                "maxItems": 2
+              },
+              "camera_changed": {
+                "type": "boolean"
+              }
+            }
+          },
+          "camera_source": {
+            "$ref": "#/components/schemas/CameraSourceInput"
+          },
+          "test_token": {
+            "type": "string",
+            "description": "Required when camera_source is provided. Camera changes must be saved separately."
+          },
+          "detection": {
+            "$ref": "#/components/schemas/DetectionSettings"
+          },
+          "visualization": {
+            "$ref": "#/components/schemas/VisualizationSettings"
+          }
+        }
+      },
+      "SystemMetrics": {
+        "type": "object",
+        "required": [
+          "schema_version",
+          "sampled_at_ms",
+          "age_ms",
+          "cpu_percent",
+          "gpu_percent",
+          "memory_used_bytes",
+          "memory_total_bytes",
+          "temperature_celsius",
+          "uptime_seconds",
+          "temperature_sensor"
+        ],
+        "properties": {
+          "schema_version": {
+            "type": "string",
+            "const": "1.0"
+          },
+          "sampled_at_ms": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "age_ms": {
+            "type": "number",
+            "minimum": 0
+          },
+          "cpu_percent": {
+            "description": "Aggregate all-core utilization between successive samples. First sample is null.",
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 100
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "gpu_percent": {
+            "description": "Current Jetson driver load divided by ten.",
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 100
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "memory_used_bytes": {
+            "description": "MemTotal minus MemAvailable, in bytes.",
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "memory_total_bytes": {
+            "description": "System usable physical RAM in bytes.",
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "temperature_celsius": {
+            "description": "Highest valid CPU/GPU/SoC on-chip thermal sensor.",
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": -40,
+                "maximum": 150
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "uptime_seconds": {
+            "description": "Device uptime from /proc/uptime.",
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "temperature_sensor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "TimingSettings": {
+        "type": "object",
+        "required": [
+          "start_seconds",
+          "short_away_seconds",
+          "stop_absent_seconds",
+          "missing_grace_seconds",
+          "max_observation_age"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "start_seconds": {
+            "type": "number",
+            "minimum": 0.1,
+            "maximum": 86400
+          },
+          "short_away_seconds": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 86400
+          },
+          "stop_absent_seconds": {
+            "type": "number",
+            "minimum": 0.1,
+            "maximum": 86400
+          },
+          "missing_grace_seconds": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 86400
+          },
+          "max_observation_age": {
+            "type": "number",
+            "minimum": 0.1,
+            "maximum": 86400
+          }
+        }
+      },
+      "VisualizationSettings": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "colors",
+          "station_fill_alpha",
+          "seat_fill_alpha"
+        ],
+        "properties": {
+          "colors": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "station",
+              "seat",
+              "person",
+              "skeleton",
+              "keypoint",
+              "anchor"
+            ],
+            "properties": {
+              "station": {
+                "type": "string",
+                "pattern": "^#[0-9a-fA-F]{6}$"
+              },
+              "seat": {
+                "type": "string",
+                "pattern": "^#[0-9a-fA-F]{6}$"
+              },
+              "person": {
+                "type": "string",
+                "pattern": "^#[0-9a-fA-F]{6}$"
+              },
+              "skeleton": {
+                "type": "string",
+                "pattern": "^#[0-9a-fA-F]{6}$"
+              },
+              "keypoint": {
+                "type": "string",
+                "pattern": "^#[0-9a-fA-F]{6}$"
+              },
+              "anchor": {
+                "type": "string",
+                "pattern": "^#[0-9a-fA-F]{6}$"
+              }
+            }
+          },
+          "station_fill_alpha": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "seat_fill_alpha": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        }
+      },
+      "WorkStatus": {
+        "type": "object",
+        "properties": {
+          "schema_version": {
+            "type": "string",
+            "const": "1.0"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "NOT_STARTED",
+              "START_PENDING",
+              "WORKING",
+              "AWAY_PENDING",
+              "REST",
+              "OBSERVATION_UNKNOWN"
+            ]
+          },
+          "behavior": {
+            "type": "string",
+            "enum": [
+              "SEATED",
+              "NEARBY",
+              "MISSING",
+              "ABSENT",
+              "UNKNOWN"
+            ]
+          },
+          "reason": {
+            "type": "string"
+          },
+          "run_id": {
+            "type": "string"
+          },
+          "session_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "session_start": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "session_end": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "review": {
+            "type": "boolean"
+          },
+          "work_seconds": {
+            "type": "number"
+          },
+          "rest_seconds": {
+            "type": "number"
+          },
+          "unknown_seconds": {
+            "type": "number"
+          },
+          "pending_seconds": {
+            "type": "number"
+          },
+          "start_pending_seconds": {
+            "type": "number"
+          },
+          "completed_sessions": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "thresholds": {
+            "type": "object"
+          },
+          "frame_ref": {
+            "type": "object",
+            "properties": {
+              "session_id": {
+                "type": "string"
+              },
+              "receive_sequence": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "pts_ns": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^[0-9]+$",
+                    "description": "Decimal nanoseconds; lossless JavaScript string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "receive_monotonic_ns": {
+                "type": "string",
+                "pattern": "^[0-9]+$",
+                "description": "Decimal nanoseconds; lossless JavaScript string"
+              }
+            },
+            "required": []
+          },
+          "algorithm_error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "roi_provisional": {
+            "type": "boolean"
+          },
+          "camera_changed": {
+            "type": "boolean"
+          },
+          "regions": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 2,
+                "maxItems": 2
+              },
+              "minItems": 3
+            }
+          },
+          "image_size": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 2,
+            "maxItems": 2
+          },
+          "last_observation_monotonic_seconds": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "server_monotonic_seconds": {
+            "type": "number"
+          },
+          "server_wall_time_ms": {
+            "type": "number"
+          },
+          "config_revision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "privacy_applied": {
+            "type": "boolean"
+          },
+          "reason_code": {
+            "type": "string"
+          },
+          "reason_params": {
+            "type": "object",
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "ownership": {
+            "$ref": "#/components/schemas/Ownership"
+          }
+        },
+        "required": [
+          "schema_version",
+          "state",
+          "behavior",
+          "reason",
+          "run_id",
+          "session_id",
+          "active",
+          "session_start",
+          "session_end",
+          "review",
+          "work_seconds",
+          "rest_seconds",
+          "unknown_seconds",
+          "pending_seconds",
+          "start_pending_seconds",
+          "completed_sessions",
+          "thresholds",
+          "frame_ref",
+          "algorithm_error",
+          "roi_provisional",
+          "camera_changed",
+          "regions",
+          "image_size",
+          "last_observation_monotonic_seconds",
+          "server_monotonic_seconds",
+          "server_wall_time_ms"
+        ]
+      }
+    }
+  },
   "info": {
     "title": "Worktime Tracking System API",
     "version": "1.0.0",
     "description": "Backend authoritative timing. See api-v1.md for synchronization and health semantics. Device settings and head privacy controls. Clean media excludes project overlays and follows the active privacy policy."
   },
-  "servers": [
-    {
-      "url": "/"
-    }
-  ],
+  "openapi": "3.1.0",
   "paths": {
     "/api/v1/camera": {
       "get": {
@@ -555,1500 +2346,138 @@
           }
         }
       }
-    }
-  },
-  "components": {
-    "schemas": {
-      "Error": {
-        "type": "object",
-        "properties": {
-          "schema_version": {
-            "type": "string",
-            "const": "1.0"
-          },
-          "error": {
-            "type": "object",
-            "properties": {
-              "code": {
-                "type": "string"
-              },
-              "message": {
-                "type": "string"
-              },
-              "message_key": {
-                "type": "string"
-              },
-              "message_params": {
-                "type": "object",
-                "additionalProperties": {
-                  "anyOf": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "number"
-                    },
-                    {
-                      "type": "boolean"
-                    },
-                    {
-                      "type": "null"
-                    }
-                  ]
-                }
-              }
-            },
-            "required": [
-              "code",
-              "message"
-            ]
-          }
-        },
-        "required": [
-          "schema_version",
-          "error"
-        ]
-      },
-      "Keypoint": {
-        "type": "object",
-        "properties": {
-          "x": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "y": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "confidence": {
-            "anyOf": [
-              {
-                "type": "number",
-                "minimum": 0,
-                "maximum": 1
-              },
-              {
-                "type": "null"
-              }
-            ]
-          }
-        },
-        "required": [
-          "x",
-          "y",
-          "confidence"
-        ]
-      },
-      "Person": {
-        "type": "object",
-        "properties": {
-          "person_track_id": {
-            "anyOf": [
-              {
-                "type": "integer",
-                "minimum": 0
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "bbox_xyxy": {
-            "type": "array",
-            "items": {
-              "type": "number"
-            },
-            "minItems": 4,
-            "maxItems": 4
-          },
-          "confidence": {
-            "type": "number"
-          },
-          "valid": {
-            "type": "boolean"
-          },
-          "keypoints": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Keypoint"
-            },
-            "minItems": 17,
-            "maxItems": 17
-          },
-          "upper_body_anchor": {
-            "anyOf": [
-              {
-                "type": "array",
-                "items": {
-                  "type": "number"
-                },
-                "minItems": 2,
-                "maxItems": 2
-              },
-              {
-                "type": "null"
-              }
-            ]
-          }
-        },
-        "required": [
-          "person_track_id",
-          "bbox_xyxy",
-          "confidence",
-          "valid",
-          "keypoints",
-          "upper_body_anchor"
-        ]
-      },
-      "Frame": {
-        "type": "object",
-        "properties": {
-          "stream_session_id": {
-            "type": "string"
-          },
-          "receive_sequence": {
-            "type": "integer",
-            "minimum": 0
-          },
-          "pts_ns": {
-            "anyOf": [
-              {
-                "type": "string",
-                "pattern": "^[0-9]+$",
-                "description": "Decimal nanoseconds; lossless JavaScript string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "receive_monotonic_ns": {
-            "type": "string",
-            "pattern": "^[0-9]+$",
-            "description": "Decimal nanoseconds; lossless JavaScript string"
-          },
-          "source_width": {
-            "type": "integer",
-            "minimum": 0
-          },
-          "source_height": {
-            "type": "integer",
-            "minimum": 0
-          },
-          "jpeg_width": {
-            "type": "integer",
-            "minimum": 0
-          },
-          "jpeg_height": {
-            "type": "integer",
-            "minimum": 0
-          },
-          "color_format": {
-            "type": "string",
-            "const": "BGR"
-          }
-        },
-        "required": [
-          "stream_session_id",
-          "receive_sequence",
-          "pts_ns",
-          "receive_monotonic_ns",
-          "source_width",
-          "source_height",
-          "jpeg_width",
-          "jpeg_height",
-          "color_format"
-        ]
-      },
-      "Inference": {
-        "type": "object",
-        "properties": {
-          "started_monotonic_ns": {
-            "type": "string",
-            "pattern": "^[0-9]+$",
-            "description": "Decimal nanoseconds; lossless JavaScript string"
-          },
-          "completed_monotonic_ns": {
-            "type": "string",
-            "pattern": "^[0-9]+$",
-            "description": "Decimal nanoseconds; lossless JavaScript string"
-          },
-          "local_processing_ms": {
-            "type": "number"
-          },
-          "local_receive_to_result_ms": {
-            "type": "number"
-          },
-          "accepted": {
-            "type": "boolean"
-          },
-          "observation_valid": {
-            "type": "boolean"
-          },
-          "behavior": {
-            "type": "string",
-            "enum": [
-              "SEATED",
-              "NEARBY",
-              "MISSING",
-              "ABSENT",
-              "UNKNOWN"
-            ]
-          },
-          "reason": {
-            "type": "string"
-          },
-          "reason_code": {
-            "type": "string"
-          },
-          "reason_params": {
-            "type": "object",
-            "additionalProperties": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                },
-                {
-                  "type": "boolean"
-                },
-                {
-                  "type": "null"
-                }
+    },
+    "/api/v1/video/whep/{locale}": {
+      "post": {
+        "summary": "Create a protected WebRTC viewing session",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "locale",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "zh-CN",
+                "en"
               ]
             }
-          }
-        },
-        "required": [
-          "started_monotonic_ns",
-          "completed_monotonic_ns",
-          "local_processing_ms",
-          "local_receive_to_result_ms",
-          "accepted",
-          "observation_valid",
-          "behavior",
-          "reason"
-        ]
-      },
-      "Observation": {
-        "type": "object",
-        "properties": {
-          "observation_id": {
-            "type": "string"
-          },
-          "run_id": {
-            "type": "string"
-          },
-          "frame": {
-            "$ref": "#/components/schemas/Frame"
-          },
-          "inference": {
-            "$ref": "#/components/schemas/Inference"
-          },
-          "persons": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Person"
-            }
-          },
-          "regions": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "array",
-              "items": {
-                "type": "array",
-                "items": {
-                  "type": "number"
-                },
-                "minItems": 2,
-                "maxItems": 2
-              },
-              "minItems": 3
-            }
-          },
-          "roi_provisional": {
-            "type": "boolean"
-          },
-          "camera_changed": {
-            "type": "boolean"
-          },
-          "matching_frame_url": {
-            "type": "string"
-          },
-          "config_revision": {
-            "type": "integer",
-            "minimum": 0
-          },
-          "privacy_applied": {
-            "type": "boolean"
-          },
-          "display": {
-            "$ref": "#/components/schemas/DisplaySettings"
-          },
-          "detection": {
-            "$ref": "#/components/schemas/DetectionSettings"
-          }
-        },
-        "required": [
-          "observation_id",
-          "run_id",
-          "frame",
-          "inference",
-          "persons",
-          "regions",
-          "roi_provisional",
-          "camera_changed",
-          "matching_frame_url"
-        ]
-      },
-      "ObservationEnvelope": {
-        "type": "object",
-        "properties": {
-          "schema_version": {
-            "type": "string",
-            "const": "1.0"
-          },
-          "available": {
-            "type": "boolean"
-          },
-          "fresh": {
-            "type": "boolean"
-          },
-          "age_ms": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "algorithm_error": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "observation": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/Observation"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "config_revision": {
-            "type": "integer",
-            "minimum": 0
-          },
-          "privacy_applied": {
-            "type": "boolean"
-          },
-          "max_observation_age_ms": {
-            "type": "number",
-            "minimum": 100
-          }
-        },
-        "required": [
-          "schema_version",
-          "available",
-          "fresh",
-          "age_ms",
-          "algorithm_error",
-          "observation"
-        ]
-      },
-      "Camera": {
-        "type": "object",
-        "properties": {
-          "schema_version": {
-            "type": "string",
-            "const": "1.0"
-          },
-          "status": {
-            "type": "string",
-            "enum": [
-              "connecting",
-              "online",
-              "reconnecting"
-            ]
-          },
-          "sequence": {
-            "type": "integer",
-            "minimum": 0
-          },
-          "width": {
-            "anyOf": [
-              {
-                "type": "integer",
-                "minimum": 0
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "height": {
-            "anyOf": [
-              {
-                "type": "integer",
-                "minimum": 0
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "jpeg_width": {
-            "anyOf": [
-              {
-                "type": "integer",
-                "minimum": 0
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "jpeg_height": {
-            "anyOf": [
-              {
-                "type": "integer",
-                "minimum": 0
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "source_fps": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "stream_session_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "receive_sequence": {
-            "anyOf": [
-              {
-                "type": "integer",
-                "minimum": 0
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "pts_ns": {
-            "anyOf": [
-              {
-                "type": "string",
-                "pattern": "^[0-9]+$",
-                "description": "Decimal nanoseconds; lossless JavaScript string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "age_ms": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "codec": {
-            "enum": [
-              "h264",
-              "h265",
-              "yuyv",
-              "mjpeg"
-            ]
-          },
-          "decoder": {
-            "enum": [
-              "nvv4l2decoder",
-              "software"
-            ]
-          },
-          "preview_max_fps": {
-            "type": "number"
-          },
-          "preview_has_project_overlay": {
-            "type": "boolean",
-            "const": false
-          },
-          "config_revision": {
-            "type": "integer",
-            "minimum": 0
-          },
-          "privacy_applied": {
-            "type": "boolean"
-          },
-          "output_fps": {
-            "type": "number",
-            "minimum": 0
-          },
-          "algorithm_error": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "regions_match": {
-            "type": "boolean"
-          },
-          "camera_changed": {
-            "type": "boolean"
-          },
-          "source_type": {
-            "enum": [
-              "rtsp",
-              "usb"
-            ]
-          },
-          "device_name": {
-            "type": "string"
-          },
-          "connection_error": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          }
-        },
-        "required": [
-          "schema_version",
-          "status",
-          "sequence",
-          "width",
-          "height",
-          "jpeg_width",
-          "jpeg_height",
-          "source_fps",
-          "stream_session_id",
-          "receive_sequence",
-          "pts_ns",
-          "age_ms",
-          "codec",
-          "decoder",
-          "preview_max_fps",
-          "preview_has_project_overlay"
-        ]
-      },
-      "WorkStatus": {
-        "type": "object",
-        "properties": {
-          "schema_version": {
-            "type": "string",
-            "const": "1.0"
-          },
-          "state": {
-            "type": "string",
-            "enum": [
-              "NOT_STARTED",
-              "START_PENDING",
-              "WORKING",
-              "AWAY_PENDING",
-              "REST",
-              "OBSERVATION_UNKNOWN"
-            ]
-          },
-          "behavior": {
-            "type": "string",
-            "enum": [
-              "SEATED",
-              "NEARBY",
-              "MISSING",
-              "ABSENT",
-              "UNKNOWN"
-            ]
-          },
-          "reason": {
-            "type": "string"
-          },
-          "run_id": {
-            "type": "string"
-          },
-          "session_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "active": {
-            "type": "boolean"
-          },
-          "session_start": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "session_end": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "review": {
-            "type": "boolean"
-          },
-          "work_seconds": {
-            "type": "number"
-          },
-          "rest_seconds": {
-            "type": "number"
-          },
-          "unknown_seconds": {
-            "type": "number"
-          },
-          "pending_seconds": {
-            "type": "number"
-          },
-          "start_pending_seconds": {
-            "type": "number"
-          },
-          "completed_sessions": {
-            "type": "integer",
-            "minimum": 0
-          },
-          "thresholds": {
-            "type": "object"
-          },
-          "frame_ref": {
-            "type": "object",
-            "properties": {
-              "session_id": {
-                "type": "string"
-              },
-              "receive_sequence": {
-                "type": "integer",
-                "minimum": 0
-              },
-              "pts_ns": {
-                "anyOf": [
-                  {
-                    "type": "string",
-                    "pattern": "^[0-9]+$",
-                    "description": "Decimal nanoseconds; lossless JavaScript string"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
-              },
-              "receive_monotonic_ns": {
-                "type": "string",
-                "pattern": "^[0-9]+$",
-                "description": "Decimal nanoseconds; lossless JavaScript string"
-              }
-            },
-            "required": []
-          },
-          "algorithm_error": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "roi_provisional": {
-            "type": "boolean"
-          },
-          "camera_changed": {
-            "type": "boolean"
-          },
-          "regions": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "array",
-              "items": {
-                "type": "array",
-                "items": {
-                  "type": "number"
-                },
-                "minItems": 2,
-                "maxItems": 2
-              },
-              "minItems": 3
-            }
-          },
-          "image_size": {
-            "type": "array",
-            "items": {
-              "type": "number"
-            },
-            "minItems": 2,
-            "maxItems": 2
-          },
-          "last_observation_monotonic_seconds": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "server_monotonic_seconds": {
-            "type": "number"
-          },
-          "server_wall_time_ms": {
-            "type": "number"
-          },
-          "config_revision": {
-            "type": "integer",
-            "minimum": 0
-          },
-          "privacy_applied": {
-            "type": "boolean"
-          },
-          "reason_code": {
-            "type": "string"
-          },
-          "reason_params": {
-            "type": "object",
-            "additionalProperties": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                },
-                {
-                  "type": "boolean"
-                },
-                {
-                  "type": "null"
-                }
-              ]
-            }
-          }
-        },
-        "required": [
-          "schema_version",
-          "state",
-          "behavior",
-          "reason",
-          "run_id",
-          "session_id",
-          "active",
-          "session_start",
-          "session_end",
-          "review",
-          "work_seconds",
-          "rest_seconds",
-          "unknown_seconds",
-          "pending_seconds",
-          "start_pending_seconds",
-          "completed_sessions",
-          "thresholds",
-          "frame_ref",
-          "algorithm_error",
-          "roi_provisional",
-          "camera_changed",
-          "regions",
-          "image_size",
-          "last_observation_monotonic_seconds",
-          "server_monotonic_seconds",
-          "server_wall_time_ms"
-        ]
-      },
-      "Action": {
-        "type": "object",
-        "properties": {
-          "action": {
-            "type": "string",
-            "enum": [
-              "start",
-              "end",
-              "review",
-              "confirm_camera"
-            ]
-          }
-        },
-        "required": [
-          "action"
-        ]
-      },
-      "PrivacySettings": {
-        "type": "object",
-        "required": [
-          "enabled"
-        ],
-        "additionalProperties": false,
-        "properties": {
-          "enabled": {
-            "type": "boolean"
-          }
-        }
-      },
-      "DisplaySettings": {
-        "type": "object",
-        "required": [
-          "boxes",
-          "regions",
-          "keypoints"
-        ],
-        "additionalProperties": false,
-        "properties": {
-          "boxes": {
-            "type": "boolean"
-          },
-          "regions": {
-            "type": "boolean"
-          },
-          "keypoints": {
-            "type": "boolean"
-          }
-        }
-      },
-      "TimingSettings": {
-        "type": "object",
-        "required": [
-          "start_seconds",
-          "short_away_seconds",
-          "stop_absent_seconds",
-          "missing_grace_seconds",
-          "max_observation_age"
-        ],
-        "additionalProperties": false,
-        "properties": {
-          "start_seconds": {
-            "type": "number",
-            "minimum": 0.1,
-            "maximum": 86400
-          },
-          "short_away_seconds": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 86400
-          },
-          "stop_absent_seconds": {
-            "type": "number",
-            "minimum": 0.1,
-            "maximum": 86400
-          },
-          "missing_grace_seconds": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 86400
-          },
-          "max_observation_age": {
-            "type": "number",
-            "minimum": 0.1,
-            "maximum": 86400
-          }
-        }
-      },
-      "DeviceSettings": {
-        "type": "object",
-        "required": [
-          "schema_version",
-          "revision",
-          "privacy",
-          "display",
-          "timing",
-          "defaults",
-          "regions",
-          "image_size",
-          "roi_configured",
-          "camera"
-        ],
-        "properties": {
-          "schema_version": {
-            "const": "1.0"
-          },
-          "revision": {
-            "type": "integer",
-            "minimum": 0
-          },
-          "privacy": {
-            "$ref": "#/components/schemas/PrivacySettings"
-          },
-          "display": {
-            "$ref": "#/components/schemas/DisplaySettings"
-          },
-          "timing": {
-            "$ref": "#/components/schemas/TimingSettings"
-          },
-          "defaults": {
-            "$ref": "#/components/schemas/TimingSettings"
-          },
-          "regions": {
-            "type": "object",
-            "required": [
-              "station",
-              "seat"
-            ],
-            "additionalProperties": false,
-            "properties": {
-              "station": {
-                "type": "array",
-                "items": {
-                  "type": "array",
-                  "items": {
-                    "type": "number",
-                    "minimum": 0
-                  },
-                  "minItems": 2,
-                  "maxItems": 2
-                },
-                "minItems": 3,
-                "maxItems": 32
-              },
-              "seat": {
-                "type": "array",
-                "items": {
-                  "type": "array",
-                  "items": {
-                    "type": "number",
-                    "minimum": 0
-                  },
-                  "minItems": 2,
-                  "maxItems": 2
-                },
-                "minItems": 3,
-                "maxItems": 32
-              }
-            }
-          },
-          "image_size": {
-            "type": "array",
-            "items": {
-              "type": "integer",
-              "minimum": 2
-            },
-            "minItems": 2,
-            "maxItems": 2
-          },
-          "roi_configured": {
-            "type": "boolean"
-          },
-          "camera": {
-            "$ref": "#/components/schemas/Camera"
-          },
-          "camera_source": {
-            "$ref": "#/components/schemas/CameraSource"
-          },
-          "detection": {
-            "$ref": "#/components/schemas/DetectionSettings"
-          },
-          "detection_defaults": {
-            "$ref": "#/components/schemas/DetectionSettings"
-          }
-        }
-      },
-      "SettingsUpdate": {
-        "type": "object",
-        "required": [
-          "expected_revision"
-        ],
-        "additionalProperties": false,
-        "properties": {
-          "expected_revision": {
-            "type": "integer",
-            "minimum": 0
-          },
-          "privacy": {
-            "$ref": "#/components/schemas/PrivacySettings"
-          },
-          "display": {
-            "$ref": "#/components/schemas/DisplaySettings"
-          },
-          "timing": {
-            "$ref": "#/components/schemas/TimingSettings"
-          },
-          "regions": {
-            "type": "object",
-            "required": [
-              "station",
-              "seat"
-            ],
-            "additionalProperties": false,
-            "properties": {
-              "station": {
-                "type": "array",
-                "items": {
-                  "type": "array",
-                  "items": {
-                    "type": "number",
-                    "minimum": 0
-                  },
-                  "minItems": 2,
-                  "maxItems": 2
-                },
-                "minItems": 3,
-                "maxItems": 32
-              },
-              "seat": {
-                "type": "array",
-                "items": {
-                  "type": "array",
-                  "items": {
-                    "type": "number",
-                    "minimum": 0
-                  },
-                  "minItems": 2,
-                  "maxItems": 2
-                },
-                "minItems": 3,
-                "maxItems": 32
-              }
-            }
-          },
-          "image_size": {
-            "type": "array",
-            "items": {
-              "type": "integer",
-              "minimum": 2
-            },
-            "minItems": 2,
-            "maxItems": 2
-          },
-          "reference_frame": {
-            "type": "object",
-            "required": [
-              "stream_session_id",
-              "image_size"
-            ],
-            "properties": {
-              "stream_session_id": {
-                "type": "string"
-              },
-              "image_size": {
-                "type": "array",
-                "items": {
-                  "type": "integer",
-                  "minimum": 2
-                },
-                "minItems": 2,
-                "maxItems": 2
-              },
-              "camera_changed": {
-                "type": "boolean"
-              }
-            }
-          },
-          "camera_source": {
-            "$ref": "#/components/schemas/CameraSourceInput"
-          },
-          "test_token": {
-            "type": "string",
-            "description": "Required when camera_source is provided. Camera changes must be saved separately."
-          },
-          "detection": {
-            "$ref": "#/components/schemas/DetectionSettings"
-          }
-        }
-      },
-      "SystemMetrics": {
-        "type": "object",
-        "required": [
-          "schema_version",
-          "sampled_at_ms",
-          "age_ms",
-          "cpu_percent",
-          "gpu_percent",
-          "memory_used_bytes",
-          "memory_total_bytes",
-          "temperature_celsius",
-          "uptime_seconds",
-          "temperature_sensor"
-        ],
-        "properties": {
-          "schema_version": {
-            "type": "string",
-            "const": "1.0"
-          },
-          "sampled_at_ms": {
-            "type": "integer",
-            "minimum": 0
-          },
-          "age_ms": {
-            "type": "number",
-            "minimum": 0
-          },
-          "cpu_percent": {
-            "description": "Aggregate all-core utilization between successive samples. First sample is null.",
-            "anyOf": [
-              {
-                "type": "number",
-                "minimum": 0,
-                "maximum": 100
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "gpu_percent": {
-            "description": "Current Jetson driver load divided by ten.",
-            "anyOf": [
-              {
-                "type": "number",
-                "minimum": 0,
-                "maximum": 100
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "memory_used_bytes": {
-            "description": "MemTotal minus MemAvailable, in bytes.",
-            "anyOf": [
-              {
-                "type": "integer",
-                "minimum": 0
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "memory_total_bytes": {
-            "description": "System usable physical RAM in bytes.",
-            "anyOf": [
-              {
-                "type": "integer",
-                "minimum": 1
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "temperature_celsius": {
-            "description": "Highest valid CPU/GPU/SoC on-chip thermal sensor.",
-            "anyOf": [
-              {
-                "type": "number",
-                "minimum": -40,
-                "maximum": 150
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "uptime_seconds": {
-            "description": "Device uptime from /proc/uptime.",
-            "anyOf": [
-              {
-                "type": "number",
-                "minimum": 0
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "temperature_sensor": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          }
-        },
-        "additionalProperties": false
-      },
-      "CameraSource": {
-        "oneOf": [
-          {
-            "type": "object",
-            "required": [
-              "type",
-              "url",
-              "username",
-              "codec"
-            ],
-            "additionalProperties": false,
-            "properties": {
-              "type": {
-                "const": "rtsp"
-              },
-              "url": {
-                "type": "string",
-                "description": "RTSP URL without credentials in read responses."
-              },
-              "username": {
-                "type": "string"
-              },
-              "codec": {
-                "enum": [
-                  "h264",
-                  "h265"
-                ]
-              },
-              "password_set": {
-                "type": "boolean"
-              }
-            }
           },
           {
-            "type": "object",
-            "required": [
-              "type",
-              "device",
-              "format"
-            ],
-            "additionalProperties": false,
-            "properties": {
-              "type": {
-                "const": "usb"
-              },
-              "device": {
-                "type": "string"
-              },
-              "format": {
-                "enum": [
-                  "yuyv",
-                  "mjpeg",
-                  "h264"
-                ]
-              }
-            }
-          }
-        ]
-      },
-      "CameraSourceInput": {
-        "oneOf": [
-          {
-            "type": "object",
-            "required": [
-              "type",
-              "url",
-              "username",
-              "codec"
-            ],
-            "additionalProperties": false,
-            "properties": {
-              "type": {
-                "const": "rtsp"
-              },
-              "url": {
-                "type": "string",
-                "description": "RTSP URL without credentials in read responses."
-              },
-              "username": {
-                "type": "string"
-              },
-              "codec": {
-                "enum": [
-                  "h264",
-                  "h265"
-                ]
-              },
-              "password": {
-                "type": "string",
-                "description": "Write-only. Blank preserves existing password only for the same URL and username."
-              }
-            }
-          },
-          {
-            "type": "object",
-            "required": [
-              "type",
-              "device",
-              "format"
-            ],
-            "additionalProperties": false,
-            "properties": {
-              "type": {
-                "const": "usb"
-              },
-              "device": {
-                "type": "string"
-              },
-              "format": {
-                "enum": [
-                  "yuyv",
-                  "mjpeg",
-                  "h264"
-                ]
-              }
-            }
-          }
-        ]
-      },
-      "CameraDevices": {
-        "type": "object",
-        "required": [
-          "schema_version",
-          "devices"
-        ],
-        "properties": {
-          "schema_version": {
-            "const": "1.0"
-          },
-          "devices": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "required": [
-                "device",
-                "name",
-                "formats"
+            "in": "query",
+            "name": "profile",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "remote",
+                "local"
               ],
-              "properties": {
-                "device": {
-                  "type": "string"
-                },
-                "name": {
-                  "type": "string"
-                },
-                "formats": {
-                  "type": "array",
-                  "items": {
-                    "enum": [
-                      "yuyv",
-                      "mjpeg",
-                      "h264"
-                    ]
-                  }
-                }
+              "default": "remote"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/sdp": {
+              "schema": {
+                "type": "string",
+                "maxLength": 131072
               }
             }
           }
-        }
-      },
-      "CameraTestRequest": {
-        "type": "object",
-        "required": [
-          "expected_revision",
-          "camera_source"
-        ],
-        "additionalProperties": false,
-        "properties": {
-          "expected_revision": {
-            "type": "integer",
-            "minimum": 0
+        },
+        "responses": {
+          "201": {
+            "description": "SDP answer with relative Location and ETag",
+            "headers": {
+              "Location": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/sdp": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
           },
-          "camera_source": {
-            "$ref": "#/components/schemas/CameraSourceInput"
+          "409": {
+            "description": "Publisher unavailable or viewer limit"
+          },
+          "503": {
+            "description": "Media service unavailable"
+          }
+        }
+      }
+    },
+    "/api/v1/video/sessions/{token}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "token",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{32}$"
+          }
+        }
+      ],
+      "get": {
+        "summary": "Renew viewer lease, every 5 seconds while playing",
+        "responses": {
+          "200": {
+            "description": "Active session"
+          },
+          "409": {
+            "description": "Expired session"
           }
         }
       },
-      "CameraTestResult": {
-        "type": "object",
-        "required": [
-          "schema_version",
-          "test_token",
-          "expires_in_seconds",
-          "width",
-          "height"
-        ],
-        "properties": {
-          "schema_version": {
-            "const": "1.0"
-          },
-          "test_token": {
-            "type": "string"
-          },
-          "expires_in_seconds": {
-            "type": "integer"
-          },
-          "width": {
-            "type": "integer"
-          },
-          "height": {
-            "type": "integer"
+      "patch": {
+        "summary": "Forward WHEP trickle ICE update with If-Match",
+        "requestBody": {
+          "content": {
+            "application/trickle-ice-sdpfrag": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Candidates accepted"
           }
         }
       },
-      "DetectionSettings": {
-        "type": "object",
-        "required": [
-          "person_confidence",
-          "keypoint_confidence"
-        ],
-        "additionalProperties": false,
-        "properties": {
-          "person_confidence": {
-            "type": "number",
-            "minimum": 0.1,
-            "maximum": 1,
-            "default": 0.1,
-            "description": "Minimum score for business timing and person overlays. Privacy uses conservative candidates."
+      "delete": {
+        "summary": "Release WebRTC session",
+        "responses": {
+          "200": {
+            "description": "Session released"
           },
-          "keypoint_confidence": {
-            "type": "number",
-            "minimum": 0.25,
-            "maximum": 1,
-            "default": 0.4,
-            "description": "Minimum keypoint score for presence and pose overlays. Independent from privacy localization."
+          "204": {
+            "description": "Session released"
+          },
+          "409": {
+            "description": "Already expired"
           }
         }
       }
     }
-  }
+  },
+  "servers": [
+    {
+      "url": "/"
+    }
+  ]
 }

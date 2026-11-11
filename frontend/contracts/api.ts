@@ -5,14 +5,29 @@ export interface ReasonDetails {reason_code?:string;reason_params?:Record<string
 export type NS = string; // decimal nanoseconds, never convert to JS Number for identity
 export type Behavior = 'SEATED'|'NEARBY'|'MISSING'|'ABSENT'|'UNKNOWN';
 export type WorkState = 'NOT_STARTED'|'START_PENDING'|'WORKING'|'AWAY_PENDING'|'REST'|'OBSERVATION_UNKNOWN';
-export type Action = 'start'|'end'|'review'|'confirm_camera';
+export type Action = 'start'|'end'|'review'|'confirm_camera'|'confirm_return';
 export type Point = [number, number];
 export interface Keypoint { x:number|null; y:number|null; confidence:number|null }
 export interface Person {
   person_track_id:number|null; bbox_xyxy:[number,number,number,number]; confidence:number;
   valid:boolean; keypoints:Keypoint[]; upper_body_anchor:Point|null;
+  is_session_operator?:boolean;ownership_zone?:'SEATED'|'NEARBY'|'OUTSIDE'|'UNKNOWN';
+}
+export interface Ownership {
+  operator_id:string|null;track_id:number|null;run_id?:string|null;stream_session_id?:string|null;
+  state:'UNBOUND'|'CANDIDATE'|'TRACKED'|'MISSING'|'CONFIRMATION_REQUIRED'|'INPUT_UNKNOWN'|'UNVERIFIED'|'ENDED';
+  needs_confirmation:boolean;candidates:{track_id:number;bbox_xyxy:[number,number,number,number];zone:'SEATED'}[];
+  ignored_track_ids:number[];away_since:number|null;absent_since:number|null;
+  away_seconds:number;absent_seconds:number;end_remaining_seconds:number|null;
+}
+export interface ConfirmReturnRequest {
+  action:'confirm_return';session_id:string;observation_id:string;stream_session_id:string;
+  config_revision:number;track_id:number;
 }
 export interface Observation {
+  visualization?:VisualizationSettings;
+
+  ownership?:Ownership;
   config_revision?:number;privacy_applied?:boolean;display?:DisplaySettings;detection?:DetectionSettings;
   observation_id:string; run_id:string;
   frame:{stream_session_id:string;receive_sequence:number;pts_ns:NS|null;receive_monotonic_ns:NS;
@@ -27,6 +42,7 @@ export interface ObservationEnvelope {
   algorithm_error:string|null;observation:Observation|null;
 }
 export interface Camera {
+  video?:VideoTransportStatus;
   config_revision?:number;privacy_applied?:boolean;output_fps?:number;algorithm_error?:string|null;regions_match?:boolean;camera_changed?:boolean;
   schema_version:'1.0';status:'connecting'|'online'|'reconnecting';sequence:number;
   width:number|null;height:number|null;jpeg_width:number|null;jpeg_height:number|null;
@@ -35,6 +51,7 @@ export interface Camera {
   codec:'h264'|'h265'|'yuyv'|'mjpeg';decoder:'nvv4l2decoder'|'software';preview_max_fps:number;preview_has_project_overlay:false;
 }
 export interface WorkStatus extends ReasonDetails {
+  ownership?:Ownership;
   config_revision?:number;privacy_applied?:boolean;
   schema_version:'1.0';state:WorkState;behavior:Behavior;reason:string;run_id:string;
   session_id:string|null;active:boolean;session_start:number|null;session_end:number|null;review:boolean;
@@ -46,16 +63,20 @@ export interface WorkStatus extends ReasonDetails {
 }
 export interface ApiError {schema_version:'1.0';error:MessageDetails & {code:string;message:string}}
 
-export interface DisplaySettings {boxes:boolean;regions:boolean;keypoints:boolean}
+export interface VisualizationSettings {colors:Record<'station'|'seat'|'person'|'skeleton'|'keypoint'|'anchor',string>;station_fill_alpha:number;seat_fill_alpha:number}
+export interface VideoTransportStatus {webrtc_available:boolean;profiles?:Record<string,{width:number;max_fps:number;bitrate:number}>;viewers?:number;preview:{width:number;max_fps:number;bitrate:number};fallback:{width:number;max_fps:number;jpeg_quality:number};error:string|null;epoch:number}
+export interface DisplaySettings {boxes:boolean;regions:boolean;keypoints:boolean;station?:boolean;seat?:boolean}
 export interface TimingSettings {start_seconds:number;short_away_seconds:number;stop_absent_seconds:number;missing_grace_seconds:number;max_observation_age:number}
 export interface DetectionSettings {person_confidence:number;keypoint_confidence:number}
 export interface DeviceSettings {
+  visualization?:VisualizationSettings;visualization_defaults?:VisualizationSettings;
   detection?:DetectionSettings;detection_defaults?:DetectionSettings;
   schema_version:'1.0';revision:number;privacy:{enabled:boolean};display:DisplaySettings;
   timing:TimingSettings;defaults:TimingSettings;regions:{station:Point[];seat:Point[]};
   image_size:Point;roi_configured:boolean;camera:Camera;camera_source?:CameraSource;
 }
 export interface SettingsUpdate {
+  visualization?:VisualizationSettings;
   detection?:DetectionSettings;
   camera_source?:CameraSourceInput;test_token?:string;
   expected_revision:number;privacy?:{enabled:boolean};display?:DisplaySettings;timing?:TimingSettings;

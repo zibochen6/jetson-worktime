@@ -7,8 +7,8 @@ export async function getJSON(url,options={}) {
   if(!response.ok)throw Object.assign(new Error(data.error?.message||'Request failed'),{status:response.status,code:data.error?.code,message_key:data.error?.message_key,message_params:data.error?.message_params});
   return data;
 }
-export function workAction(action) {
-  return getJSON('/api/v1/work/actions',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action})});
+export function workAction(action, payload = {}) {
+  return getJSON('/api/v1/work/actions',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...payload,action})});
 }
 export function containRect(sourceWidth,sourceHeight,containerWidth,containerHeight) {
   const scale=Math.min(containerWidth/sourceWidth,containerHeight/sourceHeight);

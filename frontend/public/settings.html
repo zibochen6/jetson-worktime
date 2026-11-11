@@ -51,7 +51,8 @@
           <label class="switch-row privacy-row"><span><strong><span data-i18n="privacy.mask">头部与人脸马赛克</span></strong><small><span data-i18n="privacy.scope">统一控制直播、截图和新增保存素材</span></small></span><span class="switch"><input type="checkbox" id="privacy" role="switch"><span class="switch-track"></span></span></label>
           <div class="privacy-status" id="privacyStatus"><span data-i18n="privacy.readSettings">读取隐私设置中…</span></div>
           <label class="switch-row"><span><strong><span data-i18n="display.boxes">显示检测框</span></strong><small><span data-i18n="display.boxesHelp">人体边界与检测标签</span></small></span><span class="switch"><input type="checkbox" id="boxes" role="switch"><span class="switch-track"></span></span></label>
-          <label class="switch-row"><span><strong><span data-i18n="display.regions">显示检测区域</span></strong><small><span data-i18n="display.regionsHelp">工位范围、在位判断区及区域名称</span></small></span><span class="switch"><input type="checkbox" id="regions" role="switch"><span class="switch-track"></span></span></label>
+          <label class="switch-row"><span><strong data-i18n="display.station">显示工位范围</strong><small data-i18n="display.stationHelp">工位范围蒙版、边界及名称</small></span><span class="switch"><input type="checkbox" id="station" role="switch"><span class="switch-track"></span></span></label>
+          <label class="switch-row"><span><strong data-i18n="display.seat">显示在位判断区</strong><small data-i18n="display.seatHelp">在位判断区蒙版、边界及名称</small></span><span class="switch"><input type="checkbox" id="seat" role="switch"><span class="switch-track"></span></span></label>
           <label class="switch-row"><span><strong><span data-i18n="display.keypoints">显示关键点</span></strong><small><span data-i18n="display.keypointsHelp">关节、骨架与上半身判断点</span></small></span><span class="switch"><input type="checkbox" id="keypoints" role="switch"><span class="switch-track"></span></span></label>
           <p class="footnote"><span data-i18n="display.note">显示开关只控制画面图层。隐私开启时，头脸打码由设备完成，脸部关键点在展示层隐藏。自动打码效果需结合现场遮挡情况验证。</span></p>
         </section>
@@ -64,6 +65,12 @@
         <section class="panel" aria-labelledby="timingTitle"><div class="panel-heading"><div><p class="eyebrow" data-i18n="timing.step">04 / 时长</p><h2 id="timingTitle"><span data-i18n="timing.title">检测与计时规则</span></h2></div><button class="text-button" id="restoreDefaults" type="button"><span data-i18n="timing.defaults">恢复默认</span></button></div>
           <div id="timingFields" class="timing-fields"></div>
           <div class="rule-note"><strong><span data-i18n="timing.settlement">暂离时间如何结算</span></strong><p><span data-i18n="timing.note">当前规则下，暂离确认期内返回会补计工作时间；超过确认期，整段暂离计为休息。这里调整的是现有规则的时间参数。</span></p></div>
+        </section>
+        <section class="panel" aria-labelledby="visualizationTitle">
+          <div class="panel-heading"><h2 id="visualizationTitle" data-i18n="visualization.title">标注配色</h2><button id="restoreVisualization" class="text-button" type="button" data-i18n="timing.defaults">恢复默认</button></div>
+          <p data-i18n="visualization.help">分别设置区域、人物与姿态颜色。预览后点击保存并应用。</p>
+          <div id="visualizationFields" class="palette-fields"></div>
+          <canvas id="palettePreview" width="480" height="210" role="img" data-i18n-aria-label="visualization.preview" aria-label="标注配色预览"></canvas>
         </section>
       </div>
     </div>

@@ -23,8 +23,8 @@ function canvasRecorder() {
 
 test('shared overlay tokens default to quiet geometry and sparse corners',()=>{
   assert.deepEqual(overlayStyle.defaults,{boxes:true,regions:true,keypoints:false});
-  assert.equal(overlayStyle.seat_fill_alpha,.04);
-  assert.equal(overlayStyle.colors.seat,'#00d5b0');
+  assert.equal(overlayStyle.seat_fill_alpha,.16);
+  assert.equal(overlayStyle.colors.seat,'#fbbf24');
   for (const width of [160,640,1280,2560]) {
     const m=overlayDimensions(width);
     assert.ok(m.font_size>=11 && m.font_size<=22);
@@ -51,7 +51,7 @@ test('frame canvas uses current layers, a subtle fill and short labels',()=>{
   const {canvas,calls}=canvasRecorder();
   drawResult(canvas,{naturalWidth:1280,naturalHeight:720},observation);
   assert.equal(canvas.width,1280);
-  assert.ok(calls.some(c=>c[0]==='fill' && c[1]===overlayStyle.colors.seat && c[2]===.04));
+  assert.ok(calls.some(c=>c[0]==='fill' && c[1]===overlayStyle.colors.seat && c[2]===overlayStyle.seat_fill_alpha));
   assert.ok(calls.some(c=>c[0]==='fillText' && c[1]==='人员'));
   assert.equal(calls.some(c=>c[0]==='arc'),false);
   assert.equal(calls.some(c=>c[0]==='fillText' && /配置|轨迹/.test(c[1])),false);

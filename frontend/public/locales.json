@@ -1,119 +1,43 @@
 {
-  "app.name": {
-    "zh-CN": "工时统计系统",
-    "en": "Worktime Tracking System"
+  "actions.camera": {
+    "zh-CN": "确认当前机位",
+    "en": "Confirm camera position"
   },
-  "app.homeTitle": {
-    "zh-CN": "实时监控 · 工时统计系统",
-    "en": "Live monitor · Worktime Tracking System"
+  "actions.end": {
+    "zh-CN": "结束会话",
+    "en": "End session"
   },
-  "app.settingsTitle": {
-    "zh-CN": "场景设置 · 工时统计系统",
-    "en": "Settings · Worktime Tracking System"
+  "actions.recorded": {
+    "zh-CN": "操作已记录",
+    "en": "Action recorded"
+  },
+  "actions.review": {
+    "zh-CN": "标记复核",
+    "en": "Flag for review"
+  },
+  "actions.start": {
+    "zh-CN": "开始会话",
+    "en": "Start session"
+  },
+  "actions.title": {
+    "zh-CN": "人工会话操作",
+    "en": "Manual session actions"
   },
   "app.home": {
     "zh-CN": "工时统计系统监控首页",
     "en": "Worktime Tracking System home"
   },
-  "nav.monitor": {
-    "zh-CN": "工位监控",
-    "en": "Station monitor"
+  "app.homeTitle": {
+    "zh-CN": "实时监控 · 工时统计系统",
+    "en": "Live monitor · Worktime Tracking System"
   },
-  "nav.navigation": {
-    "zh-CN": "页面导航",
-    "en": "Page navigation"
+  "app.name": {
+    "zh-CN": "工时统计系统",
+    "en": "Worktime Tracking System"
   },
-  "nav.help": {
-    "zh-CN": "提示",
-    "en": "Help"
-  },
-  "nav.settings": {
-    "zh-CN": "设置",
-    "en": "Settings"
-  },
-  "nav.more": {
-    "zh-CN": "更多操作",
-    "en": "More actions"
-  },
-  "nav.close": {
-    "zh-CN": "关闭",
-    "en": "Close"
-  },
-  "nav.closeHelp": {
-    "zh-CN": "关闭提示",
-    "en": "Close help"
-  },
-  "nav.closeSettings": {
-    "zh-CN": "关闭设置",
-    "en": "Close settings"
-  },
-  "nav.openSettings": {
-    "zh-CN": "打开设置 ↗",
-    "en": "Open settings ↗"
-  },
-  "nav.goSettings": {
-    "zh-CN": "去设置 ↗",
-    "en": "Settings ↗"
-  },
-  "nav.back": {
-    "zh-CN": "返回实时画面",
-    "en": "Back to monitor"
-  },
-  "nav.language": {
-    "zh-CN": "界面语言",
-    "en": "Interface language"
-  },
-  "camera.connecting": {
-    "zh-CN": "正在连接相机",
-    "en": "Connecting to camera"
-  },
-  "camera.connected": {
-    "zh-CN": "相机在线",
-    "en": "Camera online"
-  },
-  "camera.disconnected": {
-    "zh-CN": "相机断线",
-    "en": "Camera disconnected"
-  },
-  "camera.deviceOffline": {
-    "zh-CN": "设备离线",
-    "en": "Device offline"
-  },
-  "camera.waiting": {
-    "zh-CN": "等待相机恢复",
-    "en": "Waiting for camera recovery"
-  },
-  "camera.retrying": {
-    "zh-CN": "正在重连相机",
-    "en": "Reconnecting to camera"
-  },
-  "camera.readyHint": {
-    "zh-CN": "画面准备好后自动显示",
-    "en": "Video appears when ready"
-  },
-  "camera.recoveryHint": {
-    "zh-CN": "连接与画面恢复后自动显示",
-    "en": "Video resumes after recovery"
-  },
-  "camera.deviceLost": {
-    "zh-CN": "设备连接中断",
-    "en": "Device connection lost"
-  },
-  "camera.retryHint": {
-    "zh-CN": "连接恢复后自动重试",
-    "en": "Retrying automatically after recovery"
-  },
-  "camera.waitDevice": {
-    "zh-CN": "等待设备恢复",
-    "en": "Waiting for device recovery"
-  },
-  "camera.preparing": {
-    "zh-CN": "正在准备画面",
-    "en": "Preparing video"
-  },
-  "camera.algorithmRecovering": {
-    "zh-CN": "算法正在恢复",
-    "en": "Recovering detection"
+  "app.settingsTitle": {
+    "zh-CN": "场景设置 · 工时统计系统",
+    "en": "Settings · Worktime Tracking System"
   },
   "camera.algorithmError": {
     "zh-CN": "算法异常",
@@ -123,21 +47,17 @@
     "zh-CN": "算法观测暂不可用，正在恢复",
     "en": "Detection is temporarily unavailable and recovering"
   },
-  "camera.moved": {
-    "zh-CN": "机位已变化，请到设置确认检测区域",
-    "en": "Camera position changed. Confirm the detection regions in settings"
+  "camera.algorithmRecovering": {
+    "zh-CN": "算法正在恢复",
+    "en": "Recovering detection"
   },
-  "camera.streamInfo": {
-    "zh-CN": "{width} × {height} · {fps} fps",
-    "en": "{width} × {height} · {fps} fps"
+  "camera.connected": {
+    "zh-CN": "相机在线",
+    "en": "Camera online"
   },
-  "camera.onlineFps": {
-    "zh-CN": "相机在线 · 输出 {fps} fps",
-    "en": "Camera online · output {fps} fps"
-  },
-  "camera.mock": {
-    "zh-CN": "MOCK · 模拟设备",
-    "en": "MOCK · simulated device"
+  "camera.connecting": {
+    "zh-CN": "正在连接相机",
+    "en": "Connecting to camera"
   },
   "camera.connectingDevice": {
     "zh-CN": "正在连接设备",
@@ -147,233 +67,61 @@
     "zh-CN": "相机连接中",
     "en": "Connecting to camera"
   },
-  "privacy.reading": {
-    "zh-CN": "读取隐私状态…",
-    "en": "Reading privacy status…"
+  "camera.deviceLost": {
+    "zh-CN": "设备连接中断",
+    "en": "Device connection lost"
   },
-  "privacy.pending": {
-    "zh-CN": "隐私状态待确认",
-    "en": "Privacy status unavailable"
+  "camera.deviceOffline": {
+    "zh-CN": "设备离线",
+    "en": "Device offline"
   },
-  "privacy.on": {
-    "zh-CN": "头脸马赛克已开启",
-    "en": "Head and face mosaic on"
+  "camera.disconnected": {
+    "zh-CN": "相机断线",
+    "en": "Camera disconnected"
   },
-  "privacy.off": {
-    "zh-CN": "头脸打码已关闭",
-    "en": "Head and face masking off"
+  "camera.mock": {
+    "zh-CN": "MOCK · 模拟设备",
+    "en": "MOCK · simulated device"
   },
-  "video.live": {
-    "zh-CN": "实时画面",
-    "en": "Live video"
+  "camera.moved": {
+    "zh-CN": "机位已变化，请到设置确认检测区域",
+    "en": "Camera position changed. Confirm the detection regions in settings"
   },
-  "video.alt": {
-    "zh-CN": "工位相机实时画面",
-    "en": "Live station camera video"
+  "camera.onlineFps": {
+    "zh-CN": "相机在线 · 输出 {fps} fps",
+    "en": "Camera online · output {fps} fps"
   },
-  "video.camera": {
-    "zh-CN": "工位相机 / 01",
-    "en": "Station camera / 01"
+  "camera.preparing": {
+    "zh-CN": "正在准备画面",
+    "en": "Preparing video"
   },
-  "video.waiting": {
-    "zh-CN": "等待画面",
-    "en": "Waiting for video"
+  "camera.readyHint": {
+    "zh-CN": "画面准备好后自动显示",
+    "en": "Video appears when ready"
   },
-  "video.pause": {
-    "zh-CN": "暂停画面",
-    "en": "Pause video"
+  "camera.recoveryHint": {
+    "zh-CN": "连接与画面恢复后自动显示",
+    "en": "Video resumes after recovery"
   },
-  "video.resume": {
-    "zh-CN": "继续画面",
-    "en": "Resume video"
+  "camera.retryHint": {
+    "zh-CN": "连接恢复后自动重试",
+    "en": "Retrying automatically after recovery"
   },
-  "video.paused": {
-    "zh-CN": "画面已暂停",
-    "en": "Video paused"
+  "camera.retrying": {
+    "zh-CN": "正在重连相机",
+    "en": "Reconnecting to camera"
   },
-  "video.background": {
-    "zh-CN": "后台检测与计时持续运行",
-    "en": "Detection and timing continue in the background"
+  "camera.streamInfo": {
+    "zh-CN": "{width} × {height} · {fps} fps",
+    "en": "{width} × {height} · {fps} fps"
   },
-  "video.snapshot": {
-    "zh-CN": "截图",
-    "en": "Snapshot"
+  "camera.waitDevice": {
+    "zh-CN": "等待设备恢复",
+    "en": "Waiting for device recovery"
   },
-  "video.fullscreen": {
-    "zh-CN": "全屏",
-    "en": "Fullscreen"
-  },
-  "video.noFullscreen": {
-    "zh-CN": "当前浏览器暂不支持全屏",
-    "en": "Fullscreen is unavailable in this browser"
-  },
-  "session.label": {
-    "zh-CN": "工作会话计时",
-    "en": "Work session timer"
-  },
-  "session.state": {
-    "zh-CN": "当前状态",
-    "en": "Current state"
-  },
-  "session.waitObservation": {
-    "zh-CN": "等待观测",
-    "en": "Waiting for observation"
-  },
-  "session.workTime": {
-    "zh-CN": "本次工作时间",
-    "en": "Session work time"
-  },
-  "session.rest": {
-    "zh-CN": "休息",
-    "en": "Break"
-  },
-  "session.pending": {
-    "zh-CN": "待确认",
-    "en": "Pending"
-  },
-  "session.unknown": {
-    "zh-CN": "未知",
-    "en": "Unknown"
-  },
-  "session.loading": {
-    "zh-CN": "正在加载观测",
-    "en": "Loading observation"
-  },
-  "session.waitStart": {
-    "zh-CN": "等待自动开始",
-    "en": "Waiting for automatic start"
-  },
-  "session.autoStart": {
-    "zh-CN": "连续在位 {seconds} 秒后自动开始",
-    "en": "Starts after {seconds} seconds of continuous presence"
-  },
-  "session.started": {
-    "zh-CN": "开始 {time}",
-    "en": "Started {time}"
-  },
-  "session.endedAt": {
-    "zh-CN": " · 结束 {time}",
-    "en": " · Ended {time}"
-  },
-  "session.syncPending": {
-    "zh-CN": "计时状态待同步",
-    "en": "Waiting to synchronize timing"
-  },
-  "state.idle": {
-    "zh-CN": "等待开工",
-    "en": "Waiting to start"
-  },
-  "state.start": {
-    "zh-CN": "开工确认中",
-    "en": "Confirming start"
-  },
-  "state.working": {
-    "zh-CN": "工作中",
-    "en": "Working"
-  },
-  "state.away": {
-    "zh-CN": "暂离确认中",
-    "en": "Confirming absence"
-  },
-  "state.rest": {
-    "zh-CN": "休息中",
-    "en": "On break"
-  },
-  "state.unknown": {
-    "zh-CN": "观测未知",
-    "en": "Observation unknown"
-  },
-  "state.done": {
-    "zh-CN": "会话已结束",
-    "en": "Session ended"
-  },
-  "pipeline.label": {
-    "zh-CN": "工作状态流程",
-    "en": "Work status pipeline"
-  },
-  "pipeline.idle": {
-    "zh-CN": "等待",
-    "en": "Idle"
-  },
-  "pipeline.start": {
-    "zh-CN": "开工",
-    "en": "Starting"
-  },
-  "pipeline.working": {
-    "zh-CN": "作业中",
-    "en": "Working"
-  },
-  "pipeline.pause": {
-    "zh-CN": "暂停",
-    "en": "Paused"
-  },
-  "pipeline.done": {
-    "zh-CN": "完工",
-    "en": "Done"
-  },
-  "pipeline.away": {
-    "zh-CN": "暂离待确认",
-    "en": "Away pending confirmation"
-  },
-  "pipeline.startProgress": {
-    "zh-CN": "已确认 {elapsed} / {target} 秒",
-    "en": "Confirmed {elapsed} / {target} s"
-  },
-  "pipeline.waiting": {
-    "zh-CN": "等待人员在位",
-    "en": "Waiting for presence"
-  },
-  "pipeline.workingHint": {
-    "zh-CN": "正在累计工作时间",
-    "en": "Accumulating work time"
-  },
-  "pipeline.exception": {
-    "zh-CN": "状态暂不可用",
-    "en": "State temporarily unavailable"
-  },
-  "setup.required": {
-    "zh-CN": "请先配置检测区域",
-    "en": "Set up regions"
-  },
-  "config.version": {
-    "zh-CN": "配置 v{revision}",
-    "en": "Config v{revision}"
-  },
-  "config.effective": {
-    "zh-CN": "生效版本 v{revision}",
-    "en": "Active version v{revision}"
-  },
-  "config.reading": {
-    "zh-CN": "读取配置中",
-    "en": "Reading configuration"
-  },
-  "config.title": {
-    "zh-CN": "场景设置",
-    "en": "Scene settings"
-  },
-  "config.frameTitle": {
-    "zh-CN": "工位场景配置",
-    "en": "Station configuration"
-  },
-  "config.closeHint": {
-    "zh-CN": "保存后应用到设备，关闭面板会保留本页未保存的修改。",
-    "en": "Save to apply changes. Unsaved edits are retained when this panel closes."
-  },
-  "config.heading": {
-    "zh-CN": "让相机适应你的工位",
-    "en": "Adapt the camera to your workstation"
-  },
-  "config.intro": {
-    "zh-CN": "划定观察范围，调整计时规则，统一管理画面隐私与检测图层。",
-    "en": "Define regions, adjust timing rules, and manage privacy and detection layers."
-  },
-  "config.shared": {
-    "zh-CN": "设备级设置 · 所有观看者同步",
-    "en": "Device settings · shared with all viewers"
-  },
-  "config.impact": {
-    "zh-CN": "保存区域、时长或检测参数将结束当前工作会话，并按新配置重新确认开工。",
-    "en": "Saving regions, timing or detection parameters ends the current work session and restarts confirmation with the new configuration."
+  "camera.waiting": {
+    "zh-CN": "等待相机恢复",
+    "en": "Waiting for camera recovery"
   },
   "config.cancel": {
     "zh-CN": "取消修改",
@@ -383,237 +131,149 @@
     "zh-CN": "放弃本页修改并重新读取设备配置",
     "en": "Discard local edits and reload device settings"
   },
-  "config.save": {
-    "zh-CN": "保存并应用",
-    "en": "Save and apply"
-  },
-  "config.saving": {
-    "zh-CN": "保存中…",
-    "en": "Saving…"
-  },
-  "config.persist": {
-    "zh-CN": "本页配置保存在设备，重启后自动加载。",
-    "en": "Settings are stored on the device and restored after restart."
-  },
-  "config.dirty": {
-    "zh-CN": "修改尚未保存",
-    "en": "Unsaved changes"
-  },
-  "config.loaded": {
-    "zh-CN": "已读取设备配置",
-    "en": "Device settings loaded"
-  },
-  "config.same": {
-    "zh-CN": "配置与设备一致。",
-    "en": "Settings already match the device."
-  },
-  "config.savedTiming": {
-    "zh-CN": "已保存并应用，当前会话已结算，将按新配置重新确认开工。",
-    "en": "Saved and applied. The current session is settled and work confirmation will use the new configuration."
-  },
-  "config.saved": {
-    "zh-CN": "已保存，所有观看者将同步新设置。",
-    "en": "Saved. All viewers will receive the new settings."
+  "config.closeHint": {
+    "zh-CN": "保存后应用到设备，关闭面板会保留本页未保存的修改。",
+    "en": "Save to apply changes. Unsaved edits are retained when this panel closes."
   },
   "config.conflict": {
     "zh-CN": "配置冲突或截图已过期，请点击“取消修改”重新加载后保存。",
     "en": "Settings conflict or expired reference frame. Select “Discard changes” to reload before saving."
   },
+  "config.dirty": {
+    "zh-CN": "修改尚未保存",
+    "en": "Unsaved changes"
+  },
+  "config.effective": {
+    "zh-CN": "生效版本 v{revision}",
+    "en": "Active version v{revision}"
+  },
   "config.externalChange": {
     "zh-CN": "设备配置已在其他页面更新，请点击“取消修改”重新加载后保存。",
     "en": "Settings changed in another page. Select “Discard changes” to reload before saving."
   },
-  "config.positionWarning": {
-    "zh-CN": "机位或画面尺寸变化，请重新取图、检查并确认区域。",
-    "en": "Camera position or image size changed. Capture a new frame and confirm the regions."
+  "config.eyebrow": {
+    "zh-CN": "设备设置",
+    "en": "DEVICE SETTINGS"
+  },
+  "config.frameTitle": {
+    "zh-CN": "工位场景配置",
+    "en": "Station configuration"
+  },
+  "config.heading": {
+    "zh-CN": "让相机适应你的工位",
+    "en": "Adapt the camera to your workstation"
+  },
+  "config.impact": {
+    "zh-CN": "保存区域、时长或检测参数将结束当前工作会话，并按新配置重新确认开工。",
+    "en": "Saving regions, timing or detection parameters ends the current work session and restarts confirmation with the new configuration."
+  },
+  "config.intro": {
+    "zh-CN": "划定观察范围，调整计时规则，统一管理画面隐私与检测图层。",
+    "en": "Define regions, adjust timing rules, and manage privacy and detection layers."
   },
   "config.loadFailed": {
     "zh-CN": "读取设置失败，请检查设备连接后重试。",
     "en": "Could not load settings. Check the device connection and retry."
   },
-  "roi.title": {
-    "zh-CN": "划定检测区域",
-    "en": "Define detection regions"
+  "config.loaded": {
+    "zh-CN": "已读取设备配置",
+    "en": "Device settings loaded"
   },
-  "roi.capture": {
-    "zh-CN": "重新取图",
-    "en": "Capture new frame"
+  "config.persist": {
+    "zh-CN": "本页配置保存在设备，重启后自动加载。",
+    "en": "Settings are stored on the device and restored after restart."
   },
-  "roi.choose": {
-    "zh-CN": "选择编辑区域",
-    "en": "Select region"
+  "config.positionWarning": {
+    "zh-CN": "机位或画面尺寸变化，请重新取图、检查并确认区域。",
+    "en": "Camera position or image size changed. Capture a new frame and confirm the regions."
   },
-  "roi.station": {
-    "zh-CN": "工位范围",
-    "en": "Station area"
+  "config.reading": {
+    "zh-CN": "读取配置中",
+    "en": "Reading configuration"
   },
-  "roi.seat": {
-    "zh-CN": "在位判断区",
-    "en": "Presence zone"
+  "config.same": {
+    "zh-CN": "配置与设备一致。",
+    "en": "Settings already match the device."
   },
-  "roi.stationHelp": {
-    "zh-CN": "圈出本工位的完整活动范围，包含人员站起与附近活动的位置。",
-    "en": "Outline the full workstation area, including standing and nearby activity."
+  "config.save": {
+    "zh-CN": "保存并应用",
+    "en": "Save and apply"
   },
-  "roi.seatHelp": {
-    "zh-CN": "圈出上半身判断点应落入的区域，用于当前在位开工判断。该区域应位于工位范围内。",
-    "en": "Outline where the upper-body anchor should fall to confirm presence. Keep this zone inside the station area."
+  "config.saveSection": {
+    "zh-CN": "保存设置",
+    "en": "Save settings"
   },
-  "roi.canvas": {
-    "zh-CN": "ROI区域编辑画布",
-    "en": "ROI editing canvas"
+  "config.saved": {
+    "zh-CN": "已保存，所有观看者将同步新设置。",
+    "en": "Saved. All viewers will receive the new settings."
   },
-  "roi.capturing": {
-    "zh-CN": "正在获取当前相机截图…",
-    "en": "Capturing the current camera frame…"
+  "config.savedTiming": {
+    "zh-CN": "已保存并应用，当前会话已结算，将按新配置重新确认开工。",
+    "en": "Saved and applied. The current session is settled and work confirmation will use the new configuration."
   },
-  "roi.waiting": {
-    "zh-CN": "等待相机画面",
-    "en": "Waiting for camera frame"
+  "config.saving": {
+    "zh-CN": "保存中…",
+    "en": "Saving…"
   },
-  "roi.tools": {
-    "zh-CN": "绘图工具",
-    "en": "Drawing tools"
+  "config.shared": {
+    "zh-CN": "设备级设置 · 所有观看者同步",
+    "en": "Device settings · shared with all viewers"
   },
-  "roi.rectangle": {
-    "zh-CN": "▭ 矩形",
-    "en": "▭ Rectangle"
+  "config.title": {
+    "zh-CN": "场景设置",
+    "en": "Scene settings"
   },
-  "roi.polygon": {
-    "zh-CN": "⬡ 多边形",
-    "en": "⬡ Polygon"
+  "config.version": {
+    "zh-CN": "配置 v{revision}",
+    "en": "Config v{revision}"
   },
-  "roi.edit": {
-    "zh-CN": "↖ 编辑顶点",
-    "en": "↖ Edit vertices"
+  "detection.allFields": {
+    "zh-CN": "需要同时提交人体与关键点置信度。",
+    "en": "Submit both person and keypoint confidence values."
   },
-  "roi.finish": {
-    "zh-CN": "完成多边形",
-    "en": "Finish polygon"
+  "detection.invalid": {
+    "zh-CN": "检测置信度需在允许范围内，最低为 {minimum}，最高为 1.00。",
+    "en": "Detection confidence must be within the supported range, from {minimum} to 1.00."
   },
-  "roi.undo": {
-    "zh-CN": "撤销",
-    "en": "Undo"
+  "detection.invalidInput": {
+    "zh-CN": "人体置信度范围为 0.10–1.00，关键点置信度范围为 0.25–1.00，请填写有效数值。",
+    "en": "Enter valid numbers. Person confidence must be 0.10–1.00 and keypoint confidence must be 0.25–1.00."
   },
-  "roi.clear": {
-    "zh-CN": "清除本区",
-    "en": "Clear region"
+  "detection.invalidPrivacy": {
+    "zh-CN": "隐私定位阈值配置无效，请检查设备配置。",
+    "en": "Invalid privacy localization threshold. Check the device configuration."
   },
-  "roi.confirm": {
-    "zh-CN": "确认当前区域",
-    "en": "Confirm regions"
+  "detection.keypoint": {
+    "zh-CN": "关键点置信度",
+    "en": "Keypoint confidence"
   },
-  "roi.rectangleHint": {
-    "zh-CN": "在画面上按住并拖动，绘制矩形区域。支持鼠标与触摸。",
-    "en": "Press and drag to draw a rectangle. Mouse and touch are supported."
+  "detection.keypointHelp": {
+    "zh-CN": "仅分数达到阈值的关键点参与在位判断和姿态显示。当前提取流程支持的范围为 0.25–1.00。",
+    "en": "Only keypoints at or above this score contribute to presence decisions and pose display. The extraction pipeline supports 0.25–1.00."
   },
-  "roi.polygonHint": {
-    "zh-CN": "逐点点击添加顶点，点击起点或“完成多边形”闭合区域。",
-    "en": "Click to add vertices. Click the first point or “Finish polygon” to close it."
+  "detection.note": {
+    "zh-CN": "调高阈值会过滤更多低分结果，也可能漏掉远处、侧身或遮挡人员。参数影响计时与检测标注，隐私马赛克使用独立的保守候选。保存后结算当前会话并重新确认开工。",
+    "en": "Higher thresholds filter more low-score results and can miss distant, side-facing or occluded people. These controls affect timing and detection overlays. Privacy mosaics use independent conservative candidates. Saving settles the current session and restarts work confirmation."
   },
-  "roi.editHint": {
-    "zh-CN": "按住并拖动当前区域的顶点，微调边界。",
-    "en": "Drag a vertex of the selected region to adjust its boundary."
+  "detection.noteTitle": {
+    "zh-CN": "按场景调整筛选严格程度",
+    "en": "Adjust filtering for your scene"
   },
-  "roi.notes": {
-    "zh-CN": "在位判断区应位于工位范围内。坐标按原图保存，缩放页面后仍与画面对齐。取图只冻结编辑画面，后台检测持续运行。",
-    "en": "Keep the presence zone inside the station area. Coordinates use the source image and stay aligned when resized. Capturing a frame freezes the editor while detection continues."
+  "detection.person": {
+    "zh-CN": "人体置信度",
+    "en": "Person confidence"
   },
-  "roi.vertices": {
-    "zh-CN": "{count}个顶点",
-    "en": "{count} vertices"
+  "detection.personHelp": {
+    "zh-CN": "仅分数达到阈值的人体结果参与计时与人体框显示。范围 0.10–1.00。",
+    "en": "Only person detections at or above this score contribute to timing and person boxes. Range 0.10–1.00."
   },
-  "roi.offline": {
-    "zh-CN": "相机暂时离线，请连接后重新取图。",
-    "en": "Camera offline. Reconnect and capture a new frame."
+  "detection.step": {
+    "zh-CN": "03 / 检测",
+    "en": "03 / DETECTION"
   },
-  "roi.preparing": {
-    "zh-CN": "脱敏画面正在准备，请稍后重新取图。",
-    "en": "The protected frame is being prepared. Capture again shortly."
-  },
-  "roi.revisionChanged": {
-    "zh-CN": "配置刚刚变化，请刷新配置后重新取图。",
-    "en": "Configuration changed. Reload settings and capture a new frame."
-  },
-  "roi.streamChanged": {
-    "zh-CN": "相机连接已变化，请重新取图。",
-    "en": "Camera connection changed. Capture a new frame."
-  },
-  "roi.sizeChanged": {
-    "zh-CN": "画面尺寸变化，请重新划定两个区域。",
-    "en": "Image size changed. Redraw both regions."
-  },
-  "roi.needsFrame": {
-    "zh-CN": "请重新获取相机截图后确认区域。",
-    "en": "Capture a new camera frame before confirming regions."
-  },
-  "roi.confirmed": {
-    "zh-CN": "区域已在本页确认，请保存以应用到设备。",
-    "en": "Regions confirmed locally. Save to apply them to the device."
-  },
-  "roi.noFullscreen": {
-    "zh-CN": "当前浏览器暂不支持全屏编辑。",
-    "en": "Fullscreen editing is unavailable in this browser."
-  },
-  "roi.unfinished": {
-    "zh-CN": "请先完成或取消正在绘制的多边形。",
-    "en": "Finish or cancel the current polygon first."
-  },
-  "roi.saveNeedsFrame": {
-    "zh-CN": "请重新获取相机截图，再保存区域。",
-    "en": "Capture a new camera frame before saving regions."
-  },
-  "roi.vertexCount": {
-    "zh-CN": "{region}需要3至32个顶点",
-    "en": "{region} requires 3 to 32 vertices"
-  },
-  "roi.bounds": {
-    "zh-CN": "{region}坐标超出画面",
-    "en": "{region} has coordinates outside the image"
-  },
-  "roi.duplicate": {
-    "zh-CN": "{region}有重复顶点",
-    "en": "{region} contains duplicate vertices"
-  },
-  "roi.area": {
-    "zh-CN": "{region}面积过小",
-    "en": "{region} has insufficient area"
-  },
-  "roi.crossing": {
-    "zh-CN": "{region}边界自交",
-    "en": "{region} has a self-intersecting boundary"
-  },
-  "roi.containment": {
-    "zh-CN": "在位判断区必须位于工位范围内",
-    "en": "The presence zone must be inside the station area"
-  },
-  "roi.edgeContainment": {
-    "zh-CN": "在位判断区边界必须位于工位范围内",
-    "en": "The presence zone boundary must stay inside the station area"
-  },
-  "privacy.title": {
-    "zh-CN": "隐私与检测显示",
-    "en": "Privacy and detection display"
-  },
-  "privacy.mask": {
-    "zh-CN": "头部与人脸马赛克",
-    "en": "Head and face mosaic"
-  },
-  "privacy.scope": {
-    "zh-CN": "统一控制直播、截图和新增保存素材",
-    "en": "Applies to live video, snapshots and newly saved media"
-  },
-  "privacy.readSettings": {
-    "zh-CN": "读取隐私设置中…",
-    "en": "Reading privacy settings…"
-  },
-  "privacy.descriptionOn": {
-    "zh-CN": "开启后，设备统一输出头脸脱敏画面。",
-    "en": "The device outputs head- and face-masked frames when enabled."
-  },
-  "privacy.descriptionOff": {
-    "zh-CN": "关闭后，设备输出可包含可识别的人像。",
-    "en": "Output may contain identifiable people when disabled."
+  "detection.title": {
+    "zh-CN": "检测参数",
+    "en": "Detection parameters"
   },
   "display.boxes": {
     "zh-CN": "显示检测框",
@@ -622,14 +282,6 @@
   "display.boxesHelp": {
     "zh-CN": "人体边界与检测标签",
     "en": "Person boundaries and detection labels"
-  },
-  "display.regions": {
-    "zh-CN": "显示检测区域",
-    "en": "Show detection regions"
-  },
-  "display.regionsHelp": {
-    "zh-CN": "工位范围、在位判断区及区域名称",
-    "en": "Station area, presence zone and region names"
   },
   "display.keypoints": {
     "zh-CN": "显示关键点",
@@ -643,129 +295,177 @@
     "zh-CN": "显示开关只控制画面图层。隐私开启时，头脸打码由设备完成，脸部关键点在展示层隐藏。自动打码效果需结合现场遮挡情况验证。",
     "en": "Display switches control the annotation layers. With privacy enabled, the device masks heads and faces and hides facial keypoints. Check masking under actual occlusion conditions."
   },
-  "timing.title": {
-    "zh-CN": "检测与计时规则",
-    "en": "Detection and timing rules"
+  "display.regions": {
+    "zh-CN": "显示检测区域",
+    "en": "Show detection regions"
   },
-  "timing.defaults": {
-    "zh-CN": "恢复默认",
-    "en": "Restore defaults"
+  "display.regionsHelp": {
+    "zh-CN": "工位范围、在位判断区及区域名称",
+    "en": "Station area, presence zone and region names"
   },
-  "timing.start": {
-    "zh-CN": "开工连续确认时间",
-    "en": "Continuous start confirmation"
+  "display.step": {
+    "zh-CN": "02 / 显示",
+    "en": "02 / DISPLAY"
   },
-  "timing.startHelp": {
-    "zh-CN": "在位持续满足多久后自动开工",
-    "en": "Continuous presence required before starting"
+  "error.ACTION_UNAVAILABLE": {
+    "zh-CN": "当前状态无法执行该操作",
+    "en": "This action is unavailable in the current state"
   },
-  "timing.away": {
-    "zh-CN": "暂离待确认时间",
-    "en": "Absence confirmation time"
+  "error.BACKEND_UNAVAILABLE": {
+    "zh-CN": "设备服务暂不可用",
+    "en": "Device service temporarily unavailable"
   },
-  "timing.awayHelp": {
-    "zh-CN": "期内返回补计工作，超时改计休息",
-    "en": "Return within the window to count as work. Otherwise count as break"
+  "error.BAD_REQUEST": {
+    "zh-CN": "请求参数无效，请检查输入。",
+    "en": "Invalid request. Check the inputs."
   },
-  "timing.stop": {
-    "zh-CN": "会话结束等待时间",
-    "en": "Session end timeout"
+  "error.FRAME_EXPIRED": {
+    "zh-CN": "对应帧已过期，请重新获取",
+    "en": "The matching frame expired. Retrieve a new one."
   },
-  "timing.stopHelp": {
-    "zh-CN": "持续未观察到人员多久后结束会话",
-    "en": "Unobserved duration before ending a session"
+  "error.FRAME_UNAVAILABLE": {
+    "zh-CN": "当前画面暂不可用",
+    "en": "The current frame is unavailable"
   },
-  "timing.grace": {
-    "zh-CN": "短时漏检缓冲时间",
-    "en": "Missed-detection grace period"
+  "error.METHOD_NOT_ALLOWED": {
+    "zh-CN": "请求方式不受支持",
+    "en": "The request method is unsupported"
   },
-  "timing.graceHelp": {
-    "zh-CN": "对短时遮挡或检测缺失的缓冲",
-    "en": "Buffer for brief occlusion or missed detections"
+  "error.NOT_FOUND": {
+    "zh-CN": "请求的内容不存在",
+    "en": "The requested resource was not found"
   },
-  "timing.age": {
-    "zh-CN": "算法观测有效时间",
-    "en": "Observation validity window"
+  "error.ORIGIN_REJECTED": {
+    "zh-CN": "请从本设备页面提交请求",
+    "en": "Submit requests from this device's page"
   },
-  "timing.ageHelp": {
-    "zh-CN": "超过此时间的旧结果按未知处理",
-    "en": "Older results are treated as unknown"
+  "error.SETTINGS_CONFLICT": {
+    "zh-CN": "配置已被其他页面修改，请刷新后重新保存",
+    "en": "Settings changed elsewhere. Reload before saving."
   },
-  "timing.seconds": {
-    "zh-CN": "秒",
-    "en": "s"
+  "error.SETTINGS_SAVE_FAILED": {
+    "zh-CN": "保存失败，请检查存储状态后重试",
+    "en": "Save failed. Check storage and retry."
   },
-  "timing.settlement": {
-    "zh-CN": "暂离时间如何结算",
-    "en": "How absence time is settled"
+  "error.allTiming": {
+    "zh-CN": "timing 必须包含全部五项时长",
+    "en": "timing must contain all five timing values"
   },
-  "timing.note": {
-    "zh-CN": "当前规则下，暂离确认期内返回会补计工作时间；超过确认期，整段暂离计为休息。这里调整的是现有规则的时间参数。",
-    "en": "Returning during the absence confirmation window counts that period as work. After the window, the entire absence counts as break. These fields adjust the timing parameters."
+  "error.display": {
+    "zh-CN": "display 需要 boxes、regions、keypoints 布尔开关",
+    "en": "display requires boolean boxes, regions and keypoints switches"
   },
-  "timing.invalid": {
-    "zh-CN": "请检查检测时长输入。",
-    "en": "Check the timing values."
+  "error.end": {
+    "zh-CN": "当前没有进行中的会话",
+    "en": "There is no active session"
   },
-  "timing.help": {
-    "zh-CN": "连续在位 {start_seconds} 秒后确认开工。暂离确认期为 {short_away_seconds} 秒，期间返回会补计工作时间。连续未观察到人员 {stop_absent_seconds} 秒后结束会话。短时漏检缓冲 {missing_grace_seconds} 秒，观测有效时间 {max_observation_age} 秒。",
-    "en": "Start is confirmed after {start_seconds} seconds of presence. Returning within the {short_away_seconds}-second absence window counts that period as work. End after {stop_absent_seconds} seconds without observing a person. Missed-detection grace is {missing_grace_seconds} seconds. Observation validity is {max_observation_age} seconds."
+  "error.expectedRevision": {
+    "zh-CN": "expected_revision 必须是整数",
+    "en": "expected_revision must be an integer"
   },
-  "actions.title": {
-    "zh-CN": "人工会话操作",
-    "en": "Manual session actions"
+  "error.generic": {
+    "zh-CN": "操作未完成，请重试。",
+    "en": "The operation could not be completed. Please retry."
   },
-  "actions.start": {
-    "zh-CN": "开始会话",
-    "en": "Start session"
+  "error.imageSize": {
+    "zh-CN": "image_size 必须是有效原图尺寸",
+    "en": "image_size must contain valid source image dimensions"
   },
-  "actions.end": {
-    "zh-CN": "结束会话",
-    "en": "End session"
+  "error.jsonObject": {
+    "zh-CN": "需要JSON对象",
+    "en": "A JSON object is required"
   },
-  "actions.review": {
-    "zh-CN": "标记复核",
-    "en": "Flag for review"
+  "error.language": {
+    "zh-CN": "不支持该语言，请使用 zh-CN 或 en",
+    "en": "Unsupported language. Use zh-CN or en"
   },
-  "actions.camera": {
-    "zh-CN": "确认当前机位",
-    "en": "Confirm camera position"
+  "error.privacy": {
+    "zh-CN": "privacy.enabled 必须是布尔值",
+    "en": "privacy.enabled must be a boolean"
   },
-  "actions.recorded": {
-    "zh-CN": "操作已记录",
-    "en": "Action recorded"
+  "error.reference": {
+    "zh-CN": "reference_frame 必须是对象",
+    "en": "reference_frame must be an object"
   },
-  "mock.label": {
-    "zh-CN": "前端联调 · 模拟情景",
-    "en": "Frontend testing · simulated scenario"
+  "error.regions": {
+    "zh-CN": "必须提供工位范围 station 和在位判断区 seat",
+    "en": "Provide both station and seat regions"
   },
-  "mock.start": {
-    "zh-CN": "开工确认",
-    "en": "Confirming start"
+  "error.requestSize": {
+    "zh-CN": "请求大小无效",
+    "en": "Invalid request size"
   },
-  "mock.working": {
-    "zh-CN": "工作中",
-    "en": "Working"
+  "error.review": {
+    "zh-CN": "尚无可复核会话",
+    "en": "There is no session to review"
   },
-  "mock.away": {
-    "zh-CN": "暂离确认",
-    "en": "Confirming absence"
+  "error.revision": {
+    "zh-CN": "revision 无效",
+    "en": "Invalid configuration revision"
   },
-  "mock.done": {
-    "zh-CN": "会话结束",
-    "en": "Session ended"
+  "error.staleReference": {
+    "zh-CN": "相机或截图尺寸已变化，请重新取图后保存区域",
+    "en": "Camera or frame dimensions changed. Capture a new frame before saving regions"
   },
-  "mock.offline": {
-    "zh-CN": "离线",
-    "en": "Offline"
+  "error.start": {
+    "zh-CN": "需坐席在位且尚未开始会话",
+    "en": "A person must be present with no active session"
   },
-  "help.title": {
-    "zh-CN": "监控与配置提示",
-    "en": "Monitoring and setup help"
+  "error.timingOrder": {
+    "zh-CN": "结束等待时间必须大于暂离确认时间和漏检缓冲时间",
+    "en": "End timeout must exceed absence confirmation and missed-detection grace"
+  },
+  "error.timingRange": {
+    "zh-CN": "{field}需要有效秒数，范围 {minimum} 至86400",
+    "en": "{field} must be between {minimum} and 86400 seconds"
+  },
+  "error.unknownField": {
+    "zh-CN": "设置请求包含未知字段",
+    "en": "The settings request contains unknown fields"
+  },
+  "error.vertexNumber": {
+    "zh-CN": "{region}顶点必须为有限数字坐标",
+    "en": "{region} vertices must contain finite numeric coordinates"
+  },
+  "help.anchor": {
+    "zh-CN": "上半身判断点",
+    "en": "Upper-body anchor"
+  },
+  "help.anchorDescription": {
+    "zh-CN": "琥珀色小圆点为计时参考位置，优先使用双肩中点。",
+    "en": "The small amber marker is the timing reference, preferably the midpoint of the shoulders."
   },
   "help.first": {
     "zh-CN": "首次配置",
     "en": "First-time setup"
+  },
+  "help.legend": {
+    "zh-CN": "怎么看检测标注",
+    "en": "Understanding detection annotations"
+  },
+  "help.person": {
+    "zh-CN": "人体与姿态",
+    "en": "Person and pose"
+  },
+  "help.personDescription": {
+    "zh-CN": "青绿色角框标示人员，细线与小圆点表示开启显示的姿态关键点。",
+    "en": "Teal corner brackets mark people. Fine lines and dots show pose keypoints when enabled."
+  },
+  "help.readingTiming": {
+    "zh-CN": "读取当前计时规则…",
+    "en": "Reading timing rules…"
+  },
+  "help.seat": {
+    "zh-CN": "青绿色细实线与淡填充为在位判断区，用于判断人员是否在位。",
+    "en": "The thin teal outline and subtle fill identify the presence zone."
+  },
+  "help.sessionMeaning": {
+    "zh-CN": "按在位工作会话累计时间。“会话结束”表示本次计时结束。",
+    "en": "Time is accumulated for presence-based work sessions. “Session ended” marks the end of that timing session."
+  },
+  "help.station": {
+    "zh-CN": "灰蓝色细虚线标示工位范围，用于区分工位附近与未被观察到。",
+    "en": "The fine blue-gray dashed outline marks the station area used to distinguish nearby presence from absence."
   },
   "help.step1": {
     "zh-CN": "进入设置，获取当前相机画面。",
@@ -779,69 +479,125 @@
     "zh-CN": "调整确认时长、隐私和显示选项，保存后开始观测。",
     "en": "Adjust timing, privacy and display options, then save to begin observation."
   },
-  "help.legend": {
-    "zh-CN": "怎么看检测标注",
-    "en": "Understanding detection annotations"
-  },
-  "help.seat": {
-    "zh-CN": "青绿色细实线与淡填充为在位判断区，用于判断人员是否在位。",
-    "en": "The thin teal outline and subtle fill identify the presence zone."
-  },
-  "help.anchor": {
-    "zh-CN": "上半身判断点",
-    "en": "Upper-body anchor"
-  },
-  "help.anchorDescription": {
-    "zh-CN": "琥珀色小圆点为计时参考位置，优先使用双肩中点。",
-    "en": "The small amber marker is the timing reference, preferably the midpoint of the shoulders."
-  },
-  "help.person": {
-    "zh-CN": "人体与姿态",
-    "en": "Person and pose"
-  },
-  "help.personDescription": {
-    "zh-CN": "青绿色角框标示人员，细线与小圆点表示开启显示的姿态关键点。",
-    "en": "Teal corner brackets mark people. Fine lines and dots show pose keypoints when enabled."
-  },
-  "help.station": {
-    "zh-CN": "灰蓝色细虚线标示工位范围，用于区分工位附近与未被观察到。",
-    "en": "The fine blue-gray dashed outline marks the station area used to distinguish nearby presence from absence."
-  },
   "help.timing": {
     "zh-CN": "计时口径",
     "en": "Timing rules"
   },
-  "help.readingTiming": {
-    "zh-CN": "读取当前计时规则…",
-    "en": "Reading timing rules…"
+  "help.title": {
+    "zh-CN": "监控与配置提示",
+    "en": "Monitoring and setup help"
   },
-  "help.sessionMeaning": {
-    "zh-CN": "按在位工作会话累计时间。“会话结束”表示本次计时结束。",
-    "en": "Time is accumulated for presence-based work sessions. “Session ended” marks the end of that timing session."
+  "mock.algorithm": {
+    "zh-CN": "算法异常",
+    "en": "Detection error"
   },
-  "overlay.station": {
-    "zh-CN": "工位范围",
-    "en": "Station"
+  "mock.away": {
+    "zh-CN": "暂离确认",
+    "en": "Confirming absence"
   },
-  "overlay.seat": {
-    "zh-CN": "在位区",
-    "en": "Presence zone"
+  "mock.done": {
+    "zh-CN": "会话结束",
+    "en": "Session ended"
   },
-  "overlay.person": {
-    "zh-CN": "人员",
-    "en": "Person"
+  "mock.label": {
+    "zh-CN": "前端联调 · 模拟情景",
+    "en": "Frontend testing · simulated scenario"
+  },
+  "mock.moved": {
+    "zh-CN": "机位变化",
+    "en": "Camera moved"
+  },
+  "mock.offline": {
+    "zh-CN": "离线",
+    "en": "Offline"
+  },
+  "mock.start": {
+    "zh-CN": "开工确认",
+    "en": "Confirming start"
+  },
+  "mock.working": {
+    "zh-CN": "工作中",
+    "en": "Working"
+  },
+  "nav.back": {
+    "zh-CN": "返回实时画面",
+    "en": "Back to monitor"
+  },
+  "nav.close": {
+    "zh-CN": "关闭",
+    "en": "Close"
+  },
+  "nav.closeHelp": {
+    "zh-CN": "关闭提示",
+    "en": "Close help"
+  },
+  "nav.closeSettings": {
+    "zh-CN": "关闭设置",
+    "en": "Close settings"
+  },
+  "nav.goSettings": {
+    "zh-CN": "去设置 ↗",
+    "en": "Settings ↗"
+  },
+  "nav.help": {
+    "zh-CN": "提示",
+    "en": "Help"
+  },
+  "nav.language": {
+    "zh-CN": "界面语言",
+    "en": "Interface language"
+  },
+  "nav.monitor": {
+    "zh-CN": "工位监控",
+    "en": "Station monitor"
+  },
+  "nav.more": {
+    "zh-CN": "更多操作",
+    "en": "More actions"
+  },
+  "nav.navigation": {
+    "zh-CN": "页面导航",
+    "en": "Page navigation"
+  },
+  "nav.openSettings": {
+    "zh-CN": "打开设置 ↗",
+    "en": "Open settings ↗"
+  },
+  "nav.settings": {
+    "zh-CN": "设置",
+    "en": "Settings"
   },
   "overlay.inside": {
     "zh-CN": "区内",
     "en": "Inside"
   },
+  "overlay.operator": {
+    "zh-CN": "本次操作员",
+    "en": "Session operator"
+  },
+  "overlay.otherPerson": {
+    "zh-CN": "其他人员",
+    "en": "Other person"
+  },
   "overlay.outside": {
     "zh-CN": "区外",
     "en": "Outside"
   },
+  "overlay.person": {
+    "zh-CN": "人员",
+    "en": "Person"
+  },
   "overlay.provisional": {
     "zh-CN": "（待确认）",
     "en": " (unconfirmed)"
+  },
+  "overlay.seat": {
+    "zh-CN": "在位区",
+    "en": "Presence zone"
+  },
+  "overlay.station": {
+    "zh-CN": "工位范围",
+    "en": "Station"
   },
   "overlay.track": {
     "zh-CN": "人体 · 轨迹 {track}",
@@ -851,361 +607,597 @@
     "zh-CN": "未分配",
     "en": "unassigned"
   },
-  "reason.waiting": {
-    "zh-CN": "等待算法观测",
-    "en": "Waiting for detection observations"
+  "ownership.absent": {
+    "zh-CN": "未观察到本次会话操作员，其他人员不重置离开计时",
+    "en": "Session operator not observed; other people do not reset the absence timer"
   },
-  "reason.size": {
-    "zh-CN": "画面尺寸变化，需要重新确认区域",
-    "en": "Image size changed. Confirm the detection regions"
+  "ownership.candidate": {
+    "zh-CN": "轨迹 {track_id}",
+    "en": "Track {track_id}"
   },
-  "reason.ambiguous": {
-    "zh-CN": "关键点不足或工位内多人无法归属",
-    "en": "Insufficient keypoints or multiple people prevent assignment"
+  "ownership.choose": {
+    "zh-CN": "选择返回的原操作员",
+    "en": "Select the returning session operator"
   },
-  "reason.missing": {
-    "zh-CN": "有效画面中未观察到工位人员",
-    "en": "No worker observed in a valid frame"
+  "ownership.confirmAction": {
+    "zh-CN": "确认操作员返回",
+    "en": "Confirm operator return"
   },
-  "reason.seated": {
-    "zh-CN": "上半身锚点位于初始坐席区域",
-    "en": "Upper-body anchor is inside the presence zone"
+  "ownership.confirmButton": {
+    "zh-CN": "确认所选人员为原操作员",
+    "en": "Confirm selected person as the session operator"
   },
-  "reason.nearby": {
-    "zh-CN": "人员在工位区域但不在坐席区域",
-    "en": "Person is inside the station area but outside the presence zone"
+  "ownership.confirmRequired": {
+    "zh-CN": "等待确认操作员返回，原离开计时继续",
+    "en": "Confirm operator return; the original absence timer continues"
   },
-  "reason.stale": {
-    "zh-CN": "超过{seconds}秒无新鲜算法观测",
-    "en": "No fresh detection observation for over {seconds} seconds"
+  "ownership.confirmed": {
+    "zh-CN": "已人工确认本次操作员返回",
+    "en": "Session operator return confirmed manually"
   },
-  "reason.interrupted": {
-    "zh-CN": "视频流中断，等待新会话",
-    "en": "Video interrupted. Waiting for a new session"
+  "ownership.instructions": {
+    "zh-CN": "请在下方配对画面中核对人员，再选择对应轨迹。确认只适用于当前会话。",
+    "en": "Check the person in the matching image and choose their track. Confirmation applies to this session only."
   },
-  "reason.moved": {
-    "zh-CN": "机位可能移动，请检查区域并重新确认",
-    "en": "Camera may have moved. inspect and confirm the regions"
+  "ownership.nearby": {
+    "zh-CN": "本次会话操作员在工位附近",
+    "en": "Session operator is near the workstation"
+  },
+  "ownership.noCandidates": {
+    "zh-CN": "当前没有可确认的在位人员，请稍后刷新",
+    "en": "No eligible person in the presence zone. Refresh shortly."
+  },
+  "ownership.operator": {
+    "zh-CN": "操作员 {operator} · 轨迹 {track_id}",
+    "en": "Operator {operator} · Track {track_id}"
+  },
+  "ownership.present": {
+    "zh-CN": "本次会话操作员在位",
+    "en": "Session operator is in the presence zone"
+  },
+  "ownership.progress": {
+    "zh-CN": "离开确认 {elapsed} · 距结束 {remaining}",
+    "en": "Confirmed absence {elapsed} · Ends in {remaining}"
+  },
+  "ownership.refresh": {
+    "zh-CN": "刷新人员画面",
+    "en": "Refresh people"
+  },
+  "ownership.select": {
+    "zh-CN": "请选择一名人员",
+    "en": "Select a person"
+  },
+  "ownership.staleConfirmation": {
+    "zh-CN": "确认已过期或会话状态已变化，请刷新后重新选择",
+    "en": "Confirmation expired or the session changed. Refresh and select again."
+  },
+  "ownership.starting": {
+    "zh-CN": "正在确认操作员（轨迹 {track_id}）",
+    "en": "Confirming operator (track {track_id})"
+  },
+  "ownership.title": {
+    "zh-CN": "会话操作员",
+    "en": "Session operator"
+  },
+  "ownership.unbound": {
+    "zh-CN": "尚未绑定操作员",
+    "en": "No operator bound"
+  },
+  "ownership.unverifiedHistory": {
+    "zh-CN": "历史记录缺少轨迹证据，人员归属无法验证",
+    "en": "Historical record lacks track evidence; ownership is unverified"
+  },
+  "ownership.waiting": {
+    "zh-CN": "等待可连续跟踪的操作员",
+    "en": "Waiting for a continuously tracked operator"
+  },
+  "pipeline.away": {
+    "zh-CN": "暂离待确认",
+    "en": "Away pending confirmation"
+  },
+  "pipeline.done": {
+    "zh-CN": "完工",
+    "en": "Done"
+  },
+  "pipeline.exception": {
+    "zh-CN": "状态暂不可用",
+    "en": "State temporarily unavailable"
+  },
+  "pipeline.idle": {
+    "zh-CN": "等待",
+    "en": "Idle"
+  },
+  "pipeline.label": {
+    "zh-CN": "工作状态流程",
+    "en": "Work status pipeline"
+  },
+  "pipeline.pause": {
+    "zh-CN": "暂停",
+    "en": "Paused"
+  },
+  "pipeline.start": {
+    "zh-CN": "开工",
+    "en": "Starting"
+  },
+  "pipeline.startProgress": {
+    "zh-CN": "已确认 {elapsed} / {target} 秒",
+    "en": "Confirmed {elapsed} / {target} s"
+  },
+  "pipeline.waiting": {
+    "zh-CN": "等待人员在位",
+    "en": "Waiting for presence"
+  },
+  "pipeline.working": {
+    "zh-CN": "作业中",
+    "en": "Working"
+  },
+  "pipeline.workingHint": {
+    "zh-CN": "正在累计工作时间",
+    "en": "Accumulating work time"
+  },
+  "privacy.descriptionOff": {
+    "zh-CN": "关闭后，设备输出可包含可识别的人像。",
+    "en": "Output may contain identifiable people when disabled."
+  },
+  "privacy.descriptionOn": {
+    "zh-CN": "开启后，设备统一输出头脸脱敏画面。",
+    "en": "The device outputs head- and face-masked frames when enabled."
+  },
+  "privacy.mask": {
+    "zh-CN": "头部与人脸马赛克",
+    "en": "Head and face mosaic"
+  },
+  "privacy.off": {
+    "zh-CN": "头脸打码已关闭",
+    "en": "Head and face masking off"
+  },
+  "privacy.on": {
+    "zh-CN": "头脸马赛克已开启",
+    "en": "Head and face mosaic on"
+  },
+  "privacy.pending": {
+    "zh-CN": "隐私状态待确认",
+    "en": "Privacy status unavailable"
+  },
+  "privacy.readSettings": {
+    "zh-CN": "读取隐私设置中…",
+    "en": "Reading privacy settings…"
+  },
+  "privacy.reading": {
+    "zh-CN": "读取隐私状态…",
+    "en": "Reading privacy status…"
+  },
+  "privacy.scope": {
+    "zh-CN": "统一控制直播、截图和新增保存素材",
+    "en": "Applies to live video, snapshots and newly saved media"
+  },
+  "privacy.title": {
+    "zh-CN": "隐私与检测显示",
+    "en": "Privacy and detection display"
   },
   "reason.algorithm": {
     "zh-CN": "算法异常，正在重试：{type}",
     "en": "Detection error. Retrying ({type})"
   },
-  "reason.unknown": {
-    "zh-CN": "状态暂不可用",
-    "en": "State temporarily unavailable"
+  "reason.ambiguous": {
+    "zh-CN": "关键点不足或工位内多人无法归属",
+    "en": "Insufficient keypoints or multiple people prevent assignment"
+  },
+  "reason.interrupted": {
+    "zh-CN": "视频流中断，等待新会话",
+    "en": "Video interrupted. Waiting for a new session"
+  },
+  "reason.missing": {
+    "zh-CN": "有效画面中未观察到工位人员",
+    "en": "No worker observed in a valid frame"
   },
   "reason.mock": {
     "zh-CN": "模拟情景 {scenario}",
     "en": "Simulated scenario {scenario}"
   },
-  "error.generic": {
-    "zh-CN": "操作未完成，请重试。",
-    "en": "The operation could not be completed. Please retry."
+  "reason.moved": {
+    "zh-CN": "机位可能移动，请检查区域并重新确认",
+    "en": "Camera may have moved. inspect and confirm the regions"
   },
-  "error.BAD_REQUEST": {
-    "zh-CN": "请求参数无效，请检查输入。",
-    "en": "Invalid request. Check the inputs."
+  "reason.nearby": {
+    "zh-CN": "人员在工位区域但不在坐席区域",
+    "en": "Person is inside the station area but outside the presence zone"
   },
-  "error.SETTINGS_CONFLICT": {
-    "zh-CN": "配置已被其他页面修改，请刷新后重新保存",
-    "en": "Settings changed elsewhere. Reload before saving."
+  "reason.seated": {
+    "zh-CN": "上半身锚点位于初始坐席区域",
+    "en": "Upper-body anchor is inside the presence zone"
   },
-  "error.SETTINGS_SAVE_FAILED": {
-    "zh-CN": "保存失败，请检查存储状态后重试",
-    "en": "Save failed. Check storage and retry."
+  "reason.size": {
+    "zh-CN": "画面尺寸变化，需要重新确认区域",
+    "en": "Image size changed. Confirm the detection regions"
   },
-  "error.ACTION_UNAVAILABLE": {
-    "zh-CN": "当前状态无法执行该操作",
-    "en": "This action is unavailable in the current state"
+  "reason.stale": {
+    "zh-CN": "超过{seconds}秒无新鲜算法观测",
+    "en": "No fresh detection observation for over {seconds} seconds"
   },
-  "error.ORIGIN_REJECTED": {
-    "zh-CN": "请从本设备页面提交请求",
-    "en": "Submit requests from this device's page"
+  "reason.unknown": {
+    "zh-CN": "状态暂不可用",
+    "en": "State temporarily unavailable"
   },
-  "error.FRAME_UNAVAILABLE": {
-    "zh-CN": "当前画面暂不可用",
-    "en": "The current frame is unavailable"
+  "reason.waiting": {
+    "zh-CN": "等待算法观测",
+    "en": "Waiting for detection observations"
   },
-  "error.FRAME_EXPIRED": {
-    "zh-CN": "对应帧已过期，请重新获取",
-    "en": "The matching frame expired. Retrieve a new one."
+  "roi.area": {
+    "zh-CN": "{region}面积过小",
+    "en": "{region} has insufficient area"
   },
-  "error.NOT_FOUND": {
-    "zh-CN": "请求的内容不存在",
-    "en": "The requested resource was not found"
+  "roi.bounds": {
+    "zh-CN": "{region}坐标超出画面",
+    "en": "{region} has coordinates outside the image"
   },
-  "error.METHOD_NOT_ALLOWED": {
-    "zh-CN": "请求方式不受支持",
-    "en": "The request method is unsupported"
+  "roi.canvas": {
+    "zh-CN": "ROI区域编辑画布",
+    "en": "ROI editing canvas"
   },
-  "error.BACKEND_UNAVAILABLE": {
-    "zh-CN": "设备服务暂不可用",
-    "en": "Device service temporarily unavailable"
+  "roi.capture": {
+    "zh-CN": "重新取图",
+    "en": "Capture new frame"
   },
-  "error.language": {
-    "zh-CN": "不支持该语言，请使用 zh-CN 或 en",
-    "en": "Unsupported language. Use zh-CN or en"
+  "roi.capturing": {
+    "zh-CN": "正在获取当前相机截图…",
+    "en": "Capturing the current camera frame…"
   },
-  "error.start": {
-    "zh-CN": "需坐席在位且尚未开始会话",
-    "en": "A person must be present with no active session"
+  "roi.choose": {
+    "zh-CN": "选择编辑区域",
+    "en": "Select region"
   },
-  "error.end": {
-    "zh-CN": "当前没有进行中的会话",
-    "en": "There is no active session"
+  "roi.clear": {
+    "zh-CN": "清除本区",
+    "en": "Clear region"
   },
-  "error.review": {
-    "zh-CN": "尚无可复核会话",
-    "en": "There is no session to review"
+  "roi.confirm": {
+    "zh-CN": "确认当前区域",
+    "en": "Confirm regions"
   },
-  "error.imageSize": {
-    "zh-CN": "image_size 必须是有效原图尺寸",
-    "en": "image_size must contain valid source image dimensions"
+  "roi.confirmed": {
+    "zh-CN": "区域已在本页确认，请保存以应用到设备。",
+    "en": "Regions confirmed locally. Save to apply them to the device."
   },
-  "error.regions": {
-    "zh-CN": "必须提供工位范围 station 和在位判断区 seat",
-    "en": "Provide both station and seat regions"
+  "roi.containment": {
+    "zh-CN": "在位判断区必须位于工位范围内",
+    "en": "The presence zone must be inside the station area"
   },
-  "error.vertexNumber": {
-    "zh-CN": "{region}顶点必须为有限数字坐标",
-    "en": "{region} vertices must contain finite numeric coordinates"
+  "roi.crossing": {
+    "zh-CN": "{region}边界自交",
+    "en": "{region} has a self-intersecting boundary"
   },
-  "error.revision": {
-    "zh-CN": "revision 无效",
-    "en": "Invalid configuration revision"
+  "roi.duplicate": {
+    "zh-CN": "{region}有重复顶点",
+    "en": "{region} contains duplicate vertices"
   },
-  "error.privacy": {
-    "zh-CN": "privacy.enabled 必须是布尔值",
-    "en": "privacy.enabled must be a boolean"
+  "roi.edgeContainment": {
+    "zh-CN": "在位判断区边界必须位于工位范围内",
+    "en": "The presence zone boundary must stay inside the station area"
   },
-  "error.display": {
-    "zh-CN": "display 需要 boxes、regions、keypoints 布尔开关",
-    "en": "display requires boolean boxes, regions and keypoints switches"
+  "roi.edit": {
+    "zh-CN": "↖ 编辑顶点",
+    "en": "↖ Edit vertices"
   },
-  "error.timingRange": {
-    "zh-CN": "{field}需要有效秒数，范围 {minimum} 至86400",
-    "en": "{field} must be between {minimum} and 86400 seconds"
+  "roi.editHint": {
+    "zh-CN": "按住并拖动当前区域的顶点，微调边界。",
+    "en": "Drag a vertex of the selected region to adjust its boundary."
   },
-  "error.timingOrder": {
-    "zh-CN": "结束等待时间必须大于暂离确认时间和漏检缓冲时间",
-    "en": "End timeout must exceed absence confirmation and missed-detection grace"
+  "roi.finish": {
+    "zh-CN": "完成多边形",
+    "en": "Finish polygon"
   },
-  "error.unknownField": {
-    "zh-CN": "设置请求包含未知字段",
-    "en": "The settings request contains unknown fields"
+  "roi.needsFrame": {
+    "zh-CN": "请重新获取相机截图后确认区域。",
+    "en": "Capture a new camera frame before confirming regions."
   },
-  "error.expectedRevision": {
-    "zh-CN": "expected_revision 必须是整数",
-    "en": "expected_revision must be an integer"
+  "roi.noFullscreen": {
+    "zh-CN": "当前浏览器暂不支持全屏编辑。",
+    "en": "Fullscreen editing is unavailable in this browser."
   },
-  "error.allTiming": {
-    "zh-CN": "timing 必须包含全部五项时长",
-    "en": "timing must contain all five timing values"
+  "roi.notes": {
+    "zh-CN": "在位判断区应位于工位范围内。坐标按原图保存，缩放页面后仍与画面对齐。取图只冻结编辑画面，后台检测持续运行。",
+    "en": "Keep the presence zone inside the station area. Coordinates use the source image and stay aligned when resized. Capturing a frame freezes the editor while detection continues."
   },
-  "error.reference": {
-    "zh-CN": "reference_frame 必须是对象",
-    "en": "reference_frame must be an object"
+  "roi.offline": {
+    "zh-CN": "相机暂时离线，请连接后重新取图。",
+    "en": "Camera offline. Reconnect and capture a new frame."
   },
-  "error.staleReference": {
-    "zh-CN": "相机或截图尺寸已变化，请重新取图后保存区域",
-    "en": "Camera or frame dimensions changed. Capture a new frame before saving regions"
+  "roi.polygon": {
+    "zh-CN": "⬡ 多边形",
+    "en": "⬡ Polygon"
   },
-  "error.requestSize": {
-    "zh-CN": "请求大小无效",
-    "en": "Invalid request size"
+  "roi.polygonHint": {
+    "zh-CN": "逐点点击添加顶点，点击起点或“完成多边形”闭合区域。",
+    "en": "Click to add vertices. Click the first point or “Finish polygon” to close it."
   },
-  "error.jsonObject": {
-    "zh-CN": "需要JSON对象",
-    "en": "A JSON object is required"
+  "roi.preparing": {
+    "zh-CN": "脱敏画面正在准备，请稍后重新取图。",
+    "en": "The protected frame is being prepared. Capture again shortly."
   },
-  "config.saveSection": {
-    "zh-CN": "保存设置",
-    "en": "Save settings"
+  "roi.rectangle": {
+    "zh-CN": "▭ 矩形",
+    "en": "▭ Rectangle"
   },
-  "config.eyebrow": {
-    "zh-CN": "设备设置",
-    "en": "DEVICE SETTINGS"
+  "roi.rectangleHint": {
+    "zh-CN": "在画面上按住并拖动，绘制矩形区域。支持鼠标与触摸。",
+    "en": "Press and drag to draw a rectangle. Mouse and touch are supported."
+  },
+  "roi.revisionChanged": {
+    "zh-CN": "配置刚刚变化，请刷新配置后重新取图。",
+    "en": "Configuration changed. Reload settings and capture a new frame."
+  },
+  "roi.saveNeedsFrame": {
+    "zh-CN": "请重新获取相机截图，再保存区域。",
+    "en": "Capture a new camera frame before saving regions."
+  },
+  "roi.seat": {
+    "zh-CN": "在位判断区",
+    "en": "Presence zone"
+  },
+  "roi.seatHelp": {
+    "zh-CN": "圈出上半身判断点应落入的区域，用于当前在位开工判断。该区域应位于工位范围内。",
+    "en": "Outline where the upper-body anchor should fall to confirm presence. Keep this zone inside the station area."
+  },
+  "roi.sizeChanged": {
+    "zh-CN": "画面尺寸变化，请重新划定两个区域。",
+    "en": "Image size changed. Redraw both regions."
+  },
+  "roi.station": {
+    "zh-CN": "工位范围",
+    "en": "Station area"
+  },
+  "roi.stationHelp": {
+    "zh-CN": "圈出本工位的完整活动范围，包含人员站起与附近活动的位置。",
+    "en": "Outline the full workstation area, including standing and nearby activity."
   },
   "roi.step": {
     "zh-CN": "01 / 场景",
     "en": "01 / SCENE"
   },
-  "display.step": {
-    "zh-CN": "02 / 显示",
-    "en": "02 / DISPLAY"
+  "roi.streamChanged": {
+    "zh-CN": "相机连接已变化，请重新取图。",
+    "en": "Camera connection changed. Capture a new frame."
   },
-  "timing.step": {
-    "zh-CN": "04 / 时长",
-    "en": "04 / TIMING"
+  "roi.title": {
+    "zh-CN": "划定检测区域",
+    "en": "Define detection regions"
   },
-  "mock.algorithm": {
-    "zh-CN": "算法异常",
-    "en": "Detection error"
+  "roi.tools": {
+    "zh-CN": "绘图工具",
+    "en": "Drawing tools"
   },
-  "mock.moved": {
-    "zh-CN": "机位变化",
-    "en": "Camera moved"
+  "roi.undo": {
+    "zh-CN": "撤销",
+    "en": "Undo"
+  },
+  "roi.unfinished": {
+    "zh-CN": "请先完成或取消正在绘制的多边形。",
+    "en": "Finish or cancel the current polygon first."
+  },
+  "roi.vertexCount": {
+    "zh-CN": "{region}需要3至32个顶点",
+    "en": "{region} requires 3 to 32 vertices"
+  },
+  "roi.vertices": {
+    "zh-CN": "{count}个顶点",
+    "en": "{count} vertices"
+  },
+  "roi.waiting": {
+    "zh-CN": "等待相机画面",
+    "en": "Waiting for camera frame"
+  },
+  "session.autoStart": {
+    "zh-CN": "连续在位 {seconds} 秒后自动开始",
+    "en": "Starts after {seconds} seconds of continuous presence"
+  },
+  "session.endedAt": {
+    "zh-CN": " · 结束 {time}",
+    "en": " · Ended {time}"
+  },
+  "session.label": {
+    "zh-CN": "工作会话计时",
+    "en": "Work session timer"
+  },
+  "session.loading": {
+    "zh-CN": "正在加载观测",
+    "en": "Loading observation"
+  },
+  "session.pending": {
+    "zh-CN": "待确认",
+    "en": "Pending"
+  },
+  "session.rest": {
+    "zh-CN": "休息",
+    "en": "Break"
+  },
+  "session.started": {
+    "zh-CN": "开始 {time}",
+    "en": "Started {time}"
+  },
+  "session.state": {
+    "zh-CN": "当前状态",
+    "en": "Current state"
+  },
+  "session.syncPending": {
+    "zh-CN": "计时状态待同步",
+    "en": "Waiting to synchronize timing"
+  },
+  "session.unknown": {
+    "zh-CN": "未知",
+    "en": "Unknown"
+  },
+  "session.waitObservation": {
+    "zh-CN": "等待观测",
+    "en": "Waiting for observation"
+  },
+  "session.waitStart": {
+    "zh-CN": "等待自动开始",
+    "en": "Waiting for automatic start"
+  },
+  "session.workTime": {
+    "zh-CN": "本次工作时间",
+    "en": "Session work time"
+  },
+  "setup.required": {
+    "zh-CN": "请先配置检测区域",
+    "en": "Set up regions"
+  },
+  "source.busy": {
+    "zh-CN": "已有连接测试正在进行，请稍后重试。",
+    "en": "A connection test is in progress. Try again shortly."
+  },
+  "source.codec": {
+    "zh-CN": "视频编码",
+    "en": "Video codec"
+  },
+  "source.connectionFailed": {
+    "zh-CN": "无法读取摄像头画面，请检查地址、凭据、编码、网络及连接数限制。原摄像头配置保留。",
+    "en": "Unable to read a frame. Check the URL, credentials, codec, network and connection limit. The previous source is retained."
+  },
+  "source.device": {
+    "zh-CN": "USB 设备",
+    "en": "USB device"
+  },
+  "source.format": {
+    "zh-CN": "采集格式",
+    "en": "Capture format"
+  },
+  "source.help": {
+    "zh-CN": "选择摄像头并测试连接，通过后点击保存并切换。切换会结束当前会话并重置区域草稿，需要重新确认检测区域。",
+    "en": "Choose a camera and test the connection, then save to switch. Switching ends the current session, resets the ROI draft and requires region confirmation."
+  },
+  "source.invalid": {
+    "zh-CN": "摄像头参数无效，请检查地址、类型和编码。",
+    "en": "Invalid camera settings. Check the URL, type and codec."
+  },
+  "source.needsTest": {
+    "zh-CN": "配置已修改，请先测试连接。",
+    "en": "Input changed. Test the connection first."
+  },
+  "source.networkHelp": {
+    "zh-CN": "网络摄像头需与设备网络互通，PoE 供电由交换机或供电器提供。测试失败请检查地址、凭据、编码和摄像头连接数限制。",
+    "en": "IP cameras need network connectivity to this device. Use a PoE switch or injector for power. If testing fails, check the URL, credentials, codec and camera connection limit."
+  },
+  "source.noUsb": {
+    "zh-CN": "未发现可用的 USB 摄像头，请插入设备后刷新。",
+    "en": "No supported USB camera found. Connect one and refresh."
+  },
+  "source.otherDraft": {
+    "zh-CN": "请先保存或取消隐私、显示、时长及检测参数修改，再切换摄像头。",
+    "en": "Save or cancel privacy, display, timing and detection parameter changes before switching cameras."
+  },
+  "source.password": {
+    "zh-CN": "密码",
+    "en": "Password"
+  },
+  "source.passwordHelp": {
+    "zh-CN": "同一地址和用户名，密码留空保留原密码。",
+    "en": "Leave blank to keep the password for the same URL and username."
+  },
+  "source.refresh": {
+    "zh-CN": "刷新设备",
+    "en": "Refresh devices"
+  },
+  "source.roiRequired": {
+    "zh-CN": "请在新摄像头画面上重新划定并保存检测区域，确认后恢复自动计时。",
+    "en": "Draw and save detection regions for the new camera to resume automatic timing."
+  },
+  "source.rtsp": {
+    "zh-CN": "网络 / PoE 摄像头（RTSP）",
+    "en": "IP / PoE camera (RTSP)"
+  },
+  "source.save": {
+    "zh-CN": "保存并切换摄像头",
+    "en": "Save and switch camera"
+  },
+  "source.separateSave": {
+    "zh-CN": "请单独保存摄像头配置，其他设置请分别保存。",
+    "en": "Save the camera source separately from other settings."
+  },
+  "source.step": {
+    "zh-CN": "00 / 摄像头",
+    "en": "00 / CAMERA"
+  },
+  "source.switched": {
+    "zh-CN": "摄像头已保存，请重新确认检测区域。",
+    "en": "Camera saved. Confirm the detection regions."
+  },
+  "source.switching": {
+    "zh-CN": "正在切换摄像头…",
+    "en": "Switching camera…"
+  },
+  "source.test": {
+    "zh-CN": "测试连接",
+    "en": "Test connection"
+  },
+  "source.testExpired": {
+    "zh-CN": "连接测试已过期或参数已修改，请重新测试。",
+    "en": "The test expired or the input changed. Test again."
+  },
+  "source.testPassed": {
+    "zh-CN": "连接成功，画面 {width} × {height}，请在90秒内保存切换。",
+    "en": "Connected at {width} × {height}. Save within 90 seconds to switch."
+  },
+  "source.testing": {
+    "zh-CN": "正在读取候选摄像头画面…",
+    "en": "Reading a frame from the candidate camera…"
+  },
+  "source.title": {
+    "zh-CN": "摄像头接入",
+    "en": "Camera input"
+  },
+  "source.type": {
+    "zh-CN": "摄像头类型",
+    "en": "Camera type"
+  },
+  "source.url": {
+    "zh-CN": "RTSP 地址",
+    "en": "RTSP URL"
+  },
+  "source.usb": {
+    "zh-CN": "USB 摄像头",
+    "en": "USB camera"
+  },
+  "source.usbUnavailable": {
+    "zh-CN": "USB 设备或采集格式不可用，请刷新设备列表。",
+    "en": "USB device or format unavailable. Refresh the device list."
+  },
+  "source.username": {
+    "zh-CN": "用户名",
+    "en": "Username"
+  },
+  "state.away": {
+    "zh-CN": "暂离确认中",
+    "en": "Confirming absence"
+  },
+  "state.done": {
+    "zh-CN": "会话已结束",
+    "en": "Session ended"
+  },
+  "state.idle": {
+    "zh-CN": "等待开工",
+    "en": "Waiting to start"
   },
   "state.reconfirm": {
     "zh-CN": "区域待确认",
     "en": "Confirm regions"
   },
-  "v4.platform": {
-    "zh-CN": "基于 NVIDIA Jetson 的工业边缘计算",
-    "en": "Industrial Edge Computing · NVIDIA Jetson"
+  "state.rest": {
+    "zh-CN": "休息中",
+    "en": "On break"
   },
-  "v4.modelMemory": {
-    "zh-CN": "16GB · 边缘计算",
-    "en": "16GB · Edge computing"
+  "state.start": {
+    "zh-CN": "开工确认中",
+    "en": "Confirming start"
   },
-  "v4.gpu": {
-    "zh-CN": "GPU",
-    "en": "GPU"
+  "state.unknown": {
+    "zh-CN": "观测未知",
+    "en": "Observation unknown"
   },
-  "v4.cpu": {
-    "zh-CN": "CPU",
-    "en": "CPU"
-  },
-  "v4.memory": {
-    "zh-CN": "内存",
-    "en": "Memory"
-  },
-  "v4.temperature": {
-    "zh-CN": "温度",
-    "en": "Temp"
-  },
-  "v4.metricsUnavailable": {
-    "zh-CN": "尚未接入设备指标采集",
-    "en": "Device telemetry is not connected"
-  },
-  "v4.showcase": {
-    "zh-CN": "展示模式",
-    "en": "Showcase"
-  },
-  "v4.exitShowcase": {
-    "zh-CN": "退出展示",
-    "en": "Exit showcase"
-  },
-  "v4.workspace": {
-    "zh-CN": "工位智能监控",
-    "en": "WORKSTATION INTELLIGENCE"
-  },
-  "v4.monitor": {
-    "zh-CN": "实时监控",
-    "en": "Live monitor"
-  },
-  "v4.stats": {
-    "zh-CN": "会话统计",
-    "en": "Session statistics"
-  },
-  "v4.station": {
-    "zh-CN": "工位配置",
-    "en": "Workstation setup"
-  },
-  "v4.localCompute": {
-    "zh-CN": "本地推理 · 现场计时",
-    "en": "Local inference · On-site timing"
-  },
-  "v4.stationCamera": {
-    "zh-CN": "工位相机",
-    "en": "Workstation camera"
-  },
-  "v4.countedTime": {
-    "zh-CN": "累计工时",
-    "en": "COUNTED WORK TIME"
-  },
-  "v4.noSession": {
-    "zh-CN": "等待会话",
-    "en": "Awaiting session"
-  },
-  "v4.currentSession": {
-    "zh-CN": "当前会话",
-    "en": "Current session"
-  },
-  "v4.lastSession": {
-    "zh-CN": "最近结束会话",
-    "en": "Last completed session"
-  },
-  "v4.presenceRule": {
-    "zh-CN": "按在位规则统计",
-    "en": "Counted by presence rules"
-  },
-  "v4.work": {
-    "zh-CN": "工作",
-    "en": "Work"
-  },
-  "v4.rest": {
-    "zh-CN": "休息 / 离位",
-    "en": "Rest / Away"
-  },
-  "v4.inputInfo": {
-    "zh-CN": "{width} × {height} · 输入 {fps} FPS",
-    "en": "{width} × {height} · Input {fps} FPS"
-  },
-  "v4.outputInfo": {
-    "zh-CN": "实际输出 {fps} FPS",
-    "en": "Actual output {fps} FPS"
-  },
-  "v4.fpsValue": {
-    "zh-CN": "{value} FPS",
-    "en": "{value} FPS"
-  },
-  "v4.msValue": {
-    "zh-CN": "{value} ms",
-    "en": "{value} ms"
-  },
-  "v4.percent": {
-    "zh-CN": "{value}%",
-    "en": "{value}%"
-  },
-  "v4.timeline": {
-    "zh-CN": "工位活动时间轴",
-    "en": "Work activity timeline"
-  },
-  "v4.timelineUnavailable": {
-    "zh-CN": "时间段明细尚未接入",
-    "en": "Time segment data is not connected"
-  },
-  "v4.timelineHint": {
-    "zh-CN": "现有接口提供会话累计时长",
-    "en": "The current API provides session totals"
-  },
-  "v4.health": {
-    "zh-CN": "系统运行状态",
-    "en": "System health"
-  },
-  "v4.outputFps": {
-    "zh-CN": "输出帧率",
-    "en": "Output FPS"
-  },
-  "v4.processing": {
-    "zh-CN": "本地处理耗时",
-    "en": "Local processing"
-  },
-  "v4.observationAge": {
-    "zh-CN": "观测年龄",
-    "en": "Observation age"
-  },
-  "v4.healthNote": {
-    "zh-CN": "历史时间段待接入",
-    "en": "Historical time segments are not connected"
-  },
-  "v4.sessionOnly": {
-    "zh-CN": "统计范围为当前会话或最近一次已结束会话。",
-    "en": "Statistics cover the current session or the last completed session."
-  },
-  "video.exitFullscreen": {
-    "zh-CN": "退出全屏",
-    "en": "Exit fullscreen"
-  },
-  "v4.uptime": {
-    "zh-CN": "设备运行时长",
-    "en": "Device uptime"
-  },
-  "system.unavailable": {
-    "zh-CN": "设备指标读取中或暂不可用，约每2秒刷新",
-    "en": "Device metric is loading or unavailable. Refreshes about every 2 seconds."
+  "state.working": {
+    "zh-CN": "工作中",
+    "en": "Working"
   },
   "system.cpuHint": {
     "zh-CN": "设备全部CPU核心的总体使用率，约每2秒刷新",
@@ -1223,176 +1215,360 @@
     "zh-CN": "CPU、GPU及SoC片上传感器中的最高温度，约每2秒刷新",
     "en": "Highest on-chip CPU, GPU or SoC sensor temperature. Refreshes about every 2 seconds."
   },
-  "source.step": {
-    "zh-CN": "00 / 摄像头",
-    "en": "00 / CAMERA"
+  "system.unavailable": {
+    "zh-CN": "设备指标读取中或暂不可用，约每2秒刷新",
+    "en": "Device metric is loading or unavailable. Refreshes about every 2 seconds."
   },
-  "source.title": {
-    "zh-CN": "摄像头接入",
-    "en": "Camera input"
+  "timing.age": {
+    "zh-CN": "算法观测有效时间",
+    "en": "Observation validity window"
   },
-  "source.help": {
-    "zh-CN": "选择摄像头并测试连接，通过后点击保存并切换。切换会结束当前会话并重置区域草稿，需要重新确认检测区域。",
-    "en": "Choose a camera and test the connection, then save to switch. Switching ends the current session, resets the ROI draft and requires region confirmation."
+  "timing.ageHelp": {
+    "zh-CN": "超过此时间的旧结果按未知处理",
+    "en": "Older results are treated as unknown"
   },
-  "source.type": {
-    "zh-CN": "摄像头类型",
-    "en": "Camera type"
+  "timing.away": {
+    "zh-CN": "暂离待确认时间",
+    "en": "Absence confirmation time"
   },
-  "source.rtsp": {
-    "zh-CN": "网络 / PoE 摄像头（RTSP）",
-    "en": "IP / PoE camera (RTSP)"
+  "timing.awayHelp": {
+    "zh-CN": "期内返回补计工作，超时改计休息",
+    "en": "Return within the window to count as work. Otherwise count as break"
   },
-  "source.usb": {
-    "zh-CN": "USB 摄像头",
-    "en": "USB camera"
+  "timing.defaults": {
+    "zh-CN": "恢复默认",
+    "en": "Restore defaults"
   },
-  "source.url": {
-    "zh-CN": "RTSP 地址",
-    "en": "RTSP URL"
+  "timing.grace": {
+    "zh-CN": "短时漏检缓冲时间",
+    "en": "Missed-detection grace period"
   },
-  "source.username": {
-    "zh-CN": "用户名",
-    "en": "Username"
+  "timing.graceHelp": {
+    "zh-CN": "对短时遮挡或检测缺失的缓冲",
+    "en": "Buffer for brief occlusion or missed detections"
   },
-  "source.password": {
-    "zh-CN": "密码",
-    "en": "Password"
+  "timing.help": {
+    "zh-CN": "连续在位 {start_seconds} 秒后确认开工。暂离确认期为 {short_away_seconds} 秒，期间返回会补计工作时间。连续未观察到人员 {stop_absent_seconds} 秒后结束会话。短时漏检缓冲 {missing_grace_seconds} 秒，观测有效时间 {max_observation_age} 秒。",
+    "en": "Start is confirmed after {start_seconds} seconds of presence. Returning within the {short_away_seconds}-second absence window counts that period as work. End after {stop_absent_seconds} seconds without observing a person. Missed-detection grace is {missing_grace_seconds} seconds. Observation validity is {max_observation_age} seconds."
   },
-  "source.passwordHelp": {
-    "zh-CN": "同一地址和用户名，密码留空保留原密码。",
-    "en": "Leave blank to keep the password for the same URL and username."
+  "timing.invalid": {
+    "zh-CN": "请检查检测时长输入。",
+    "en": "Check the timing values."
   },
-  "source.codec": {
-    "zh-CN": "视频编码",
-    "en": "Video codec"
+  "timing.note": {
+    "zh-CN": "当前规则下，暂离确认期内返回会补计工作时间；超过确认期，整段暂离计为休息。这里调整的是现有规则的时间参数。",
+    "en": "Returning during the absence confirmation window counts that period as work. After the window, the entire absence counts as break. These fields adjust the timing parameters."
   },
-  "source.device": {
-    "zh-CN": "USB 设备",
-    "en": "USB device"
+  "timing.seconds": {
+    "zh-CN": "秒",
+    "en": "s"
   },
-  "source.format": {
-    "zh-CN": "采集格式",
-    "en": "Capture format"
+  "timing.settlement": {
+    "zh-CN": "暂离时间如何结算",
+    "en": "How absence time is settled"
   },
-  "source.refresh": {
-    "zh-CN": "刷新设备",
-    "en": "Refresh devices"
+  "timing.start": {
+    "zh-CN": "开工连续确认时间",
+    "en": "Continuous start confirmation"
   },
-  "source.networkHelp": {
-    "zh-CN": "网络摄像头需与设备网络互通，PoE 供电由交换机或供电器提供。测试失败请检查地址、凭据、编码和摄像头连接数限制。",
-    "en": "IP cameras need network connectivity to this device. Use a PoE switch or injector for power. If testing fails, check the URL, credentials, codec and camera connection limit."
+  "timing.startHelp": {
+    "zh-CN": "在位持续满足多久后自动开工",
+    "en": "Continuous presence required before starting"
   },
-  "source.test": {
-    "zh-CN": "测试连接",
-    "en": "Test connection"
+  "timing.step": {
+    "zh-CN": "04 / 时长",
+    "en": "04 / TIMING"
   },
-  "source.save": {
-    "zh-CN": "保存并切换摄像头",
-    "en": "Save and switch camera"
+  "timing.stop": {
+    "zh-CN": "会话结束等待时间",
+    "en": "Session end timeout"
   },
-  "source.needsTest": {
-    "zh-CN": "配置已修改，请先测试连接。",
-    "en": "Input changed. Test the connection first."
+  "timing.stopHelp": {
+    "zh-CN": "持续未观察到人员多久后结束会话",
+    "en": "Unobserved duration before ending a session"
   },
-  "source.testing": {
-    "zh-CN": "正在读取候选摄像头画面…",
-    "en": "Reading a frame from the candidate camera…"
+  "timing.title": {
+    "zh-CN": "检测与计时规则",
+    "en": "Detection and timing rules"
   },
-  "source.testPassed": {
-    "zh-CN": "连接成功，画面 {width} × {height}，请在90秒内保存切换。",
-    "en": "Connected at {width} × {height}. Save within 90 seconds to switch."
+  "v4.countedTime": {
+    "zh-CN": "累计工时",
+    "en": "COUNTED WORK TIME"
   },
-  "source.switching": {
-    "zh-CN": "正在切换摄像头…",
-    "en": "Switching camera…"
+  "v4.cpu": {
+    "zh-CN": "CPU",
+    "en": "CPU"
   },
-  "source.switched": {
-    "zh-CN": "摄像头已保存，请重新确认检测区域。",
-    "en": "Camera saved. Confirm the detection regions."
+  "v4.currentSession": {
+    "zh-CN": "当前会话",
+    "en": "Current session"
   },
-  "source.roiRequired": {
-    "zh-CN": "请在新摄像头画面上重新划定并保存检测区域，确认后恢复自动计时。",
-    "en": "Draw and save detection regions for the new camera to resume automatic timing."
+  "v4.exitShowcase": {
+    "zh-CN": "退出展示",
+    "en": "Exit showcase"
   },
-  "source.noUsb": {
-    "zh-CN": "未发现可用的 USB 摄像头，请插入设备后刷新。",
-    "en": "No supported USB camera found. Connect one and refresh."
+  "v4.fpsValue": {
+    "zh-CN": "{value} FPS",
+    "en": "{value} FPS"
   },
-  "source.invalid": {
-    "zh-CN": "摄像头参数无效，请检查地址、类型和编码。",
-    "en": "Invalid camera settings. Check the URL, type and codec."
+  "v4.gpu": {
+    "zh-CN": "GPU",
+    "en": "GPU"
   },
-  "source.connectionFailed": {
-    "zh-CN": "无法读取摄像头画面，请检查地址、凭据、编码、网络及连接数限制。原摄像头配置保留。",
-    "en": "Unable to read a frame. Check the URL, credentials, codec, network and connection limit. The previous source is retained."
+  "v4.health": {
+    "zh-CN": "系统运行状态",
+    "en": "System health"
   },
-  "source.usbUnavailable": {
-    "zh-CN": "USB 设备或采集格式不可用，请刷新设备列表。",
-    "en": "USB device or format unavailable. Refresh the device list."
+  "v4.healthNote": {
+    "zh-CN": "历史时间段待接入",
+    "en": "Historical time segments are not connected"
   },
-  "source.busy": {
-    "zh-CN": "已有连接测试正在进行，请稍后重试。",
-    "en": "A connection test is in progress. Try again shortly."
+  "v4.inputInfo": {
+    "zh-CN": "{width} × {height} · 输入 {fps} FPS",
+    "en": "{width} × {height} · Input {fps} FPS"
   },
-  "source.testExpired": {
-    "zh-CN": "连接测试已过期或参数已修改，请重新测试。",
-    "en": "The test expired or the input changed. Test again."
+  "v4.lastSession": {
+    "zh-CN": "最近结束会话",
+    "en": "Last completed session"
   },
-  "source.separateSave": {
-    "zh-CN": "请单独保存摄像头配置，其他设置请分别保存。",
-    "en": "Save the camera source separately from other settings."
+  "v4.localCompute": {
+    "zh-CN": "本地推理 · 现场计时",
+    "en": "Local inference · On-site timing"
   },
-  "source.otherDraft": {
-    "zh-CN": "请先保存或取消隐私、显示、时长及检测参数修改，再切换摄像头。",
-    "en": "Save or cancel privacy, display, timing and detection parameter changes before switching cameras."
+  "v4.memory": {
+    "zh-CN": "内存",
+    "en": "Memory"
   },
-  "detection.step": {
-    "zh-CN": "03 / 检测",
-    "en": "03 / DETECTION"
+  "v4.metricsUnavailable": {
+    "zh-CN": "尚未接入设备指标采集",
+    "en": "Device telemetry is not connected"
   },
-  "detection.title": {
-    "zh-CN": "检测参数",
-    "en": "Detection parameters"
+  "v4.modelMemory": {
+    "zh-CN": "16GB · 边缘计算",
+    "en": "16GB · Edge computing"
   },
-  "detection.person": {
-    "zh-CN": "人体置信度",
-    "en": "Person confidence"
+  "v4.monitor": {
+    "zh-CN": "实时监控",
+    "en": "Live monitor"
   },
-  "detection.personHelp": {
-    "zh-CN": "仅分数达到阈值的人体结果参与计时与人体框显示。范围 0.10–1.00。",
-    "en": "Only person detections at or above this score contribute to timing and person boxes. Range 0.10–1.00."
+  "v4.msValue": {
+    "zh-CN": "{value} ms",
+    "en": "{value} ms"
   },
-  "detection.keypoint": {
-    "zh-CN": "关键点置信度",
-    "en": "Keypoint confidence"
+  "v4.noSession": {
+    "zh-CN": "等待会话",
+    "en": "Awaiting session"
   },
-  "detection.keypointHelp": {
-    "zh-CN": "仅分数达到阈值的关键点参与在位判断和姿态显示。当前提取流程支持的范围为 0.25–1.00。",
-    "en": "Only keypoints at or above this score contribute to presence decisions and pose display. The extraction pipeline supports 0.25–1.00."
+  "v4.observationAge": {
+    "zh-CN": "观测年龄",
+    "en": "Observation age"
   },
-  "detection.noteTitle": {
-    "zh-CN": "按场景调整筛选严格程度",
-    "en": "Adjust filtering for your scene"
+  "v4.outputFps": {
+    "zh-CN": "输出帧率",
+    "en": "Output FPS"
   },
-  "detection.note": {
-    "zh-CN": "调高阈值会过滤更多低分结果，也可能漏掉远处、侧身或遮挡人员。参数影响计时与检测标注，隐私马赛克使用独立的保守候选。保存后结算当前会话并重新确认开工。",
-    "en": "Higher thresholds filter more low-score results and can miss distant, side-facing or occluded people. These controls affect timing and detection overlays. Privacy mosaics use independent conservative candidates. Saving settles the current session and restarts work confirmation."
+  "v4.outputInfo": {
+    "zh-CN": "实际输出 {fps} FPS",
+    "en": "Actual output {fps} FPS"
   },
-  "detection.invalidInput": {
-    "zh-CN": "人体置信度范围为 0.10–1.00，关键点置信度范围为 0.25–1.00，请填写有效数值。",
-    "en": "Enter valid numbers. Person confidence must be 0.10–1.00 and keypoint confidence must be 0.25–1.00."
+  "v4.percent": {
+    "zh-CN": "{value}%",
+    "en": "{value}%"
   },
-  "detection.invalid": {
-    "zh-CN": "检测置信度需在允许范围内，最低为 {minimum}，最高为 1.00。",
-    "en": "Detection confidence must be within the supported range, from {minimum} to 1.00."
+  "v4.platform": {
+    "zh-CN": "基于 NVIDIA Jetson 的工业边缘计算",
+    "en": "Industrial Edge Computing · NVIDIA Jetson"
   },
-  "detection.invalidPrivacy": {
-    "zh-CN": "隐私定位阈值配置无效，请检查设备配置。",
-    "en": "Invalid privacy localization threshold. Check the device configuration."
+  "v4.presenceRule": {
+    "zh-CN": "按在位规则统计",
+    "en": "Counted by presence rules"
   },
-  "detection.allFields": {
-    "zh-CN": "需要同时提交人体与关键点置信度。",
-    "en": "Submit both person and keypoint confidence values."
+  "v4.processing": {
+    "zh-CN": "本地处理耗时",
+    "en": "Local processing"
+  },
+  "v4.rest": {
+    "zh-CN": "休息 / 离位",
+    "en": "Rest / Away"
+  },
+  "v4.sessionOnly": {
+    "zh-CN": "统计范围为当前会话或最近一次已结束会话。",
+    "en": "Statistics cover the current session or the last completed session."
+  },
+  "v4.showcase": {
+    "zh-CN": "展示模式",
+    "en": "Showcase"
+  },
+  "v4.station": {
+    "zh-CN": "工位配置",
+    "en": "Workstation setup"
+  },
+  "v4.stationCamera": {
+    "zh-CN": "工位相机",
+    "en": "Workstation camera"
+  },
+  "v4.stats": {
+    "zh-CN": "会话统计",
+    "en": "Session statistics"
+  },
+  "v4.temperature": {
+    "zh-CN": "温度",
+    "en": "Temp"
+  },
+  "v4.timeline": {
+    "zh-CN": "工位活动时间轴",
+    "en": "Work activity timeline"
+  },
+  "v4.timelineHint": {
+    "zh-CN": "现有接口提供会话累计时长",
+    "en": "The current API provides session totals"
+  },
+  "v4.timelineUnavailable": {
+    "zh-CN": "时间段明细尚未接入",
+    "en": "Time segment data is not connected"
+  },
+  "v4.uptime": {
+    "zh-CN": "设备运行时长",
+    "en": "Device uptime"
+  },
+  "v4.work": {
+    "zh-CN": "工作",
+    "en": "Work"
+  },
+  "v4.workspace": {
+    "zh-CN": "工位智能监控",
+    "en": "WORKSTATION INTELLIGENCE"
+  },
+  "video.alt": {
+    "zh-CN": "工位相机实时画面",
+    "en": "Live station camera video"
+  },
+  "video.background": {
+    "zh-CN": "后台检测与计时持续运行",
+    "en": "Detection and timing continue in the background"
+  },
+  "video.camera": {
+    "zh-CN": "工位相机 / 01",
+    "en": "Station camera / 01"
+  },
+  "video.connectingRTC": {
+    "zh-CN": "正在连接低延迟视频…",
+    "en": "Connecting low-latency video…"
+  },
+  "video.exitFullscreen": {
+    "zh-CN": "退出全屏",
+    "en": "Exit fullscreen"
+  },
+  "video.fullscreen": {
+    "zh-CN": "全屏",
+    "en": "Fullscreen"
+  },
+  "video.live": {
+    "zh-CN": "实时画面",
+    "en": "Live video"
+  },
+  "video.lowBandwidth": {
+    "zh-CN": "低带宽预览 · MJPEG",
+    "en": "Low-bandwidth preview · MJPEG"
+  },
+  "video.noFullscreen": {
+    "zh-CN": "当前浏览器暂不支持全屏",
+    "en": "Fullscreen is unavailable in this browser"
+  },
+  "video.pause": {
+    "zh-CN": "暂停画面",
+    "en": "Pause video"
+  },
+  "video.paused": {
+    "zh-CN": "画面已暂停",
+    "en": "Video paused"
+  },
+  "video.resume": {
+    "zh-CN": "继续画面",
+    "en": "Resume video"
+  },
+  "video.snapshot": {
+    "zh-CN": "截图",
+    "en": "Snapshot"
+  },
+  "video.waiting": {
+    "zh-CN": "等待画面",
+    "en": "Waiting for video"
+  },
+  "video.webrtcStats": {
+    "zh-CN": "WebRTC · {quality} · {fps} FPS · {kbps} Kbps · RTT {rtt} ms · 缓冲 {buffer} ms",
+    "en": "WebRTC · {quality} · {fps} FPS · {kbps} Kbps · RTT {rtt} ms · Buffer {buffer} ms"
+  },
+  "visualization.anchor": {
+    "zh-CN": "在位判断点",
+    "en": "Presence anchor"
+  },
+  "visualization.help": {
+    "zh-CN": "分别设置区域、人物与姿态颜色。预览后点击保存并应用。",
+    "en": "Choose colors for regions, people and pose. Preview, then save to apply."
+  },
+  "visualization.invalid": {
+    "zh-CN": "配色或不透明度无效，请重新选择。",
+    "en": "Invalid colors or opacity. Choose valid values."
+  },
+  "visualization.keypoint": {
+    "zh-CN": "骨骼关键点",
+    "en": "Keypoints"
+  },
+  "visualization.person": {
+    "zh-CN": "人物检测框",
+    "en": "Person boxes"
+  },
+  "visualization.preview": {
+    "zh-CN": "标注配色预览",
+    "en": "Annotation color preview"
+  },
+  "visualization.seat": {
+    "zh-CN": "在位判断区",
+    "en": "Presence zone"
+  },
+  "visualization.seatOpacity": {
+    "zh-CN": "在位区蒙版不透明度",
+    "en": "Presence overlay opacity"
+  },
+  "visualization.skeleton": {
+    "zh-CN": "骨架连线",
+    "en": "Skeleton lines"
+  },
+  "visualization.station": {
+    "zh-CN": "工位范围",
+    "en": "Station area"
+  },
+  "visualization.stationOpacity": {
+    "zh-CN": "工位蒙版不透明度",
+    "en": "Station overlay opacity"
+  },
+  "visualization.title": {
+    "zh-CN": "标注配色",
+    "en": "Annotation colors"
+  },
+  "display.station": {
+    "zh-CN": "显示工位范围",
+    "en": "Show station area"
+  },
+  "display.seat": {
+    "zh-CN": "显示在位判断区",
+    "en": "Show presence zone"
+  },
+  "display.stationHelp": {
+    "zh-CN": "工位范围蒙版、边界及名称",
+    "en": "Station overlay, boundary and label"
+  },
+  "display.seatHelp": {
+    "zh-CN": "在位判断区蒙版、边界及名称",
+    "en": "Presence overlay, boundary and label"
+  },
+  "video.hd": {
+    "zh-CN": "高清",
+    "en": "HD"
+  },
+  "video.fluent": {
+    "zh-CN": "流畅",
+    "en": "Fluent"
   }
 }

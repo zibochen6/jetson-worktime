@@ -45,9 +45,14 @@ class VideoReader:
         self.sample_error = None
         self.closed = False
         self.rtsp = rtsp
+        self.codec = codec
+        self.selected_stream = None
+        self.rtp_links = {}
+        self.extra_ssrc_links = 0
         self.live = rtsp or usb_format is not None
         if rtsp:
-            prefix = f'rtspsrc name=source protocols=tcp latency=100 ! application/x-rtp,media=video,encoding-name={codec.upper()} ! rtp{codec}depay'
+            prefix = ('rtspsrc name=source protocols=tcp latency=100 ! rtpfunnel name=video_funnel '
+                      f'! application/x-rtp,media=video,encoding-name={codec.upper()},clock-rate=90000 ! rtp{codec}depay')
             decoder = f'{codec}parse ! nvv4l2decoder ! nvvidconv'
         elif usb_format:
             prefix = 'v4l2src name=source do-timestamp=true'
@@ -72,7 +77,9 @@ class VideoReader:
         source_element = self.pipeline.get_by_name('source')
         source_element.set_property('device' if usb_format else 'location', source)
         if rtsp:
-            source_element.connect('select-stream', lambda element, index, caps: select_video_stream(caps, codec))
+            source_element.connect('select-stream', self._select_stream)
+            source_element.connect('pad-added', self._link_rtsp_pad)
+            source_element.connect('pad-removed', self._unlink_rtsp_pad)
         if record_path:
             self.pipeline.get_by_name('rec').set_property('location', record_path)
         self.sink = self.pipeline.get_by_name('sink')
@@ -81,6 +88,40 @@ class VideoReader:
             self.sink.connect('new-sample', self._on_sample)
         if self.pipeline.set_state(Gst.State.PLAYING) == Gst.StateChangeReturn.FAILURE:
             self.close(); raise RuntimeError('pipeline start failed')
+
+    def _select_stream(self, source, index, caps):
+        if not select_video_stream(caps, self.codec):
+            return False
+        if self.selected_stream is None:
+            self.selected_stream = index
+        return self.selected_stream == index
+
+    def _link_rtsp_pad(self, source, pad):
+        # parse_launch connects the first RTP pad. This camera also introduces
+        # another SSRC in the selected track, which needs its own funnel input.
+        if self.closed or pad.is_linked():
+            return
+        caps = pad.get_current_caps() or pad.query_caps(None)
+        if caps is None or not select_video_stream(caps, self.codec):
+            return
+        funnel = self.pipeline.get_by_name('video_funnel')
+        sink = funnel.request_pad_simple('sink_%u')
+        if sink is None:
+            self.sample_error = 'unable to allocate RTP funnel input'
+            return
+        if pad.link(sink) != Gst.PadLinkReturn.OK:
+            funnel.release_request_pad(sink)
+            self.sample_error = 'unable to link selected RTP source'
+            return
+        self.rtp_links[pad.name] = (funnel, sink)
+        self.extra_ssrc_links += 1
+
+    def _unlink_rtsp_pad(self, source, pad):
+        link = self.rtp_links.pop(pad.name, None)
+        if link is not None:
+            funnel, sink = link
+            pad.unlink(sink)
+            funnel.release_request_pad(sink)
 
     def _unpack(self, sample):
         buffer = sample.get_buffer(); info = GstVideo.VideoInfo.new_from_caps(sample.get_caps())
@@ -160,6 +201,11 @@ class VideoReader:
         if self.pipeline.get_by_name('rec'):
             self.pipeline.send_event(Gst.Event.new_eos())
             self.pipeline.get_bus().timed_pop_filtered(5*Gst.SECOND, Gst.MessageType.EOS | Gst.MessageType.ERROR)
-        self.pipeline.set_state(Gst.State.NULL)
+        try:
+            self.pipeline.set_state(Gst.State.NULL)
+        finally:
+            for funnel, pad in list(self.rtp_links.values()):
+                funnel.release_request_pad(pad)
+            self.rtp_links.clear()
     def __enter__(self): return self
     def __exit__(self, *args): self.close()

@@ -1,3 +1,4 @@
+import {visualizationDefaults,applyVisualization} from './overlay.js';
 import {tr, text, errorDetails, LocalizedError} from './i18n.js';
 import {getJSON} from './api.js';
 import {RoiEditor, validateRegions} from './roi-editor.js';
@@ -55,6 +56,51 @@ const editor = new RoiEditor($('roiCanvas'), () => {
   changed();
   updateCounts();
 });
+const paletteKeys=['station','seat','person','skeleton','keypoint','anchor'];
+function paletteValues() {
+  return {colors:Object.fromEntries(paletteKeys.map(key=>[key,$('color_'+key).value])),
+    station_fill_alpha:Number($('opacity_station').value)/100,seat_fill_alpha:Number($('opacity_seat').value)/100};
+}
+function previewPalette() {
+  const value=paletteValues();
+  editor.visualization=value;
+  applyVisualization(value);
+  editor.draw();
+  for(const key of ['station','seat']) $('opacity_'+key+'Value').textContent=$('opacity_'+key).value+'%';
+  const ctx=$('palettePreview').getContext('2d'),c=value.colors;
+  ctx.clearRect(0,0,480,210);ctx.fillStyle='#0b1920';ctx.fillRect(0,0,480,210);
+  for(const [key,x,y,w,h] of [['station',16,16,448,178],['seat',245,54,194,122]]) {
+    ctx.globalAlpha=value[key+'_fill_alpha'];ctx.fillStyle=c[key];ctx.fillRect(x,y,w,h);ctx.globalAlpha=1;
+    ctx.strokeStyle=c[key];ctx.lineWidth=2;ctx.strokeRect(x,y,w,h);
+    ctx.fillStyle=c[key];ctx.font='14px sans-serif';ctx.fillText(tr('visualization.'+key),x+8,y+20);
+  }
+  ctx.strokeStyle=c.person;ctx.lineWidth=3;ctx.strokeRect(120,44,90,140);
+  const points=[[165,80],[140,105],[190,105],[150,140],[180,140],[140,170],[190,170]];
+  ctx.strokeStyle=c.skeleton;ctx.lineWidth=3;
+  for(const [a,b] of [[0,1],[0,2],[1,3],[2,4],[3,4],[3,5],[4,6]]){ctx.beginPath();ctx.moveTo(...points[a]);ctx.lineTo(...points[b]);ctx.stroke();}
+  ctx.fillStyle=c.keypoint;
+  for(const point of points){ctx.beginPath();ctx.arc(...point,4,0,2*Math.PI);ctx.fill();}
+  ctx.strokeStyle=c.anchor;ctx.beginPath();ctx.arc(165,100,7,0,2*Math.PI);ctx.stroke();
+}
+function fillPalette(value) {
+  for(const key of paletteKeys) $('color_'+key).value=value.colors[key];
+  for(const key of ['station','seat']) $('opacity_'+key).value=String(value[key+'_fill_alpha']*100);
+  previewPalette();
+}
+for(const key of paletteKeys) {
+  const label=document.createElement('label');label.className='palette-row';
+  const title=document.createElement('span');title.dataset.i18n='visualization.'+key;title.textContent=tr(title.dataset.i18n);
+  const input=document.createElement('input');Object.assign(input,{type:'color',id:'color_'+key,value:visualizationDefaults().colors[key]});
+  input.oninput=()=>{previewPalette();changed();};label.append(title,input);$('visualizationFields').append(label);
+}
+for(const key of ['station','seat']) {
+  const label=document.createElement('label');label.className='palette-row opacity-row';
+  const title=document.createElement('span');title.dataset.i18n='visualization.'+key+'Opacity';title.textContent=tr(title.dataset.i18n);
+  const input=document.createElement('input');Object.assign(input,{type:'range',id:'opacity_'+key,min:'0',max:'100',step:'1',value:'10'});
+  const output=document.createElement('output');output.id='opacity_'+key+'Value';
+  input.oninput=()=>{previewPalette();changed();};label.append(title,input,output);$('visualizationFields').append(label);
+}
+$('restoreVisualization').onclick=()=>{fillPalette(base.visualization_defaults);changed();};
 function updateCounts() {
   for (const name of ['station', 'seat']) $(name + 'Count').textContent = tr('roi.vertices', {count:editor.regions[name].length});
 }
@@ -153,7 +199,7 @@ $('restoreDetectionDefaults').onclick = () => {
   changed();
 };
 
-for (const id of ['privacy', 'boxes', 'regions', 'keypoints']) {
+for (const id of ['privacy', 'boxes', 'station', 'seat', 'keypoints']) {
   $(id).addEventListener('change', () => {
     privacyDescription();
     changed();
@@ -163,6 +209,9 @@ for (const id of ['privacy', 'boxes', 'regions', 'keypoints']) {
 function fill(settings) {
   if (base && settings.revision !== base.revision) sourceToken = null;
   base = structuredClone(settings);
+  base.visualization ??= visualizationDefaults();
+  base.visualization_defaults ??= visualizationDefaults();
+  fillPalette(base.visualization);
   base.detection ??= {...detectionDefaults};
   base.detection_defaults ??= {...detectionDefaults};
   setDetectionValues(base.detection);
@@ -170,7 +219,9 @@ function fill(settings) {
   latestRevision = settings.revision;
   $('revision').textContent = tr('config.effective', {revision:settings.revision});
   $('privacy').checked = settings.privacy.enabled;
-  for (const key of ['boxes', 'regions', 'keypoints']) $(key).checked = settings.display[key];
+  base.display.station ??= base.display.regions;
+  base.display.seat ??= base.display.regions;
+  for (const key of ['boxes', 'station', 'seat', 'keypoints']) $(key).checked = base.display[key];
   for (const [key] of timingFields) $(key).value = settings.timing[key];
   privacyDescription();
   editor.load(settings.regions, settings.image_size);
@@ -303,7 +354,8 @@ $('saveSettings').onclick = async () => {
   if (!base || saving) return;
   const request = {expected_revision: base.revision};
   const privacy = {enabled: $('privacy').checked};
-  const display = Object.fromEntries(['boxes', 'regions', 'keypoints'].map(key => [key, $(key).checked]));
+  const display = Object.fromEntries(['boxes', 'station', 'seat', 'keypoints'].map(key => [key, $(key).checked]));
+  display.regions=display.station||display.seat;
   const timing = Object.fromEntries(timingFields.map(([key]) => [key, Number($(key).value)]));
   const detection = detectionValues();
   try {
@@ -313,6 +365,7 @@ $('saveSettings').onclick = async () => {
     if (JSON.stringify(display) !== JSON.stringify(base.display)) request.display = display;
     if (JSON.stringify(timing) !== JSON.stringify(base.timing)) request.timing = timing;
     if (JSON.stringify(detection) !== JSON.stringify(base.detection)) request.detection = detection;
+    if (JSON.stringify(paletteValues()) !== JSON.stringify(base.visualization)) request.visualization=paletteValues();
     if (roiDirty) {
       if (editor.draft.length) throw new LocalizedError('roi.unfinished');
       if (!reference || !editor.image) throw new LocalizedError('roi.saveNeedsFrame');
@@ -467,8 +520,9 @@ $('testSource').onclick = async () => {
 };
 $('saveSource').onclick = async () => {
   const otherDraft = $('privacy').checked !== base.privacy.enabled
-    || ['boxes','regions','keypoints'].some(key => $(key).checked !== base.display[key])
+    || ['boxes','station','seat','keypoints'].some(key => $(key).checked !== base.display[key])
     || timingFields.some(([key]) => Number($(key).value) !== base.timing[key])
+    || JSON.stringify(paletteValues()) !== JSON.stringify(base.visualization)
     || !validDetection()
     || detectionFields.some(([key]) => Number($(key).value) !== base.detection[key]);
   if (otherDraft) { sourceMessage('source.otherDraft', 'error'); return; }
@@ -492,3 +546,5 @@ $('saveSource').onclick = async () => {
 await reload();
 sourceButtons();
 poll();
+
+window.addEventListener('languagechange',()=>previewPalette());

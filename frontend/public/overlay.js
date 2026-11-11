@@ -6,13 +6,17 @@ export const overlayStyle = browser
   ? await (await fetch(styleURL, {cache:'no-store'})).json()
   : JSON.parse(await (await import('node:fs/promises')).readFile(styleURL, 'utf8'));
 
-if (browser) {
-  for (const [name, color] of Object.entries(overlayStyle.colors)) {
-    document.documentElement.style.setProperty('--overlay-'+name.replaceAll('_','-'), color);
-  }
-  document.documentElement.style.setProperty('--station', overlayStyle.colors.station);
-  document.documentElement.style.setProperty('--seat', overlayStyle.colors.seat);
+export function visualizationDefaults() {
+  return {colors:Object.fromEntries(['station','seat','person','skeleton','keypoint','anchor'].map(key=>[key,overlayStyle.colors[key]])),
+    station_fill_alpha:overlayStyle.station_fill_alpha,seat_fill_alpha:overlayStyle.seat_fill_alpha};
 }
+export function applyVisualization(value=visualizationDefaults()) {
+  if (!browser) return;
+  for (const [name,color] of Object.entries(value.colors)) document.documentElement.style.setProperty('--overlay-'+name,color);
+  document.documentElement.style.setProperty('--station',value.colors.station);
+  document.documentElement.style.setProperty('--seat',value.colors.seat);
+}
+applyVisualization();
 
 export function overlayDimensions(width) {
   const scale = Math.max(.65, Math.min(1.6, width/overlayStyle.reference_width));
@@ -68,7 +72,8 @@ export function drawDetectionOverlay(canvas, image, observation, {fresh=true, re
   ctx.drawImage(image,0,0);
   if (!regionsMatch) return;
   const metrics = overlayDimensions(canvas.width);
-  const colors = overlayStyle.colors;
+  const visualization=observation.visualization??visualizationDefaults();
+  const colors={...overlayStyle.colors,...visualization.colors};
   const display = observation.display || overlayStyle.defaults;
   const sx = canvas.width/observation.frame.source_width;
   const sy = canvas.height/observation.frame.source_height;
@@ -88,16 +93,17 @@ export function drawDetectionOverlay(canvas, image, observation, {fresh=true, re
     }
     return {x,y,text:value,color,width:Math.min(canvas.width-2*metrics.margin,Math.ceil(ctx.measureText(value).width)+2*metrics.label_padding_x),height:labelHeight};
   }
-  if (display.regions) {
+  {
     for (const name of ['station','seat']) {
+      if (!(display[name]??display.regions)) continue;
       const points = observation.regions[name];
       if (!points?.length) continue;
       ctx.beginPath();
       points.map(xy).forEach(([x,y],i) => i?ctx.lineTo(x,y):ctx.moveTo(x,y));
       ctx.closePath();
-      if (name==='seat') {
-        ctx.globalAlpha=overlayStyle.seat_fill_alpha;
-        ctx.fillStyle=colors.seat;
+      {
+        ctx.globalAlpha=visualization[name+'_fill_alpha'];
+        ctx.fillStyle=colors[name];
         ctx.fill();
         ctx.globalAlpha=1;
       }
@@ -120,12 +126,16 @@ export function drawDetectionOverlay(canvas, image, observation, {fresh=true, re
         ctx.beginPath();ctx.moveTo(...horizontal);ctx.lineTo(...origin);ctx.lineTo(...vertical);ctx.stroke();
       }
       const top=y1-labelHeight-metrics.label_gap;
-      people.push(label(x1+metrics.label_gap,top<metrics.margin?y1+metrics.label_gap:top,'overlay.person',colors.person));
+      const role=person.is_session_operator===undefined?'overlay.person':
+        person.is_session_operator?'overlay.operator':'overlay.otherPerson';
+      people.push(label(x1+metrics.label_gap,top<metrics.margin?y1+metrics.label_gap:top,role,colors.person));
     }
     if (!display.keypoints) continue;
     ctx.lineWidth=metrics.line_width;
     const valid=point => point && Number.isFinite(point.x) && Number.isFinite(point.y) && point.confidence>=(observation.detection?.keypoint_confidence ?? .4);
     const points=person.keypoints;
+    ctx.strokeStyle=colors.skeleton;
+    ctx.fillStyle=colors.keypoint;
     for (const [a,b] of overlayStyle.skeleton_edges) {
       if (valid(points[a]) && valid(points[b])) {
         ctx.beginPath();ctx.moveTo(...xy([points[a].x,points[a].y]));ctx.lineTo(...xy([points[b].x,points[b].y]));ctx.stroke();

@@ -20,11 +20,11 @@ class MediaLanguageTests(unittest.TestCase):
         module=ast.parse((ROOT/'scripts/preview.py').read_text())
         handler=next(node for node in module.body if isinstance(node,ast.ClassDef) and node.name=='Handler')
         methods=[node for node in handler.body if isinstance(node,ast.FunctionDef) and node.name in
-                 ('do_GET','send_bytes','json','error','media_headers','log_message')]
+                 ('do_GET','send_bytes','json','error','media_headers','log_message','send_media')]
         media=dict(jpeg=b'protected',annotated_locales={'zh-CN':b'chinese','en':b'english'},
                    received=time.monotonic_ns(),meta=dict(session_id='stream',receive_sequence=12),
                    revision=9,privacy_applied=True)
-        behavior=SimpleNamespace(lock=threading.RLock(),media=media,config={'max_observation_age':1.5})
+        behavior=SimpleNamespace(lock=threading.RLock(),media=media,config={'max_observation_age':1.5,'revision':9},transport=SimpleNamespace(condition=threading.Condition(),output_sockets=set()))
         namespace=dict(ROOT=ROOT,urlsplit=urlsplit,parse_qs=parse_qs,LANGUAGES=LANGUAGES,
                        LocalizedError=LocalizedError,json=json,time=time,behavior=behavior)
         exec(compile(ast.Module(body=methods,type_ignores=[]),'production_http_methods','exec'),namespace)

@@ -10,3 +10,5 @@ __pycache__/
 tests/fixtures/media/*.mp4
 tests/fixtures/media/*.jpg
 tests/fixtures/media/*.png
+vendor/mediamtx/
+logs/

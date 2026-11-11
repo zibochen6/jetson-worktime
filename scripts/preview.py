@@ -21,10 +21,12 @@ from jetson_worktime.localization import LANGUAGES, LocalizedError
 from jetson_worktime.settings import SettingsConflict
 from jetson_worktime.system_metrics import SystemMetrics
 from jetson_worktime.video import VideoReader
+from jetson_worktime.streaming import VideoTransport, PROFILES
 from jetson_worktime.camera_sources import CameraSources, normalize_source, usb_devices
 
 os.chdir(ROOT)
 behavior = BehaviorService(ROOT)
+behavior.transport = VideoTransport(ROOT)
 system_metrics = SystemMetrics()
 atexit.register(behavior.close)
 if (ROOT/'.env').exists():
@@ -79,7 +81,8 @@ def capture():
                     state.update(status='reconnecting')
                 with behavior.lock:
                     try:
-                        behavior.log(dict(event='stream_failure', exception_type=type(exc).__name__))
+                        behavior.log(dict(event='stream_failure', exception_type=type(exc).__name__,
+                                          monotonic_seconds=time.monotonic()))
                     except OSError:
                         pass
                 if cameras.reader:
@@ -130,6 +133,8 @@ class Handler(BaseHTTPRequestHandler):
                         output_fps=round(output_fps, 2), algorithm_error=behavior.error,
                         regions_match=behavior.config['image_size'] == [info['width'], info['height']],
                         camera_changed=behavior.camera_changed)
+        if getattr(behavior, 'transport', None):
+            info['video'] = behavior.transport.status()
         active_source = cameras.current()
         return dict(schema_version='1.0', codec=active_source.get('codec', active_source.get('format')),
                     source_type=active_source['type'], device_name=active_source.get('device', 'RTSP'),
@@ -144,43 +149,126 @@ class Handler(BaseHTTPRequestHandler):
                 'X-Config-Revision': media['revision'],
                 'X-Privacy-Applied': str(media['privacy_applied']).lower()}
 
+    def send_media(self, data, headers):
+        transport = behavior.transport
+        with transport.condition:
+            if int(headers['X-Config-Revision']) != behavior.config['revision']:
+                self.error(409, 'FRAME_EXPIRED', 'Media policy changed')
+                return
+            transport.output_sockets.add(self.connection)
+        try:
+            self.connection.settimeout(2)
+            self.send_bytes(data,'image/jpeg',headers=headers)
+        except (BrokenPipeError, ConnectionResetError, TimeoutError, OSError):
+            self.close_connection = True
+        finally:
+            with transport.condition:
+                transport.output_sockets.discard(self.connection)
+
     def stream(self, raw=False, locale='zh-CN'):
-        with behavior.lock:
-            revision = behavior.config['revision']
-        previous = -1
+        transport = behavior.transport
+        profile = parse_qs(urlsplit(self.path).query).get('profile',['remote'])
+        if len(profile)!=1 or profile[0] not in ('local','remote'):
+            self.error(400,'BAD_REQUEST','Invalid video profile')
+            return
+        profile=profile[0]
+        key = ('raw' if raw else locale,profile)
+        try:
+            epoch = transport.add_socket(self.connection,profile)
+        except ValueError as error:
+            self.error(429, 'VIDEO_LIMIT', error)
+            return
+        previous = None
         self.send_response(200)
         self.send_header('Content-Type', 'multipart/x-mixed-replace; boundary=frame')
-        if not raw:
-            self.send_header('Content-Language', locale)
+        self.send_header('Content-Language', locale)
         self.send_header('Cache-Control', 'no-store')
         self.end_headers()
         self.connection.settimeout(1)
+        self.connection.setsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF, 16384)
         try:
-            self.connection.setsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF, 131072)
             while not behavior.stop.is_set():
-                with behavior.media_condition:
-                    ready = behavior.media_condition.wait_for(
-                        lambda: behavior.stop.is_set() or behavior.config['revision'] != revision or
-                        (behavior.media is not None and behavior.media['sequence'] != previous), timeout=5)
-                    if not ready or behavior.stop.is_set() or behavior.config['revision'] != revision:
+                with transport.condition:
+                    ready = transport.condition.wait_for(
+                        lambda: transport.epoch != epoch or transport.stop.is_set() or
+                        transport.jpegs.get(key) is not previous, timeout=5)
+                    if not ready or transport.epoch != epoch or transport.stop.is_set():
                         break
-                    media = behavior.media
-                    if media is None or (time.monotonic_ns()-media['received'])/1e9 >= behavior.config['max_observation_age']:
+                    packet = transport.jpegs.get(key)
+                    if packet is None:
                         break
-                    data = media['jpeg'] if raw else media['annotated_locales'][locale]
-                    headers = self.media_headers(media)
-                    if not raw:
-                        headers['Content-Language'] = locale
-                    header = '--frame\r\nContent-Type: image/jpeg\r\nContent-Length: '+str(len(data))+'\r\n'
-                    header += ''.join(key+': '+str(value)+'\r\n' for key, value in headers.items())+'\r\n'
-                    # Writes are serialized with policy changes. Slow clients have bounded waits.
-                    self.wfile.write(header.encode()+data+b'\r\n')
-                    self.wfile.flush()
-                    previous = media['sequence']
+                    if time.monotonic_ns()-packet[1] >= (packet[6] if len(packet)>6 else 1.5)*1e9:
+                        previous = packet
+                        continue
+                    data = packet[2]
+                # Network writes hold neither inference nor settings locks.
+                header = '--frame\r\nContent-Type: image/jpeg\r\nContent-Length: '+str(len(data))+'\r\n'
+                if len(packet) > 3:
+                    header += 'X-Config-Revision: '+str(packet[3])+'\r\nX-Privacy-Applied: '+str(packet[4]).lower()+'\r\n'
+                    header += 'X-Stream-Session-ID: '+str(packet[5].get('session_id',''))+'\r\n'
+                    header += 'X-Frame-Sequence: '+str(packet[5].get('receive_sequence',''))+'\r\n'
+                header += '\r\n'
+                self.wfile.write(header.encode()+data+b'\r\n')
+                self.wfile.flush()
+                previous = packet
         except (BrokenPipeError, ConnectionResetError, TimeoutError, OSError):
             pass
         finally:
+            transport.remove_socket(self.connection)
             self.close_connection = True
+
+    def whep(self, method):
+        if not self.check_origin():
+            return
+        parts = urlsplit(self.path).path.split('/')
+        transport = behavior.transport
+        try:
+            if len(parts) != 6:
+                raise ValueError('Invalid video resource')
+            data = None
+            if method in ('POST', 'PATCH'):
+                length = int(self.headers.get('Content-Length', '0'))
+                if not 1 <= length <= 131072:
+                    raise ValueError('Invalid SDP size')
+                self.connection.settimeout(5)
+                data = self.rfile.read(length)
+                if len(data) != length:
+                    raise ValueError('Incomplete SDP')
+            if parts[4] == 'whep' and method == 'POST' and parts[5] in LANGUAGES:
+                profiles=parse_qs(urlsplit(self.path).query).get('profile',['remote'])
+                if len(profiles)!=1 or profiles[0] not in PROFILES:
+                    raise ValueError('Invalid video profile')
+                token, answer, etag = transport.create(parts[5], data, profiles[0])
+                try:
+                    self.send_bytes(answer, 'application/sdp', 201, {
+                        'Location':'/api/v1/video/sessions/'+token, 'ETag':etag})
+                except OSError:
+                    transport.session_request(token, 'DELETE')
+            elif parts[4] == 'sessions' and re.fullmatch('[a-f0-9]{32}', parts[5]):
+                if method == 'GET':
+                    with transport.condition:
+                        session = transport.sessions.get(parts[5])
+                        if not session or session['epoch'] != transport.epoch:
+                            raise ValueError('Expired media session')
+                        session['created'] = time.monotonic()
+                    self.json({'active':True})
+                elif method in ('PATCH','DELETE'):
+                    status, body = transport.session_request(parts[5],method,data,self.headers.get('If-Match','*'))
+                    self.send_bytes(body,'application/trickle-ice-sdpfrag',status)
+                else:
+                    raise ValueError('Invalid video operation')
+            else:
+                raise ValueError('Invalid video resource')
+        except ValueError as error:
+            self.error(409, 'VIDEO_UNAVAILABLE', error)
+        except OSError:
+            self.error(503, 'VIDEO_UNAVAILABLE', 'Media service unavailable')
+
+    def do_PATCH(self):
+        self.whep('PATCH')
+
+    def do_DELETE(self):
+        self.whep('DELETE')
 
     def do_GET(self):
         parsed = urlsplit(self.path)
@@ -192,7 +280,8 @@ class Handler(BaseHTTPRequestHandler):
                 self.error(400, 'BAD_REQUEST', LocalizedError('error.language'))
                 return
             locale = values[0]
-        assets = {'/overlay-style.json': ('overlay-style.json', 'application/json; charset=utf-8'),
+        assets = {'/video-player.js': ('video-player.js', 'text/javascript; charset=utf-8'),
+                  '/overlay-style.json': ('overlay-style.json', 'application/json; charset=utf-8'),
                   '/overlay.js': ('overlay.js', 'text/javascript; charset=utf-8'),
                   '/i18n.js': ('i18n.js', 'text/javascript; charset=utf-8'),
                   '/locales.json': ('locales.json', 'application/json; charset=utf-8'),
@@ -210,6 +299,8 @@ class Handler(BaseHTTPRequestHandler):
         elif path in assets:
             filename, content_type = assets[path]
             self.send_bytes((ROOT/'frontend/public'/filename).read_bytes(), content_type)
+        elif path.startswith('/api/v1/video/sessions/'):
+            self.whep('GET')
         elif path == '/dev-info':
             self.json({'mode': 'device'})
         elif path == '/api/v1/system/metrics':
@@ -239,7 +330,7 @@ class Handler(BaseHTTPRequestHandler):
                     self.error(410, 'FRAME_EXPIRED', 'Fetch the latest observation again')
                     return
                 observation, data = pair
-                self.send_bytes(data, 'image/jpeg', headers={
+            self.send_media(data, headers={
                     'X-Observation-ID': key, 'X-Stream-Session-ID': observation['frame']['stream_session_id'],
                     'X-Frame-Sequence': observation['frame']['receive_sequence'],
                     'X-Config-Revision': observation['config_revision'],
@@ -255,7 +346,7 @@ class Handler(BaseHTTPRequestHandler):
                 if path == '/api/frame.jpg':
                     data = media['annotated_locales'][locale]
                     headers['Content-Language'] = locale
-                self.send_bytes(data, 'image/jpeg', headers=headers)
+            self.send_media(data, headers=headers)
         elif path in ('/stream.mjpg', '/api/v1/video.mjpg'):
             self.stream(raw=path.startswith('/api/v1/'), locale=locale)
         else:
@@ -311,6 +402,9 @@ class Handler(BaseHTTPRequestHandler):
     def do_POST(self):
         if not self.check_origin():
             return
+        if self.path.startswith('/api/v1/video/'):
+            self.whep('POST')
+            return
         if self.path == '/api/v1/camera/test':
             try:
                 self.json(cameras.test(self.read_json(8192)))
@@ -324,13 +418,13 @@ class Handler(BaseHTTPRequestHandler):
             return
         try:
             data = self.read_json(1024)
-            if data.get('action') not in ('start', 'end', 'review', 'confirm_camera'):
+            if data.get('action') not in ('start', 'end', 'review', 'confirm_camera', 'confirm_return'):
                 raise ValueError('Unsupported action')
         except (ValueError, TypeError, UnicodeError) as exc:
             self.error(400, 'BAD_REQUEST', exc)
             return
         try:
-            result = behavior.action(data['action'])
+            result = behavior.action(data['action'], data)
         except (ValueError, TypeError) as exc:
             self.error(409, 'ACTION_UNAVAILABLE', exc)
             return

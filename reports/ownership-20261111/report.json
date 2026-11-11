@@ -1,0 +1,135 @@
+{
+  "date": "2026-11-11",
+  "status": "IMPLEMENTED_AND_DEPLOYED_WITH_VERIFICATION_LIMITS",
+  "device": "seeed@100.98.151.121",
+  "project": "/home/seeed/workspace/jetson-worktime",
+  "port": 8088,
+  "implementation_files": 27,
+  "thresholds": {
+    "start_seconds": 10,
+    "short_away_seconds": 30,
+    "stop_absent_seconds": 31
+  },
+  "results": [
+    {
+      "item": "Final deployed backend regression",
+      "status": "PASS",
+      "passed": 124,
+      "evidence": "device-evidence/tests-final-postdeploy.log"
+    },
+    {
+      "item": "Current local frontend regression",
+      "status": "PASS",
+      "passed": 26,
+      "evidence": "frontend-final-live-source.log"
+    },
+    {
+      "item": "Repeated passers controlled regression",
+      "status": "PASS",
+      "evidence": "replay-after-final/summary.json"
+    },
+    {
+      "item": "Actual deployed ownership APIs",
+      "status": "PASS",
+      "passed": 9,
+      "evidence": "device-evidence/ownership-api-final.json"
+    },
+    {
+      "item": "GPU numeric and CUDA NMS",
+      "status": "PASS",
+      "evidence": "device-evidence/release-candidate/reports/gpu-smoke.json"
+    },
+    {
+      "item": "Initial full real-camera HTTP checks",
+      "status": "PASS",
+      "passed": 22,
+      "evidence": "device-evidence/api-postdeploy-retry/acceptance.json"
+    },
+    {
+      "item": "Final full HTTP smoke",
+      "status": "FAIL",
+      "reason": "Existing viewer limit returned HTTP 429 at MJPEG admission; first 18 checks passed. Earlier full run passed. No existing viewers were disconnected.",
+      "evidence": "device-evidence/api-final/acceptance.json"
+    },
+    {
+      "item": "Final live source continuity",
+      "status": "PASS",
+      "evidence": "device-evidence/final-live-summary.json"
+    },
+    {
+      "item": "Labeled onsite A-leaves B-passes A-returns scenario",
+      "status": "NOT RUN",
+      "reason": "No continuously eligible operator binding occurred during captured live period; all captured ownership states were UNBOUND."
+    },
+    {
+      "item": "Labeled real-world identity association accuracy",
+      "status": "NOT RUN",
+      "reason": "Requires annotated multiple-person footage and manual return demonstration."
+    },
+    {
+      "item": "Final delivery health after last restart",
+      "status": "PASS",
+      "evidence": "device-evidence/delivery-health.json"
+    }
+  ],
+  "protection": {
+    "models_and_dependency_hashes_unchanged": true,
+    "configuration_written_by_this_change": false,
+    "concurrent_configuration_revision_at_capture": 22,
+    "concurrent_source_changes_preserved": true,
+    "local_source": "/Users/chenzibo/data/project/Jetson/workspace/jetson-worktime-settings/source",
+    "note": "Other development updated source and device configuration during delivery. Final source snapshot records observed code. Rollback hash guards refuse later concurrent edits."
+  },
+  "limitations": [
+    "Conservative tracking association only; identity cannot be guaranteed from ByteTrack IDs.",
+    "Long absence, changed IDs, or crossing ambiguity require human return confirmation.",
+    "Raw region configuration was preserved. No eligible operator was observed in the presence zone during final capture.",
+    "Existing viewer limit can block additional MJPEG clients with 429."
+  ],
+  "rollback": {
+    "script": "/home/seeed/workspace/jetson-worktime-ownership-20261111/rollback-release.py",
+    "backup": "/home/seeed/workspace/jetson-worktime-ownership-20261111/baseline-v2.tar.gz",
+    "note": "Dry run by default. Concurrent edits require three-way reverse patch merge; never force overwrite."
+  },
+  "live": {
+    "run_id": "d89f04acb642472187b06dc14f898aef",
+    "config_revision": 22,
+    "observations": 2400,
+    "streams": 1,
+    "elapsed_seconds": 264.653213892,
+    "event_counts": {
+      "state_transition": 2
+    },
+    "people": {
+      "1": 1384,
+      "0": 143,
+      "3": 137,
+      "2": 736
+    },
+    "ownership_states": {
+      "UNBOUND": 2400
+    },
+    "algorithm_error": null,
+    "work_state": "NOT_STARTED",
+    "thresholds": {
+      "start_seconds": 10,
+      "short_away_seconds": 30,
+      "stop_absent_seconds": 31
+    },
+    "note": "Continuous stream evidence captured before the final deadline-boundary refinement. Final delivery health is recorded separately."
+  },
+  "delivery_health": {
+    "status": "PASS",
+    "fresh": true,
+    "camera": "online",
+    "config_revision": 22,
+    "run_id": "be76c432006c47118e5c6e4030b81aea",
+    "ownership_state": "UNBOUND",
+    "algorithm_error": null,
+    "thresholds": {
+      "start_seconds": 10,
+      "short_away_seconds": 30,
+      "stop_absent_seconds": 31
+    }
+  }
+}

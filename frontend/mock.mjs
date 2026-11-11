@@ -1,8 +1,8 @@
-import {overlayStyle} from './public/overlay.js';
+import {overlayStyle,visualizationDefaults} from './public/overlay.js';
 import {readFile} from 'node:fs/promises';
 import {validateRegions} from './public/roi-editor.js';
-const scenarios=['idle','start','working','away','rest','done','unknown','offline','algorithm','moved'];
-let scenario='idle';let review=false;
+const scenarios=['idle','start','working','away','rest','done','unknown','offline','algorithm','moved','owner_return'];
+let scenario='idle';let review=false;let ownerConfirmed=false;
 let cameraTest=null;
 let streamSession='mock-stream';
 const mockDevices=[{device:'/dev/v4l/by-id/mock-usb-camera',name:'Mock USB camera',formats:['yuyv','mjpeg','h264']}];
@@ -10,13 +10,13 @@ const defaultDetection = {person_confidence:.10,keypoint_confidence:.40};
 const defaultTiming = {start_seconds:10, short_away_seconds:60, stop_absent_seconds:300, missing_grace_seconds:3, max_observation_age:1.5};
 const deviceSettings = {
   camera_source:{type:'rtsp',url:'rtsp://192.168.1.100:554/stream',username:'admin',password_set:true,codec:'h265'},
-  revision:0, privacy:{enabled:true}, display:{...overlayStyle.defaults},
-  detection:{...defaultDetection},
+  revision:0, privacy:{enabled:true}, display:{...overlayStyle.defaults,station:true,seat:true},
+  detection:{...defaultDetection}, visualization:visualizationDefaults(),
   timing:{...defaultTiming}, image_size:[2560,1440], roi_configured:false,
   regions:{station:[[1664,0],[2559,0],[2559,1439],[1664,1439]],seat:[[2125,331],[2559,331],[2559,893],[2125,893]]}
 };
 export function settingsFixture() {
-  return {schema_version:'1.0', ...structuredClone(deviceSettings), defaults:{...defaultTiming}, detection_defaults:{...defaultDetection}, camera:fixtures().camera};
+  return {schema_version:'1.0', ...structuredClone(deviceSettings), defaults:{...defaultTiming}, detection_defaults:{...defaultDetection}, visualization_defaults:visualizationDefaults(), camera:fixtures().camera};
 }
 
 export function systemMetricsFixture() {
@@ -31,16 +31,28 @@ export function systemMetricsFixture() {
 
 export function fixtures(name=scenario){
   const now=process.uptime(),ns=String(Math.round(now*1e9)),regions=structuredClone(deviceSettings.regions);
-  const mode={idle:'NOT_STARTED',start:'START_PENDING',working:'WORKING',away:'AWAY_PENDING',rest:'REST',done:'NOT_STARTED',unknown:'OBSERVATION_UNKNOWN',offline:'OBSERVATION_UNKNOWN',algorithm:'OBSERVATION_UNKNOWN',moved:'OBSERVATION_UNKNOWN'}[name];
-  const behavior=['unknown','offline','algorithm','moved'].includes(name)?'UNKNOWN':['idle','done'].includes(name)?'MISSING':['away','rest'].includes(name)?'NEARBY':'SEATED';
+  const mode={idle:'NOT_STARTED',start:'START_PENDING',working:'WORKING',away:'AWAY_PENDING',rest:'REST',done:'NOT_STARTED',unknown:'OBSERVATION_UNKNOWN',offline:'OBSERVATION_UNKNOWN',algorithm:'OBSERVATION_UNKNOWN',moved:'OBSERVATION_UNKNOWN',owner_return:'AWAY_PENDING'}[name];
+  const behavior=['unknown','offline','algorithm','moved'].includes(name)?'UNKNOWN':['idle','done'].includes(name)?'MISSING':name==='owner_return'?'MISSING':['away','rest'].includes(name)?'NEARBY':'SEATED';
   const person={person_track_id:7,bbox_xyxy:[2020,250,2540,1400],confidence:.93,valid:true,
     upper_body_anchor:[2300,570],keypoints:[[2300,380],[2260,360],[2340,360],[2220,380],[2380,380],[2150,570],[2450,570],[2120,800],[2470,800],[2200,980],[2400,980],[2200,1080],[2400,1080],null,null,null,null].map(p=>({x:p?.[0]??null,y:p?.[1]??null,confidence:p?.[0]!==undefined?.94:.1}))};
-  const active=['working','away','rest','unknown','algorithm','moved'].includes(name),has=active||name==='done';
+  const active=['working','away','rest','unknown','algorithm','moved','owner_return'].includes(name),has=active||name==='done';
   const reason_code={SEATED:'reason.seated',NEARBY:'reason.nearby',MISSING:'reason.missing',UNKNOWN:'reason.ambiguous'}[behavior];
   const work={schema_version:'1.0',config_revision:deviceSettings.revision,privacy_applied:deviceSettings.privacy.enabled,state:mode,behavior,reason:'MOCK 模拟情景：'+name,reason_code,reason_params:{},run_id:'mock-run',session_id:has?'mock-work-session':null,active,session_start:has?0:null,session_end:name==='done'?now:null,review,
     work_seconds:has?1115:0,rest_seconds:has?85:0,unknown_seconds:name==='unknown'?12:0,pending_seconds:name==='away'?25:0,start_pending_seconds:name==='start'?5:0,completed_sessions:name==='done'?1:0,
     thresholds:{...deviceSettings.timing},frame_ref:{session_id:streamSession,receive_sequence:1,pts_ns:ns,receive_monotonic_ns:ns},algorithm_error:name==='algorithm'?'RuntimeError':null,roi_provisional:!deviceSettings.roi_configured,camera_changed:name==='moved',regions,image_size:[2560,1440],last_observation_monotonic_seconds:now,server_monotonic_seconds:now,server_wall_time_ms:Date.now()};
-  const observation={detection:{...deviceSettings.detection},config_revision:deviceSettings.revision,privacy_applied:deviceSettings.privacy.enabled,display:{...deviceSettings.display},observation_id:'mock-observation',run_id:'mock-run',frame:{stream_session_id:streamSession,receive_sequence:1,pts_ns:null,receive_monotonic_ns:ns,source_width:2560,source_height:1440,jpeg_width:1280,jpeg_height:720,color_format:'BGR'},inference:{started_monotonic_ns:ns,completed_monotonic_ns:ns,local_processing_ms:20,local_receive_to_result_ms:25,accepted:true,observation_valid:behavior!=='UNKNOWN',behavior,reason:work.reason,reason_code,reason_params:{}},persons:['idle','done'].includes(name)||person.confidence<deviceSettings.detection.person_confidence?[]:[person],regions,roi_provisional:!deviceSettings.roi_configured,camera_changed:false,matching_frame_url:'/api/v1/observations/frame.jpg?observation_id=mock-observation'};
+  const observation={visualization:structuredClone(deviceSettings.visualization),detection:{...deviceSettings.detection},config_revision:deviceSettings.revision,privacy_applied:deviceSettings.privacy.enabled,display:{...deviceSettings.display},observation_id:'mock-observation',run_id:'mock-run',frame:{stream_session_id:streamSession,receive_sequence:1,pts_ns:null,receive_monotonic_ns:ns,source_width:2560,source_height:1440,jpeg_width:1280,jpeg_height:720,color_format:'BGR'},inference:{started_monotonic_ns:ns,completed_monotonic_ns:ns,local_processing_ms:20,local_receive_to_result_ms:25,accepted:true,observation_valid:behavior!=='UNKNOWN',behavior,reason:work.reason,reason_code,reason_params:{}},persons:['idle','done'].includes(name)||person.confidence<deviceSettings.detection.person_confidence?[]:[person],regions,roi_provisional:!deviceSettings.roi_configured,camera_changed:false,matching_frame_url:'/api/v1/observations/frame.jpg?observation_id=mock-observation'};
+  if(name==='owner_return' || (name==='working' && ownerConfirmed)) {
+    const waiting=name==='owner_return';
+    work.ownership={operator_id:'mock-operator',track_id:waiting?1:7,run_id:'mock-run',stream_session_id:streamSession,
+      state:waiting?'CONFIRMATION_REQUIRED':'TRACKED',needs_confirmation:waiting,
+      candidates:[{track_id:7,bbox_xyxy:person.bbox_xyxy,zone:'SEATED'}],ignored_track_ids:waiting?[7]:[],
+      away_since:waiting?0:null,absent_since:waiting?0:null,away_seconds:waiting?25:0,absent_seconds:waiting?25:0,
+      end_remaining_seconds:waiting?275:null};
+    work.reason_code=waiting?'ownership.confirmRequired':'ownership.confirmed';
+    observation.ownership=structuredClone(work.ownership);
+    observation.persons[0].is_session_operator=!waiting;
+    observation.persons[0].ownership_zone='SEATED';
+  }
   return {work,camera:{schema_version:'1.0',config_revision:deviceSettings.revision,privacy_applied:deviceSettings.privacy.enabled,output_fps:name==='algorithm'?0:5,algorithm_error:name==='algorithm'?'RuntimeError':null,regions_match:true,camera_changed:name==='moved',status:name==='offline'?'reconnecting':'online',sequence:1,width:2560,height:1440,jpeg_width:1280,jpeg_height:720,source_fps:20,stream_session_id:streamSession,receive_sequence:1,pts_ns:ns,age_ms:name==='offline'?6000:0,source_type:deviceSettings.camera_source.type,device_name:deviceSettings.camera_source.device||'RTSP',connection_error:null,codec:deviceSettings.camera_source.codec||deviceSettings.camera_source.format,decoder:['yuyv','mjpeg'].includes(deviceSettings.camera_source.format)?'software':'nvv4l2decoder',preview_max_fps:12,preview_has_project_overlay:false},envelope:{schema_version:'1.0',config_revision:deviceSettings.revision,privacy_applied:deviceSettings.privacy.enabled,available:!['offline','algorithm'].includes(name),fresh:!['offline','algorithm'].includes(name),age_ms:name==='offline'?null:0,algorithm_error:name==='algorithm'?'RuntimeError':null,observation:['offline','algorithm'].includes(name)?null:observation}};
 }
 export async function mockReply(req,res,url){
@@ -54,7 +66,7 @@ export async function mockReply(req,res,url){
   const languages=url.searchParams.getAll('lang');
   const locale=languages[0]||'zh-CN';
   if(['/stream.mjpg','/api/frame.jpg'].includes(url.pathname)&&(languages.length>1||!['zh-CN','en'].includes(locale)||languages[0]===''))return error('BAD_REQUEST','Unsupported language',400,{message_key:'error.language'});
-  if(url.pathname==='/mock/scenario') {const name=url.searchParams.get('name');if(!scenarios.includes(name))return error('BAD_REQUEST','Unknown mock scenario',400);scenario=name;return json({scenario});}
+  if(url.pathname==='/mock/scenario') {const name=url.searchParams.get('name');if(!scenarios.includes(name))return error('BAD_REQUEST','Unknown mock scenario',400);scenario=name;ownerConfirmed=false;return json({scenario});}
   if(url.pathname==='/api/v1/camera/devices') return json({schema_version:'1.0',devices:mockDevices});
   if(url.pathname==='/api/v1/camera/test') {
     if(req.method!=='POST') return error('METHOD_NOT_ALLOWED','Unsupported method',405);
@@ -92,13 +104,17 @@ export async function mockReply(req,res,url){
       deviceSettings.camera_source=source;deviceSettings.roi_configured=false;deviceSettings.revision++;scenario='idle';cameraTest=null;streamSession='mock-stream-'+deviceSettings.revision;
       return json(settingsFixture());
     }
-    const allowed=['expected_revision','privacy','display','timing','regions','image_size','reference_frame','detection'];
+    const allowed=['expected_revision','privacy','display','timing','regions','image_size','reference_frame','detection','visualization'];
     if(Object.keys(request).some(key=>!allowed.includes(key)))return error('BAD_REQUEST','Unknown field',400);
     const next=structuredClone(deviceSettings);
     try {
-      for(const key of ['privacy','display','timing','regions','image_size','detection']) if(key in request) next[key]=request[key];
+      for(const key of ['privacy','display','timing','regions','image_size','detection','visualization']) if(key in request) next[key]=request[key];
       if(!next.privacy || Object.keys(next.privacy).join(',')!=='enabled' || typeof next.privacy.enabled!=='boolean') throw new Error('privacy.enabled 必须为布尔值');
-      if(!next.display || Object.keys(next.display).length!==3 || ['boxes','regions','keypoints'].some(key=>typeof next.display[key]!=='boolean')) throw new Error('显示开关无效');
+      if(!next.visualization || Object.keys(next.visualization).length!==3 || !next.visualization.colors || Object.keys(next.visualization.colors).length!==6 || Object.keys(visualizationDefaults().colors).some(key=>!/^#[0-9a-f]{6}$/i.test(next.visualization.colors[key]??'')) || ['station_fill_alpha','seat_fill_alpha'].some(key=>!Number.isFinite(next.visualization[key])||next.visualization[key]<0||next.visualization[key]>1))return error('BAD_REQUEST','Invalid palette',400,{message_key:'visualization.invalid'});
+      if(!next.display || ![3,5].includes(Object.keys(next.display).length) || ['boxes','regions','keypoints'].some(key=>typeof next.display[key]!=='boolean') || Object.keys(next.display).some(key=>!['boxes','regions','keypoints','station','seat'].includes(key)))throw new Error('显示开关无效');
+      next.display.station ??= next.display.regions;next.display.seat ??= next.display.regions;
+      if(typeof next.display.station!=='boolean'||typeof next.display.seat!=='boolean')throw new Error('显示开关无效');
+      next.display.regions=next.display.station||next.display.seat;
       if(!next.detection || Object.keys(next.detection).length!==2 || Object.keys(next.detection).some(k=>!(k in defaultDetection)))return error('BAD_REQUEST','Both detection fields required',400,{message_key:'detection.allFields'});
       for(const [key,min] of [['person_confidence',.1],['keypoint_confidence',.25]]) {
         if(!Number.isFinite(next.detection[key]) || next.detection[key]<min || next.detection[key]>1)return error('BAD_REQUEST','Invalid confidence',400,{message_key:'detection.invalid',message_params:{field:key,minimum:min}});
@@ -129,8 +145,14 @@ export async function mockReply(req,res,url){
   if(url.pathname==='/api/v1/observations/latest')return json(data.envelope);
   if(url.pathname==='/api/v1/work/actions'&&req.method==='POST') {
     let body='';for await(const chunk of req){body+=chunk;if(body.length>1024)return error('BAD_REQUEST','Body too large',400);}
-    let action;try{action=JSON.parse(body).action;}catch{return error('BAD_REQUEST','Invalid JSON',400);}
-    if(!['start','end','review','confirm_camera'].includes(action))return error('BAD_REQUEST','Unknown action',400);
+    let request,action;try{request=JSON.parse(body);action=request.action;}catch{return error('BAD_REQUEST','Invalid JSON',400);}
+    if(!['start','end','review','confirm_camera','confirm_return'].includes(action))return error('BAD_REQUEST','Unknown action',400);
+    if(action==='confirm_return') {
+      if(scenario!=='owner_return' || request.session_id!==data.work.session_id || request.observation_id!=='mock-observation'
+          || request.stream_session_id!==streamSession || request.config_revision!==deviceSettings.revision || request.track_id!==7)
+        return error('ACTION_UNAVAILABLE','Stale confirmation',409,{message_key:'ownership.staleConfirmation'});
+      scenario='working';ownerConfirmed=true;
+    }
     if(action==='start'){if(data.work.active||data.work.behavior!=='SEATED')return error('ACTION_UNAVAILABLE','Simulate seated/start first',409);scenario='working';}
     if(action==='end'){if(!data.work.active)return error('ACTION_UNAVAILABLE','No active mock session',409);scenario='done';}
     if(action==='review'){if(!data.work.session_id)return error('ACTION_UNAVAILABLE','No mock session',409);review=true;}

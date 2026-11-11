@@ -79,3 +79,54 @@ ROI截图引用同时携带取图时的`camera_changed`状态；机位待确认�
 `cpu_percent` 为所有CPU核心的总体使用率，范围0到100，来自 `/proc/stat` 前八项的两次差分，将idle及iowait计为非忙碌时间。`gpu_percent` 为Jetson驱动load节点值除以10，表示采样时驱动报告的负载。`memory_used_bytes` 为MemTotal减MemAvailable，`memory_total_bytes` 为内核可用总物理内存，前端换算GiB。`temperature_celsius` 为CPU、GPU及SoC片上传感器的最高有效值，`temperature_sensor` 为对应名称。`uptime_seconds` 为设备启动至今的秒数。读取指标无需额外权限或依赖。
 
 GPU单位依据 [NVIDIA Jetson Linux Developer Guide](https://docs.nvidia.com/jetson/archives/r39.2/DeveloperGuide/SD/PlatformPowerAndPerformance/JetsonOrinNanoSeriesJetsonOrinNxSeriesAndJetsonAgxOrinSeries.html#gpu-3d-frequency-scaling)。CPU与内存计数依据 [Linux proc文档](https://www.kernel.org/doc/html/latest/filesystems/proc.html)。
+
+## 摄像头来源配置
+
+设置弹层顶部提供网络／PoE（RTSP）和 USB 来源选择。初次启动兼容原有 `.env`。成功保存后使用 `configs/behavior.yaml` 中的设备配置。
+
+- `GET /api/v1/camera/devices` 返回 USB 设备、名称及实际支持的 `yuyv`、`mjpeg`、`h264` 格式，优先返回稳定设备标识。
+- `GET /api/v1/settings` 的 `camera_source` 返回脱敏后的当前来源。RTSP 密码仅写入设备文件，读取仅返回 `password_set`。RTSP URL 中的用户名和密码拆分存储，读取 URL 不包含认证信息。
+- `POST /api/v1/camera/test` 提交 `expected_revision` 与 `camera_source`，后端读取有效帧后返回尺寸及有效期90秒的 `test_token`。测试不会保存或切换来源。
+- `PUT /api/v1/settings` 单独提交 `expected_revision`、`camera_source`、`test_token` 执行切换。令牌绑定版本与候选配置。修改参数、版本变化或令牌过期后需要重新测试。冲突返回409，参数及连接失败返回400，持久化失败返回500。
+
+RTSP 输入包含 `type: rtsp`、`url`、`username`、`password` 和 `codec`（`h264`／`h265`）。密码留空仅对相同地址及用户名保留已有密码。USB 输入包含 `type: usb`、`device` 和 `format`。
+
+切换先验证候选有效帧，再原子保存配置。验证或保存失败保留原连接。切换成功后结算当前会话，清除旧帧和观测，以新的流会话继续预览，并将 ROI 标为待确认。用户需重新划定、保存区域，自动计时才恢复。USB 拔插后按保存的稳定设备标识重连。设备枚举由后端完成，浏览器无需直接访问摄像头。
+
+## WebRTC 与配色
+
+`GET /api/v1/camera` 的 `video` 包含媒体服务可用状态、预览参数、低带宽回退参数、错误和媒体 epoch。`POST /api/v1/video/whep/{locale}` 接收最大 128 KiB 的 `application/sdp`，返回 201、SDP answer、ETag 和同源 Location。浏览器先完成 ICE 收集再发送 offer，也可向 Location PATCH trickle ICE。每五秒 GET Location 续租，DELETE Location 释放连接，未续租三十秒后回收。最多同时三个观看客户端，包含 MJPEG 和握手中的连接。
+
+设备设置增加 `visualization` 和 `visualization_defaults`。前者包含六项 `colors`（station、seat、person、skeleton、keypoint、anchor），值为六位十六进制颜色，以及 0–1 的 `station_fill_alpha` 与 `seat_fill_alpha`。PUT 提交完整的 visualization 组及 expected_revision，非法输入返回 400、冲突返回 409。只改变配色会使旧媒体失效并重建视频，不结算计时会话。观测响应携带同帧的 visualization，供 Canvas 标注使用。
+
+## 会话操作员绑定与返回确认
+
+每个新会话绑定一名内部操作员。自动开始要求同一可跟踪候选在在位区连续满足开工确认时间。之后只依据本次操作员的证据累计时间，其他人的出现不会清空离开起点。
+
+ByteTrack ID 仅用于同一视频流内的保守连续关联。自动返回要求相同 ID、距最后可靠观测不超过 missing_grace_seconds、人体框面积比 0.5–2，且 IoU 至少 0.2 或上半身锚点位移不超过上一人体框对角线的 50%。人员交叉竞争、长缺失或新 ID 需要人工确认。持续可见的操作员在工位附近活动时保留现有附近活动规则。
+
+输入不可靠时记未知，保存离开起点，暂停有效离开确认时间。有效画面中的其他人员不会暂停或重置原操作员的缺失确认。达到 stop_absent_seconds 后会话结束，结束时间回溯至原操作员缺失的起点。长缺失后的原人员返回可能需要人工确认，轨迹关联不能保证员工身份正确。
+
+页面的更多操作提供“确认操作员返回”。确认面板展示隐私处理后的配对图像及候选轨迹，自动刷新。只能确认当前新鲜、在位的人员。过期观测、切流、配置变化、会话已结束或重复确认均返回 409。
+
+状态与观测增加可选 ownership，包含 operator_id、track_id、run_id、stream_session_id、state、needs_confirmation、candidates、ignored_track_ids、away_since、absent_since、away_seconds、absent_seconds、end_remaining_seconds。内部操作员标识仅在该会话内有效。persons 增加 is_session_operator 与 ownership_zone。
+
+POST /api/v1/work/actions 的确认请求为以下结构。
+
+```json
+{"action":"confirm_return","session_id":"当前工作会话","observation_id":"新鲜观测","stream_session_id":"当前视频流会话","config_revision":18,"track_id":7}
+```
+
+人工确认从所选观测接收时间生效，保留真实未知区间。事件记录 operator_bound、operator_association_changed、other_person_ignored、operator_return_confirmed，结束事件包含人员关联与结算区间。配置阈值继续使用设备当前设置。
+
+观测回放使用同一人员归属入口。存在人工确认时同时提供对应事件文件。
+
+```bash
+.venv/bin/python scripts/replay_behavior.py --input outputs/behavior/<run_id>/observations.jsonl --events outputs/behavior/<run_id>/events.jsonl --output /tmp/ownership-replay.jsonl
+```
+
+旧记录缺少轨迹证据时标记 UNVERIFIED，不将其作为人员区分验收证据。回放应提供采集时对应的配置文件。真实多人交叉准确率仍需要带标注的现场片段验证。
+
+WebRTC WHEP 与 MJPEG 地址支持 `profile=remote|local`。remote 默认 640×360/10 FPS/600 Kbps，local 最大 1920×1080/12 FPS/4 Mbps。浏览器按地址自动选择，localhost、回环地址和 RFC1918 局域网地址使用 local，Tailscale 地址使用 remote。高清流在原始脱敏帧上降采样，保留输入细节。
+
+显示设置新增 station 和 seat，独立控制工位范围和在位判断区的蒙版、边界与标签。仍接受旧三字段显示配置，regions 的值同时应用于这两个开关。新配置保留 regions 兼容字段，其值为 station 或 seat 开启。

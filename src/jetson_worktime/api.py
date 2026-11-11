@@ -1,4 +1,5 @@
 """Versioned wire format and bounded, atomic observation/image pairs. No GPU imports."""
+from .visualization import visualization_settings
 from collections import OrderedDict
 from copy import deepcopy
 from urllib.parse import urlencode
@@ -63,5 +64,5 @@ def make_observation(run_id, meta, pts, received, started, completed, width, hei
         persons=[{**p, 'upper_body_anchor': p.get('upper_body_anchor')} for p in persons],
         regions=config['regions'], roi_provisional=not config.get('roi_configured', False), camera_changed=camera_changed,
         config_revision=config.get('revision', 0), privacy_applied=config.get('privacy', {}).get('enabled', True),
-        display=config.get('display', DISPLAY_DEFAULTS), detection=detection_settings(config),
+        display=config.get('display', DISPLAY_DEFAULTS), visualization=visualization_settings(config), detection=detection_settings(config),
         matching_frame_url='/api/v1/observations/frame.jpg?'+urlencode({'observation_id': key})))

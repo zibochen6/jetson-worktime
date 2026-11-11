@@ -11,6 +11,7 @@ import threading
 
 import yaml
 from .behavior import DEFAULTS
+from .visualization import DEFAULT_VISUALIZATION, visualization_settings, validate_visualization
 from .detection import DETECTION_DEFAULTS, DETECTION_MINIMUMS, detection_settings
 from .localization import LocalizedError
 
@@ -110,6 +111,7 @@ def normalize(config):
     config.setdefault('privacy', {'enabled': True})
     config.setdefault('display', DISPLAY_DEFAULTS.copy())
     config.setdefault('roi_configured', False)
+    config['visualization'] = validate_visualization(visualization_settings(config))
     if 'camera_source' in config:
         from .camera_sources import normalize_source
         config['camera_source'] = normalize_source(config['camera_source'])
@@ -118,8 +120,13 @@ def normalize(config):
         raise LocalizedError('error.revision')
     if not isinstance(config['privacy'], dict) or set(config['privacy']) != {'enabled'} or type(config['privacy']['enabled']) is not bool:
         raise LocalizedError('error.privacy')
-    if not isinstance(config['display'], dict) or set(config['display']) != set(DISPLAY_DEFAULTS) or any(type(v) is not bool for v in config['display'].values()):
+    display = config['display']
+    legacy_keys = set(DISPLAY_DEFAULTS)
+    if not isinstance(display,dict) or set(display) not in (legacy_keys,legacy_keys|{'station','seat'}) or any(type(v) is not bool for v in display.values()):
         raise LocalizedError('error.display')
+    display.setdefault('station',display['regions'])
+    display.setdefault('seat',display['regions'])
+    display['regions'] = display['station'] or display['seat']
     for key in TIMING_KEYS:
         value = config[key]
         minimum = 0.1 if key in ('start_seconds', 'max_observation_age', 'stop_absent_seconds') else 0
@@ -152,7 +159,7 @@ class SettingsStore:
                 fcntl.flock(guard, fcntl.LOCK_UN)
 
     def commit(self, request):
-        allowed = {'expected_revision', 'privacy', 'display', 'timing', 'regions', 'image_size', 'reference_frame', 'camera_source', 'detection'}
+        allowed = {'expected_revision', 'privacy', 'display', 'timing', 'regions', 'image_size', 'reference_frame', 'camera_source', 'detection', 'visualization'}
         if not isinstance(request, dict) or set(request)-allowed:
             raise LocalizedError('error.unknownField')
         if type(request.get('expected_revision')) is not int:
@@ -164,7 +171,7 @@ class SettingsStore:
                 if request['expected_revision'] != old['revision']:
                     raise SettingsConflict('error.SETTINGS_CONFLICT')
                 new = deepcopy(old)
-                for key in ('privacy', 'display', 'regions', 'image_size'):
+                for key in ('privacy', 'display', 'regions', 'image_size', 'visualization'):
                     if key in request:
                         new[key] = deepcopy(request[key])
                 if 'detection' in request:
@@ -211,6 +218,7 @@ class SettingsStore:
     def public(config):
         return dict(schema_version='1.0', revision=config['revision'],
                     privacy=deepcopy(config['privacy']), display=deepcopy(config['display']),
+                    visualization=visualization_settings(config), visualization_defaults=deepcopy(DEFAULT_VISUALIZATION),
                     image_size=config['image_size'][:], regions=deepcopy(config['regions']),
                     roi_configured=config['roi_configured'],
                     detection=detection_settings(config), detection_defaults=DETECTION_DEFAULTS.copy(),

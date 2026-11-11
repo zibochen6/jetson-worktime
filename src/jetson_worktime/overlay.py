@@ -11,6 +11,7 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
 from .behavior import point_in_polygon
+from .visualization import visualization_settings
 from .localization import translate, LANGUAGES
 
 STYLE = json.loads((Path(__file__).resolve().parents[2]/'frontend/public/overlay-style.json').read_text())
@@ -80,25 +81,29 @@ def _build(width, height, config, locale):
     metrics = dimensions(width)
     scale_x, scale_y = width/config['image_size'][0], height/config['image_size'][1]
     polygons = {name: [(round(p[0]*scale_x), round(p[1]*scale_y)) for p in config['regions'][name]] for name in TITLES}
-    # Cache the tint LUT and clipped mask. A four-percent fill needs no per-frame float image.
-    mask = np.zeros((height, width), np.uint8)
-    cv2.fillPoly(mask, [np.asarray(polygons['seat'], np.int32)], 255)
-    bounds = cv2.boundingRect(mask)
-    x, y, w, h = bounds
-    alpha = STYLE['seat_fill_alpha']
-    lut = np.rint(np.arange(256)[:, None]*(1-alpha)+np.asarray(COLORS['seat'])[None, :]*alpha).astype(np.uint8)
-    keys = [(TITLES['station'], COLORS['station']), (TITLES['seat'], COLORS['seat']),
-            ('overlay.person', COLORS['person']), ('overlay.inside', COLORS['anchor']),
-            ('overlay.outside', COLORS['anchor'])]
+    visualization = visualization_settings(config)
+    colors = dict(COLORS, **{name:tuple(bytes.fromhex(value[1:])[::-1]) for name,value in visualization['colors'].items()})
+    fills = []
+    for name in TITLES:
+        mask = np.zeros((height, width), np.uint8)
+        cv2.fillPoly(mask, [np.asarray(polygons[name], np.int32)], 255)
+        x,y,w,h = cv2.boundingRect(mask)
+        alpha = visualization[name+'_fill_alpha']
+        lut = np.rint(np.arange(256)[:,None]*(1-alpha)+np.asarray(colors[name])[None,:]*alpha).astype(np.uint8)
+        fills.append((x,y,w,h,mask[y:y+h,x:x+w],lut.reshape(256,1,3)))
+    keys = [(TITLES['station'], colors['station']), (TITLES['seat'], colors['seat']),
+            ('overlay.person', colors['person']), ('overlay.inside', colors['anchor']),
+            ('overlay.operator', colors['person']), ('overlay.otherPerson', colors['station']),
+            ('overlay.outside', colors['anchor'])]
     return dict(metrics=metrics, scale_x=scale_x, scale_y=scale_y, polygons=polygons,
                 station_segments=_dash_segments(polygons['station'], metrics['dash_length'], metrics['dash_gap']),
-                fill_bounds=bounds, fill_mask=mask[y:y+h, x:x+w], fill_lut=lut.reshape(256, 1, 3),
+                fills=fills, colors=colors,
                 sprites={key: _sprite(translate(key, locale=locale), color, metrics, max(1, width-2*metrics['margin'])) for key, color in keys})
 
 
 def _layer(width, height, config, locale):
     key = (width, height, locale, config.get('revision', 0),
-           json.dumps([config['image_size'], config['regions']], sort_keys=True))
+           json.dumps([config['image_size'], config['regions'], visualization_settings(config)], sort_keys=True))
     with _CACHE_LOCK:
         if key not in _CACHE:
             _CACHE[key] = _build(width, height, config, locale)
@@ -146,35 +151,42 @@ def draw_overlay(frame, persons, config, fresh=True, locale='zh-CN'):
     height, width = frame.shape[:2]
     layer = _layer(width, height, config, locale)
     metrics = layer['metrics']
+    colors = layer['colors']
     display = config.get('display', STYLE['defaults'])
     def xy(point):
         return round(point[0]*layer['scale_x']), round(point[1]*layer['scale_y'])
     region_labels, person_labels, anchor_labels = [], [], []
-    if display['regions']:
-        x, y, w, h = layer['fill_bounds']
+    for name,title in TITLES.items():
+        if not display.get(name,display.get('regions',True)):
+            continue
+        x,y,w,h,mask,lut = layer['fills'][list(TITLES).index(name)]
         if w and h:
-            patch = frame[y:y+h, x:x+w]
-            cv2.copyTo(cv2.LUT(patch, layer['fill_lut']), layer['fill_mask'], patch)
-        for a, b in layer['station_segments']:
-            cv2.line(frame, a, b, COLORS['station'], metrics['line_width'], cv2.LINE_AA)
-        cv2.polylines(frame, [np.asarray(layer['polygons']['seat'], np.int32)], True,
-                      COLORS['seat'], metrics['line_width'], cv2.LINE_AA)
-        for name, title in TITLES.items():
-            x, y = min(layer['polygons'][name], key=lambda p: (p[1], p[0]))
-            region_labels.append((x+metrics['label_gap'], y+metrics['label_gap'], title))
+            patch = frame[y:y+h,x:x+w]
+            cv2.copyTo(cv2.LUT(patch,lut),mask,patch)
+        if name == 'station':
+            for a,b in layer['station_segments']:
+                cv2.line(frame,a,b,colors[name],metrics['line_width'],cv2.LINE_AA)
+        else:
+            cv2.polylines(frame,[np.asarray(layer['polygons'][name],np.int32)],True,
+                          colors[name],metrics['line_width'],cv2.LINE_AA)
+        x,y = min(layer['polygons'][name],key=lambda p:(p[1],p[0]))
+        region_labels.append((x+metrics['label_gap'],y+metrics['label_gap'],title))
     if fresh:
         for person in persons:
             box = person['bbox_xyxy']
             a, b = xy(box[:2]), xy(box[2:])
             if display['boxes']:
                 for origin, horizontal, vertical in corner_segments((*a, *b), metrics):
-                    cv2.line(frame, origin, horizontal, COLORS['person'], metrics['corner_width'], cv2.LINE_AA)
-                    cv2.line(frame, origin, vertical, COLORS['person'], metrics['corner_width'], cv2.LINE_AA)
+                    cv2.line(frame, origin, horizontal, colors['person'], metrics['corner_width'], cv2.LINE_AA)
+                    cv2.line(frame, origin, vertical, colors['person'], metrics['corner_width'], cv2.LINE_AA)
                 label_height = layer['sprites']['overlay.person']['height']
                 label_y = a[1]-label_height-metrics['label_gap']
                 if label_y < metrics['margin']:
                     label_y = a[1]+metrics['label_gap']
-                person_labels.append((a[0]+metrics['label_gap'], label_y, 'overlay.person'))
+                role = 'overlay.person'
+                if 'is_session_operator' in person:
+                    role = 'overlay.operator' if person['is_session_operator'] else 'overlay.otherPerson'
+                person_labels.append((a[0]+metrics['label_gap'], label_y, role))
             if not display['keypoints']:
                 continue
             points = person['keypoints']
@@ -184,14 +196,14 @@ def draw_overlay(frame, persons, config, fresh=True, locale='zh-CN'):
             for i, j in STYLE['skeleton_edges']:
                 if valid(i) and valid(j):
                     cv2.line(frame, xy((points[i]['x'], points[i]['y'])), xy((points[j]['x'], points[j]['y'])),
-                             COLORS['person'], metrics['line_width'], cv2.LINE_AA)
+                             colors['skeleton'], metrics['line_width'], cv2.LINE_AA)
             for i in range(5 if config.get('privacy', {}).get('enabled', True) else 0, len(points)):
                 if valid(i):
-                    cv2.circle(frame, xy((points[i]['x'], points[i]['y'])), metrics['point_radius'], COLORS['person'], -1, cv2.LINE_AA)
+                    cv2.circle(frame, xy((points[i]['x'], points[i]['y'])), metrics['point_radius'], colors['keypoint'], -1, cv2.LINE_AA)
             anchor = person.get('upper_body_anchor')
             if anchor:
                 point = xy(anchor)
-                cv2.circle(frame, point, metrics['anchor_radius'], COLORS['anchor'], metrics['line_width'], cv2.LINE_AA)
+                cv2.circle(frame, point, metrics['anchor_radius'], colors['anchor'], metrics['line_width'], cv2.LINE_AA)
                 key = 'overlay.inside' if point_in_polygon(anchor, config['regions']['seat']) else 'overlay.outside'
                 anchor_labels.append((point[0]+metrics['anchor_radius']+metrics['label_gap'], point[1]+metrics['label_gap'], key))
     for x, y, w, h, key in place_labels(person_labels+anchor_labels+region_labels, layer['sprites'], width, height, metrics):

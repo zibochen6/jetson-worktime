@@ -1,4 +1,6 @@
-import {getJSON, workAction, duration, dashboardView, displayMode, systemMetricsView, currentObservation} from './api.js';
+import {applyVisualization} from './overlay.js';
+import {VideoPlayer} from './video-player.js';
+import {getJSON, workAction, duration, dashboardView, displayMode, systemMetricsView, currentObservation, matchingImage, drawResult} from './api.js';
 import {tr, text, getLanguage, errorDetails} from './i18n.js';
 import {pipelineState} from './pipeline.js';
 
@@ -20,7 +22,7 @@ function fitVideoFrame() {
   const borderWidth = cardBox.width-card.clientWidth;
   const chromeHeight = cardBox.height-frame.height;
   const feed = $('feed');
-  const aspect = feed.naturalWidth > 0 ? feed.naturalWidth/feed.naturalHeight : 16/9;
+  const aspect = feed.videoWidth > 0 ? feed.videoWidth/feed.videoHeight : 16/9;
   const width = Math.min(frame.width, frame.height*aspect);
   if (width <= 0) return;
   if (columns.length === 2) {
@@ -44,6 +46,110 @@ let outputReady = false;
 let actionPending = false;
 let roiConfigured = null;
 let lastStatus = null;
+const ownershipDialog = $('ownershipDialog');
+let ownershipEvidence = null;
+let ownershipSession = null;
+let ownershipRequest = 0;
+let ownershipTimer = null;
+let ownershipSubmitting = false;
+
+function selectedOperator() {
+  return $('ownershipCandidates').querySelector('input:checked')?.value;
+}
+function invalidateOwnershipEvidence() {
+  ownershipEvidence = null;
+  $('submitOwnership').disabled = true;
+}
+async function refreshOwnership() {
+  clearTimeout(ownershipTimer);
+  const request = ++ownershipRequest;
+  try {
+    const [camera, work, envelope] = await Promise.all([
+      getJSON('/api/v1/camera'), getJSON('/api/v1/work/status'), getJSON('/api/v1/observations/latest')]);
+    if (!ownershipDialog.open || request !== ownershipRequest) return;
+    if (!work.active || work.session_id !== ownershipSession || !work.ownership?.needs_confirmation
+        || !currentObservation(camera,envelope)) throw new Error('stale confirmation');
+    const observation = envelope.observation;
+    const image = await matchingImage(observation);
+    if (!ownershipDialog.open || request !== ownershipRequest) return;
+    const selected = selectedOperator();
+    const focusedTrack=document.activeElement?.name==='operator'?document.activeElement.value:null;
+    drawResult($('ownershipCanvas'),image,observation);
+    const ctx = $('ownershipCanvas').getContext('2d');
+    const scale = image.naturalWidth/observation.frame.source_width;
+    const candidates = observation.ownership?.candidates || [];
+    const fieldset = $('ownershipCandidates');
+    fieldset.replaceChildren();
+    const legend = document.createElement('legend');
+    legend.textContent = tr('ownership.choose');
+    fieldset.append(legend);
+    for (const candidate of candidates) {
+      const label = document.createElement('label');
+      const input = document.createElement('input');
+      input.type='radio'; input.name='operator'; input.value=String(candidate.track_id);
+      input.checked=input.value===selected;
+      const name=document.createElement('span');
+      name.textContent=tr('ownership.candidate',{track_id:candidate.track_id});
+      label.append(input,name);fieldset.append(label);
+      const [x,y,right,bottom]=candidate.bbox_xyxy.map(v=>v*scale);
+      const palette=getComputedStyle(document.documentElement);
+      const warning=palette.getPropertyValue('--warning').trim();
+      const background=palette.getPropertyValue('--bg').trim();
+      ctx.strokeStyle=warning;ctx.lineWidth=3;
+      ctx.strokeRect(x,y,right-x,bottom-y);
+      ctx.font='bold 18px sans-serif';ctx.fillStyle=background;
+      const caption=tr('ownership.candidate',{track_id:candidate.track_id});
+      const captionY=Math.max(24,y);
+      ctx.fillRect(x,captionY-23,ctx.measureText(caption).width+12,26);
+      ctx.fillStyle=warning;ctx.fillText(caption,x+6,captionY-4);
+      if(input.value===focusedTrack)input.focus({preventScroll:true});
+    }
+    ownershipEvidence={session_id:work.session_id,observation_id:observation.observation_id,
+      stream_session_id:observation.frame.stream_session_id,config_revision:observation.config_revision};
+    $('submitOwnership').disabled=ownershipSubmitting || !selectedOperator();
+    if (!candidates.length) text('ownershipResult','ownership.noCandidates');
+    else $('ownershipResult').textContent='';
+  } catch (error) {
+    if (request !== ownershipRequest) return;
+    invalidateOwnershipEvidence();
+    text('ownershipResult','ownership.staleConfirmation');
+  } finally {
+    if (ownershipDialog.open && request===ownershipRequest && !ownershipSubmitting)
+      ownershipTimer=setTimeout(refreshOwnership,750);
+  }
+}
+$('confirmReturn').onclick=()=>{
+  ownershipSession=lastStatus?.work.session_id;
+  invalidateOwnershipEvidence();
+  $('actions').hidePopover();
+  ownershipDialog.showModal();
+  refreshOwnership();
+};
+$('closeOwnership').onclick=()=>ownershipDialog.close();
+ownershipDialog.addEventListener('close',()=>{
+  clearTimeout(ownershipTimer);ownershipRequest++;invalidateOwnershipEvidence();
+  $('confirmReturn').focus();
+});
+$('refreshOwnership').onclick=refreshOwnership;
+$('ownershipCandidates').onchange=()=>{
+  $('submitOwnership').disabled=ownershipSubmitting || !ownershipEvidence || !selectedOperator();
+};
+$('submitOwnership').onclick=async()=>{
+  if (!ownershipEvidence || !selectedOperator() || ownershipSubmitting) return;
+  ownershipSubmitting=true;clearTimeout(ownershipTimer);ownershipRequest++;
+  $('submitOwnership').disabled=true;
+  try {
+    await workAction('confirm_return',{...ownershipEvidence,track_id:Number(selectedOperator())});
+    ownershipDialog.close();
+    text('actionResult','ownership.confirmed');
+  } catch (error) {
+    invalidateOwnershipEvidence();
+    const details=errorDetails(error);text('ownershipResult',details.key,details.params);
+  } finally {
+    ownershipSubmitting=false;
+    if (ownershipDialog.open) ownershipTimer=setTimeout(refreshOwnership,750);
+  }
+};
 let mode = 'standard';
 try { mode = displayMode(localStorage.getItem('worktime.displayMode')); } catch {}
 function applyMode(value) {
@@ -144,29 +250,30 @@ function textPause() {
   label.dataset.i18n=paused?'video.resume':'video.pause';
   label.textContent=tr(label.dataset.i18n);
 }
+const player = new VideoPlayer($('feed'),$('feedFallback'),(ready,retry=false) => {
+  frameReady=ready;
+  if (retry) started=false;
+  if (ready) requestAnimationFrame(fitVideoFrame);
+  $('empty').hidden=!paused && outputReady && ready;
+});
 function resetStream() {
-  $('feed').removeAttribute('src');
+  player.stop();
   started = false;
   frameReady = false;
   streamSession = null;
 }
 function connect() {
-  if (!paused && outputReady && !started) {
+  if (!paused && !document.hidden && outputReady && !started) {
     streamSession = lastStatus?.camera.stream_session_id ?? null;
-    $('feed').src = '/stream.mjpg?lang=' + getLanguage() + '&t=' + Date.now();
     started = true;
+    player.start(getLanguage(),lastStatus?.camera.video?.webrtc_available === true);
   }
 }
-$('feed').onload = () => {
-  frameReady = true;
-  requestAnimationFrame(fitVideoFrame);
-  if (!paused && outputReady) $('empty').hidden = true;
-};
-$('feed').onerror = () => {
-  started = false;
-  frameReady = false;
-  $('empty').hidden = false;
-};
+document.addEventListener('visibilitychange', () => {
+  resetStream();
+  if (!document.hidden) connect();
+});
+window.addEventListener('pagehide', () => resetStream());
 $('pause').onclick = () => {
   paused = !paused;
   textPause();
@@ -280,6 +387,8 @@ function render() {
   renderDashboard();
   textPause();
   if (!lastStatus) {
+    text('operatorIdentity','ownership.unbound');
+    $('ownershipProgress').hidden=true;
     text('emptyTitle', 'camera.deviceLost');
     text('emptyHint', 'camera.retryHint');
     text('connection', 'camera.deviceOffline');
@@ -294,11 +403,18 @@ function render() {
     return;
   }
   const {camera, work} = lastStatus;
+  const owner=work.ownership;
+  if(owner?.operator_id)text('operatorIdentity','ownership.operator',{
+    operator:owner.operator_id.slice(0,8),track_id:owner.track_id??'—'});
+  else text('operatorIdentity','ownership.unbound');
+  $('ownershipProgress').hidden=!work.active || owner?.end_remaining_seconds==null;
+  if(!$('ownershipProgress').hidden)text('ownershipProgress','ownership.progress',{
+    elapsed:duration(owner.absent_seconds),remaining:duration(Math.ceil(owner.end_remaining_seconds))});
   $('setupNotice').hidden = roiConfigured ?? !work.roi_provisional;
   text('connection', cameraOnline ? 'camera.connected' : 'camera.disconnected');
   $('connection').classList.toggle('online', cameraOnline);
   text('privacy', camera.privacy_applied ? 'privacy.on' : 'privacy.off');
-  if (cameraOnline) text('streamInfo', 'v4.outputInfo', {fps:camera.output_fps ?? '—'});
+  if (cameraOnline) { $('streamInfo').textContent=player.summary(); delete $('streamInfo').dataset.i18n; }
   else text('streamInfo', 'camera.waiting');
   text('deviceInfo', 'config.version', {revision:camera.config_revision ?? 0});
   if (paused) {
@@ -335,6 +451,7 @@ async function update() {
         const settings = await getJSON('/api/v1/settings');
         if (settings.revision === camera.config_revision) {
           revision = settings.revision;
+          applyVisualization(settings.visualization);
           roiConfigured = settings.roi_configured;
         }
       } catch { roiConfigured = null; }
@@ -348,6 +465,7 @@ async function update() {
     document.querySelector('[data-action="end"]').disabled = actionPending || !work.active;
     document.querySelector('[data-action="review"]').disabled = actionPending || !work.session_id;
     document.querySelector('[data-action="confirm_camera"]').disabled = actionPending || !outputReady;
+    $('confirmReturn').disabled=actionPending || !outputReady || !work.active || !work.ownership?.needs_confirmation;
   } catch {
     cameraOnline = false;
     outputReady = false;
@@ -359,6 +477,7 @@ async function update() {
     for (const id of ['workTime','restTime','pendingTime','unknownTime']) $(id).textContent = '—';
     for (const button of document.querySelectorAll('[data-action]')) button.disabled = true;
     $('snapshot').disabled = true;
+    $('confirmReturn').disabled=true;
   }
   setTimeout(update, 1000);
 }

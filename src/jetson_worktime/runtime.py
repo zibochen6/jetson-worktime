@@ -5,7 +5,7 @@ import cv2, torch, yaml, psutil
 from ultralytics import YOLO
 from .video import VideoReader
 from .roi import observe_and_draw
-from .behavior import SessionEngine,classify
+from .behavior import SessionEngine
 from .detection import DETECTION_DEFAULTS, detection_settings, filter_persons, TRACKING_CONFIDENCE, KEYPOINT_EXTRACTION_FLOOR
 from .settings import SettingsStore, TIMING_KEYS
 from .media import protect_frame, RedactedRecorder
@@ -53,6 +53,7 @@ def main():
     output=Path(args.output or cfg['output_dir']);output.mkdir(parents=True,exist_ok=True)
     # One isolated directory per real run avoids overwriting previous evidence.
     run_id=uuid.uuid4().hex; started=time.monotonic_ns()
+    if behavior_engine:behavior_engine.run_id=run_id
     stats={'run_id':run_id,'input_type':source['type'],'decoder':'nvv4l2decoder','processed_frames':0,'received_frames':0,'overwritten_frames':0,'sample_skipped_frames':0,'timeouts':0,'reconnections':0,'sessions':[], 'status':'RUNNING','latency_definition':'local decoded-frame callback to GPU completion; not camera exposure latency','resources':{}}
     stop=threading.Event();lock=threading.Lock();state={'reader':None,'session_started_ns':started};writer=None;model=YOLO(cfg['model']['path'])
     recorder=RedactedRecorder(output, sample_hz=source['sample_hz']) if args.record_raw else None
@@ -95,7 +96,7 @@ def main():
                                 behavior_engine.interrupt(behavior_engine.last_obs or 0,'configuration_changed')
                                 completed_sessions=behavior_engine.completed
                                 pending_events=behavior_engine.events
-                                behavior_engine=SessionEngine(effective_config)
+                                behavior_engine=SessionEngine(effective_config,run_id=run_id)
                                 behavior_engine.completed=completed_sessions
                                 behavior_engine.events=pending_events
                             else:
@@ -120,11 +121,15 @@ def main():
                         # Visualization is built from the privacy-protected source after inference.
                         record={'run_id':run_id,'frame_id':current_frame_id,'source_id':cfg.get('source_id','station-1'),**meta,'pts_ns':pts,'receive_monotonic_ns':received,'inference_started_monotonic_ns':infer_started,'inference_complete_monotonic_ns':done,'local_processing_ms':(done-infer_started)/1e6,'local_receive_to_result_ms':(done-received)/1e6,'width':frame.shape[1],'height':frame.shape[0],'color_format':'BGR','stream_health':'healthy','observation_valid':True,'persons':persons,'workpiece':'UNKNOWN','activity':'UNKNOWN','config_revision':behavior_config['revision'],'privacy_applied':behavior_config['privacy']['enabled'],'detection':detection_settings(behavior_config)}
                         if behavior_engine:
-                            label,reason,_=classify(persons,frame.shape[1],frame.shape[0],behavior_config)
                             if behavior_epoch is None:behavior_epoch=received/1e9-(pts/1e9 if pts is not None else 0)
                             behavior_time=received/1e9 if rtsp or pts is None else behavior_epoch+pts/1e9
-                            behavior_engine.observe(behavior_time,label,session,now=time.monotonic() if rtsp else behavior_time,reason=reason)
+                            behavior_engine.observe_persons(behavior_time,persons,frame.shape[1],frame.shape[0],session,
+                                now=time.monotonic() if rtsp else behavior_time,sequence=meta['receive_sequence'])
+                            persons=behavior_engine.persons
+                            record['persons']=persons
+                            record['behavior']=behavior_engine.raw
                             record['work_session']=behavior_engine.snapshot(behavior_time)
+                            record['ownership']=record['work_session']['ownership']
                         with settings_store.output_policy() as policy:
                             if policy['revision']!=behavior_config['revision']:
                                 continue
