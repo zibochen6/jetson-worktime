@@ -194,3 +194,41 @@ class CheckpointTests(unittest.TestCase):
                 with self.assertRaises(OSError):save_checkpoint(root,source,4)
             self.assertEqual(find_checkpoint(root).name,'previous.pt')
             self.assertEqual(find_checkpoint(root).read_bytes(),b'epoch-three')
+
+class MultiClassTests(StudioTests):
+    def test_multiclass_export_and_snapshot_names_are_frozen(self):
+        import yaml
+        ds=self.make_dataset();ds=self.studio.update_classes(ds['id'],dict(action='add',name='second',expected_revision=ds['revision']))
+        for im in self.studio.dataset(ds['id'])['images']:
+            self.studio.annotate(ds['id'],im['id'],dict(boxes=[[10,10,30,30,0],[40,40,60,60,1]],annotated=True,expected_revision=im['revision']))
+        ds=self.studio.dataset(ds['id']);snap=self.studio.snapshot(ds['id'],dict(expected_revision=ds['revision']))
+        self.assertEqual(yaml.safe_load((Path(snap['directory'])/'data.yaml').read_text())['names'],{0:'module',1:'second'})
+        for p in (Path(snap['directory'])/'labels').rglob('*.txt'):self.assertEqual([l.split()[0] for l in p.read_text().splitlines()],['0','1'])
+        ds=self.studio.update_classes(ds['id'],dict(action='rename',class_id=1,name='renamed',expected_revision=ds['revision']))
+        with self.assertRaises(StudioError):self.studio.update_classes(ds['id'],dict(action='delete',class_id=1,expected_revision=ds['revision']))
+        self.assertEqual(yaml.safe_load((Path(snap['directory'])/'data.yaml').read_text())['names'][1],'second')
+
+    def test_class_ids_are_not_reused_and_unknown_labels_rejected(self):
+        ds=self.make_dataset();ds=self.studio.update_classes(ds['id'],dict(action='add',name='unused',expected_revision=ds['revision']))
+        ds=self.studio.update_classes(ds['id'],dict(action='delete',class_id=1,expected_revision=ds['revision']))
+        ds=self.studio.update_classes(ds['id'],dict(action='add',name='third',expected_revision=ds['revision']))
+        self.assertEqual(set(ds['classes']),{'0','2'})
+        im=self.studio.dataset(ds['id'])['images'][0]
+        with self.assertRaises(StudioError):self.studio.annotate(ds['id'],im['id'],dict(boxes=[[1,1,3,3,1]],annotated=True,expected_revision=im['revision']))
+        with self.assertRaises(StudioError):self.studio.update_classes(ds['id'],dict(action='rename',class_id=2,name='MODULE',expected_revision=ds['revision']))
+
+    def test_download_unknown_size_reports_verification_and_checksum_failure(self):
+        import io
+        from unittest.mock import patch
+        payload=b'official-test-model';(self.root/'configs').mkdir(exist_ok=True)
+        (self.root/'configs/model-catalog.json').write_text(json.dumps({'yolo11n':{'sha256':hashlib.sha256(payload).hexdigest()}}))
+        states=[];original=self.store.put
+        def record(kind,value,*args,**kwargs):
+            if kind=='download':states.append(value['state'])
+            return original(kind,value,*args,**kwargs)
+        for data,expected in [(payload,'completed'),(b'corrupted','failed')]:
+            source=io.BytesIO(data);source.headers={}
+            item=self.store.put('download',dict(id=__import__('uuid').uuid4().hex,catalog_id='yolo11n',state='queued',bytes=0,total=None))
+            with patch('urllib.request.urlopen',return_value=source),patch.object(self.studio,'import_model',return_value={'id':'verified','sha256':'test'}),patch.object(self.store,'put',side_effect=record):self.studio._download(item)
+            result=self.store.get('download',item['id']);self.assertEqual(result['state'],expected);self.assertIsNone(result['total']);self.assertEqual(result['bytes'],len(data))
+        self.assertIn('validating',states)

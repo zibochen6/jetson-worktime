@@ -2224,6 +2224,12 @@
           },
           "class_name": {
             "type": "string"
+          },
+          "classes": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
           }
         }
       },
@@ -2256,7 +2262,8 @@
                 "type": "number"
               },
               "minItems": 4,
-              "maxItems": 4
+              "maxItems": 5,
+              "description": "x1,y1,x2,y2,class_id; old 4-value boxes belong to class 0"
             }
           },
           "annotated": {
@@ -4024,6 +4031,62 @@
                 "type": "object"
               }
             }
+          }
+        }
+      }
+    },
+    "/api/v1/datasets/{dataset_id}/classes": {
+      "put": {
+        "summary": "Add, rename or delete a versioned project class",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "dataset_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "expected_revision",
+                  "action"
+                ],
+                "properties": {
+                  "expected_revision": {
+                    "type": "integer"
+                  },
+                  "action": {
+                    "enum": [
+                      "add",
+                      "rename",
+                      "delete"
+                    ]
+                  },
+                  "class_id": {
+                    "type": "integer"
+                  },
+                  "name": {
+                    "type": "string",
+                    "maxLength": 100
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated project with stable class IDs"
+          },
+          "409": {
+            "description": "Version conflict or referenced class"
           }
         }
       }

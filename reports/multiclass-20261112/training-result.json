@@ -1,0 +1,124 @@
+{
+  "dataset_id": "69f7bd103a5b43e5baaa7be4eb9d9b7f",
+  "snapshot": {
+    "id": "f0009539273d47669447cb2f80b2abd9",
+    "dataset_id": "69f7bd103a5b43e5baaa7be4eb9d9b7f",
+    "dataset_revision": 8,
+    "project_classes": {
+      "0": "red_block",
+      "1": "blue_block"
+    },
+    "class_mapping": {
+      "0": 0,
+      "1": 1
+    },
+    "classes": {
+      "0": "red_block",
+      "1": "blue_block"
+    },
+    "counts": {
+      "train": 1,
+      "val": 1,
+      "test": 1
+    },
+    "ratios": [
+      80,
+      10,
+      10
+    ],
+    "seed": 42,
+    "sha256": "d623f55dabed08d7ec540686ff31b19a7cb678a1212d10faf24a85bcc81ae492",
+    "created_at": 1794473460.0834775,
+    "revision": 1,
+    "updated_at": 1794473460.083843
+  },
+  "job": {
+    "id": "957e0c52cc4248a98eefe65afea5e827",
+    "base_model_id": "e03975578e3845bd80add9719a206939",
+    "base_sha256": "0ebbc80d4a7680d14987a577cd21342b65ecfd94632bd9a8da63ae6417644ee1",
+    "snapshot_id": "f0009539273d47669447cb2f80b2abd9",
+    "snapshot_sha256": "d623f55dabed08d7ec540686ff31b19a7cb678a1212d10faf24a85bcc81ae492",
+    "parameters": {
+      "epochs": 2,
+      "lr0": 0.001,
+      "batch": 1,
+      "optimizer": "AdamW",
+      "warmup_bias_lr": 0.0,
+      "imgsz": 640,
+      "workers": 0,
+      "seed": 42,
+      "patience": 20,
+      "device": 0,
+      "amp": true
+    },
+    "state": "completed",
+    "stage": "completed",
+    "progress": 1.0,
+    "epoch": 2,
+    "created_at": 1794473460.1262522,
+    "control_revision": 1,
+    "metrics": {
+      "metrics/precision(B)": 0.00726,
+      "metrics/recall(B)": 1.0,
+      "metrics/mAP50(B)": 0.51305,
+      "metrics/mAP50-95(B)": 0.46019,
+      "val/box_loss": 0.64299,
+      "val/cls_loss": 2.68677,
+      "val/dfl_loss": 0.95848,
+      "train/box_loss": 0.69417,
+      "train/cls_loss": 2.90618,
+      "train/dfl_loss": 0.89581
+    },
+    "error": null,
+    "command": null,
+    "stop_requested": null,
+    "checkpoint": "resume.pt",
+    "revision": 15,
+    "updated_at": 1794473489.10974,
+    "effective_amp": true,
+    "started_at": 1794473469.6582897,
+    "elapsed_seconds": 7.607160124999837,
+    "batch_index": 1,
+    "batches_total": 1,
+    "losses": {
+      "train/box_loss": 0.69417,
+      "train/cls_loss": 2.90618,
+      "train/dfl_loss": 0.89581
+    },
+    "memory_allocated_bytes": 113289216,
+    "peak_memory_allocated_bytes": 275430400,
+    "lr": {
+      "lr/pg0": 0.0,
+      "lr/pg1": 0.0,
+      "lr/pg2": 0.0
+    },
+    "eta_seconds": 0.0,
+    "training_complete": true,
+    "result_model_id": "7b6b9e954f35406e9710fa67850ee680",
+    "test_metrics": {
+      "metrics/precision(B)": 0.0072337962962962955,
+      "metrics/recall(B)": 1.0,
+      "metrics/mAP50(B)": 0.5105921052631579,
+      "metrics/mAP50-95(B)": 0.45953289473684206,
+      "fitness": 0.46463881578947364
+    },
+    "finished_at": 1794473489.108828
+  },
+  "model": {
+    "id": "7b6b9e954f35406e9710fa67850ee680",
+    "name": "Multiclass validation (synthetic) / 957e0c52",
+    "role": "material",
+    "task": "detect",
+    "classes": {
+      "0": "red_block",
+      "1": "blue_block"
+    },
+    "sha256": "4f132e7dca14339f9f38cbfe73369d4a60ce5a2bb0e3e0105747c4a13785fee7",
+    "builtin": false,
+    "installed": true,
+    "source": "trained",
+    "created_at": 1794473489.105481,
+    "revision": 1,
+    "updated_at": 1794473489.1065252
+  }
+}

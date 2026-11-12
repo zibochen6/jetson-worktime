@@ -35,7 +35,7 @@ class Studio:
         self.verified = {}
         if behavior is not None:
             for item in self.store.list('download'):
-                if item['state'] in ('queued','running'):
+                if item['state'] in ('queued','running','validating'):
                     item.update(state='interrupted',error='interrupted');self.store.put('download',item)
         path = self.root/'models/yolo11n-pose.pt'
         try:
@@ -119,7 +119,7 @@ class Studio:
             ready=next((m for m in self.store.list('model') if m.get('source')=='official' and m['name']==CATALOG[name]['name'] and Path(m['path']).exists() and digest(m['path'])==m['sha256']),None)
             if ready:
                 return public(self.store.put('download',dict(id=uid(),catalog_id=name,state='completed',bytes=Path(ready['path']).stat().st_size,total=Path(ready['path']).stat().st_size,model_id=ready['id'],sha256=ready['sha256'])))
-            old=next((d for d in self.store.list('download') if d['catalog_id']==name and d['state'] in ('queued','running')),None)
+            old=next((d for d in self.store.list('download') if d['catalog_id']==name and d['state'] in ('queued','running','validating')),None)
             if old: return public(old)
             item=self.store.put('download',dict(id=uid(),catalog_id=name,state='queued',bytes=0,total=None,created_at=time.time()))
             threading.Thread(target=self._download,args=(item,),daemon=True).start()
@@ -141,6 +141,7 @@ class Studio:
                     if item['bytes']>512*1024*1024: raise StudioError('fileSize')
                     if time.monotonic()-last>1:
                         self.store.put('download',item);last=time.monotonic()
+            item['state']='validating';self.store.put('download',item)
             # Release checksum manifest is bundled with the application, never supplied by the client.
             manifest=json.loads((self.root/'configs/model-catalog.json').read_text())
             if digest(path)!=manifest[item['catalog_id']]['sha256']: raise StudioError('checksum')
@@ -155,12 +156,44 @@ class Studio:
         name=request.get('name','').strip();label=request.get('class_name','').strip()
         if not name or len(name)>100 or not label or len(label)>100:
             raise StudioError('datasetInvalid')
-        return self.store.put('dataset',dict(id=uid(),name=name,class_name=label,created_at=time.time()))
+        return self.store.put('dataset',dict(id=uid(),name=name,class_name=label,classes={'0':label},next_class_id=1,created_at=time.time()))
 
     def dataset(self, ident):
         ds=self.store.get('dataset',ident)
+        ds['classes']=self.dataset_classes(ds)
         ds['images']=[public(v) for v in self.store.list('image') if v['dataset_id']==ident and not v.get('deleted')]
         return ds
+
+    @staticmethod
+    def dataset_classes(ds):
+        return ds.get('classes',{'0':ds['class_name']})
+
+    def update_classes(self, ident, request):
+        with self.store.transaction() as db:
+            ds=self.store.get('dataset',ident,db)
+            if type(request.get('expected_revision')) is not int or request.get('expected_revision')!=ds['revision']: raise StudioError('conflict',409)
+            if not isinstance(request.get('name',''),str): raise StudioError('classInvalid')
+            if request.get('action') in ('rename','delete') and type(request.get('class_id')) is not int: raise StudioError('classMissing')
+            classes=deepcopy(self.dataset_classes(ds));action=request.get('action')
+            name=request.get('name','').strip();key=str(request.get('class_id'))
+            if action in ('add','rename'):
+                if not name or len(name)>100 or any(v.casefold()==name.casefold() for k,v in classes.items() if action=='add' or k!=key): raise StudioError('classInvalid')
+                if action=='add':
+                    next_id=ds.get('next_class_id',max(map(int,classes),default=-1)+1)
+                    key=str(next_id);ds['next_class_id']=next_id+1
+                elif key not in classes: raise StudioError('classMissing')
+                classes[key]=name
+            elif action=='delete':
+                if key not in classes: raise StudioError('classMissing')
+                if len(classes)==1: raise StudioError('classReferenced')
+                for im in self.store.list('image',db):
+                    if im['dataset_id']==ident and not im.get('deleted') and any(str(b[4] if len(b)==5 else 0)==key for b in im['boxes']): raise StudioError('classReferenced')
+                for snap in self.store.list('snapshot',db):
+                    if snap['dataset_id']==ident and key in snap.get('project_classes',{'0':ds['class_name']}): raise StudioError('classReferenced')
+                del classes[key]
+            else: raise StudioError('request')
+            ds['classes']=classes
+            return self.store.put('dataset',ds,request['expected_revision'],db)
 
     def add_image(self, ident, data, group, config, provenance=None, protected=False):
         import cv2
@@ -225,10 +258,13 @@ class Studio:
         with self.store.transaction() as db:
             image=self.store.get('image',image_id,db)
             if image['dataset_id']!=dataset_id or image.get('deleted'): raise StudioError('notFound',404)
+            ds=self.store.get('dataset',dataset_id,db);classes=self.dataset_classes(ds)
             for b in boxes:
-                if (not isinstance(b,list) or len(b)!=4 or any(not isinstance(v,(float,int)) or isinstance(v,bool) or not math.isfinite(v) for v in b)
+                if (not isinstance(b,list) or len(b) not in (4,5) or any(not isinstance(v,(float,int)) or isinstance(v,bool) or not math.isfinite(v) for v in b[:4])
                     or not 0<=b[0]<b[2]<=image['width'] or not 0<=b[1]<b[3]<=image['height']):
                     raise StudioError('annotationInvalid')
+                if len(b)==4 and (len(classes)!=1 or '0' not in classes): raise StudioError('annotationInvalid')
+                if len(b)==5 and (type(b[4]) is not int or str(b[4]) not in classes): raise StudioError('classMissing')
             image.update(boxes=deepcopy(boxes),annotated=request['annotated'])
             image=self.store.put('image',image,request.get('expected_revision'),db)
             ds=self.store.get('dataset',dataset_id,db);self.store.put('dataset',ds,db=db)
@@ -266,6 +302,9 @@ class Studio:
             for key in sorted(keys,key=lambda k:len(groups[k]),reverse=True):
                 name=min(splits,key=lambda n:len(splits[n])/(len(images)*ratios[list(splits).index(n)]/100))
                 splits[name].extend(groups[key])
+            project_classes=self.dataset_classes(ds)
+            mapping={int(k):i for i,k in enumerate(sorted(project_classes,key=int))}
+            names={mapping[int(k)]:v for k,v in project_classes.items()}
             snap_id=uid();directory=self.store.data/'datasets'/ident/'snapshots'/snap_id
             for name,items in splits.items():
                 lines=[]
@@ -273,14 +312,17 @@ class Studio:
                     target=directory/'images'/name/(im['id']+'.jpg')
                     atomic(target,Path(im['path']).read_bytes())
                     labels=[]
-                    for x1,y1,x2,y2 in im['boxes']:
-                        labels.append(f'0 {(x1+x2)/2/im["width"]:.8f} {(y1+y2)/2/im["height"]:.8f} {(x2-x1)/im["width"]:.8f} {(y2-y1)/im["height"]:.8f}')
+                    mapped=[]
+                    for box in im['boxes']:
+                        x1,y1,x2,y2=box[:4];class_id=mapping[box[4] if len(box)==5 else 0]
+                        mapped.append([x1,y1,x2,y2,class_id])
+                        labels.append(f'{class_id} {(x1+x2)/2/im["width"]:.8f} {(y1+y2)/2/im["height"]:.8f} {(x2-x1)/im["width"]:.8f} {(y2-y1)/im["height"]:.8f}')
                     atomic(directory/'labels'/name/(im['id']+'.txt'),('\n'.join(labels)+'\n').encode())
-                    lines.append(dict(image_id=im['id'],sha256=im['sha256'],group_id=im['group_id'],boxes=im['boxes'],width=im['width'],height=im['height']))
+                    lines.append(dict(image_id=im['id'],sha256=im['sha256'],group_id=im['group_id'],boxes=mapped,width=im['width'],height=im['height']))
                 splits[name]=lines
             import yaml
-            atomic(directory/'data.yaml',yaml.safe_dump(dict(path=str(directory),train='images/train',val='images/val',test='images/test',names={0:ds['class_name']}),allow_unicode=True).encode())
+            atomic(directory/'data.yaml',yaml.safe_dump(dict(path=str(directory),train='images/train',val='images/val',test='images/test',names=names),allow_unicode=True).encode())
             manifest=json.dumps(splits,sort_keys=True).encode();atomic(directory/'manifest.json',manifest)
             snap=dict(id=snap_id,dataset_id=ident,dataset_revision=ds['revision'],directory=str(directory),
-                counts={k:len(v) for k,v in splits.items()},ratios=ratios,seed=42,sha256=hashlib.sha256(manifest).hexdigest(),created_at=time.time())
+                project_classes=project_classes,class_mapping=mapping,classes=names,counts={k:len(v) for k,v in splits.items()},ratios=ratios,seed=42,sha256=hashlib.sha256(manifest).hexdigest(),created_at=time.time())
             return self.store.put('snapshot',snap,db=db)

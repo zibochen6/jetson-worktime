@@ -72,6 +72,7 @@ class StudioHTTP:
         if len(p)>=2 and p[0]=='datasets':
             ident=p[1]
             if len(p)==2 and method=='GET': return s.dataset(ident)
+            if p[2:]==['classes'] and method=='PUT': return s.update_classes(ident,body())
             if len(p)==3 and p[2]=='images' and method=='POST':
                 if s.active_job(): raise StudioError('busy',409)
                 length=int(h.headers.get('Content-Length','0'))

@@ -178,13 +178,16 @@ def resource_preflight(model, snapshot, params):
         if image is None: raise StudioError('imageInvalid')
         h,w=image.shape[:2]
         images.append(cv2.resize(image,(640,640))[...,::-1].copy())
-        for x1,y1,x2,y2 in entry['boxes']:
-            indices.append(n);classes.append([0]);boxes.append([(x1+x2)/2/w,(y1+y2)/2/h,(x2-x1)/w,(y2-y1)/h])
+        for box in entry['boxes']:
+            x1,y1,x2,y2=box[:4]
+            indices.append(n);classes.append([box[4] if len(box)==5 else 0]);boxes.append([(x1+x2)/2/w,(y1+y2)/2/h,(x2-x1)/w,(y2-y1)/h])
     batch=dict(img=torch.from_numpy(np.stack(images).transpose(0,3,1,2)).cuda().float()/255,
         batch_idx=torch.tensor(indices,device='cuda',dtype=torch.float32),
         cls=torch.tensor(classes,device='cuda',dtype=torch.float32).reshape(-1,1),
         bboxes=torch.tensor(boxes,device='cuda',dtype=torch.float32).reshape(-1,4))
-    probe=DetectionModel(model.model.yaml,nc=1,verbose=False).cuda().train()
+    import yaml
+    names=yaml.safe_load((Path(snapshot['directory'])/'data.yaml').read_text())['names']
+    probe=DetectionModel(model.model.yaml,nc=len(names),verbose=False).cuda().train()
     # Loss construction needs the same hyperparameters as the real trainer.
     from ultralytics.cfg import get_cfg
     probe.args=get_cfg()

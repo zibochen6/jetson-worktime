@@ -49,3 +49,9 @@ test('capture requires a fresh business camera and blocks training, stale or fai
  const {captureCameraReady}=await import('../public/studio.js');assert.equal(captureCameraReady({status:'online',algorithm_fresh:true,operating_mode:'business'}),true);
  for(const c of [null,{status:'reconnecting'},{status:'online',algorithm_fresh:false},{status:'online',algorithm_error:'failed'},{status:'online',operating_mode:'training'}])assert.equal(captureCameraReady(c),false);
 });
+
+test('annotation class changes and undo preserve coordinates and labels',async()=>{
+ const {BoxAnnotator}=await import('../public/annotation.js');const canvas={addEventListener(){}};let changes=0;
+ const a=new BoxAnnotator(canvas,()=>changes++);a.draw=()=>{};a.classes={0:'part',1:'box'};a.boxes=[[1,2,20,30,0]];a.selected=0;a.setClass(1);assert.deepEqual(a.boxes[0],[1,2,20,30,1]);a.undo();assert.deepEqual(a.boxes[0],[1,2,20,30,0]);assert.equal(changes,2);
+});
+test('new-box mode allows overlapping annotations with the selected class',async()=>{const {BoxAnnotator}=await import('../public/annotation.js');const a=new BoxAnnotator({addEventListener(){},setPointerCapture(){},getBoundingClientRect(){return {width:100}}},()=>{});a.draw=()=>{};a.image={};a.classes={0:'a',1:'b'};a.classId=1;a.size=[100,100];a.boxes=[[0,0,90,90,0]];a.point=()=>[10,10];a.beginBox();a.down({button:0,pointerId:1,preventDefault(){}});assert.equal(a.boxes.length,2);assert.equal(a.boxes[1][4],1);});

@@ -2276,8 +2276,8 @@
     "en": "Running"
   },
   "studio.state.validating": {
-    "zh-CN": "独立测试中",
-    "en": "Testing"
+    "zh-CN": "校验与兼容检查中",
+    "en": "Verifying checksum and compatibility"
   },
   "studio.state.saving": {
     "zh-CN": "保存结果",
@@ -2502,5 +2502,57 @@
   "studio.newProject": {
     "zh-CN": "新建训练项目",
     "en": "New training project"
+  },
+  "studio.currentClass": {
+    "zh-CN": "当前类别／选中框类别",
+    "en": "Current / selected box class"
+  },
+  "studio.className": {
+    "zh-CN": "类别名称",
+    "en": "Class name"
+  },
+  "studio.addClass": {
+    "zh-CN": "添加类别",
+    "en": "Add class"
+  },
+  "studio.renameClass": {
+    "zh-CN": "重命名",
+    "en": "Rename"
+  },
+  "studio.deleteClass": {
+    "zh-CN": "删除类别",
+    "en": "Delete class"
+  },
+  "studio.previousImage": {
+    "zh-CN": "上一张 A",
+    "en": "Previous A"
+  },
+  "studio.nextImage": {
+    "zh-CN": "下一张 D",
+    "en": "Next D"
+  },
+  "studio.annotationKeys": {
+    "zh-CN": "先选择类别再画框。W 新框，A/D 切图，Delete 删除，Ctrl/⌘+Z 撤销，Ctrl/⌘+S 保存。",
+    "en": "Select a class before drawing. W: new box; A/D: images; Delete: remove; Ctrl/⌘+Z: undo; Ctrl/⌘+S: save."
+  },
+  "studio.installedModel": {
+    "zh-CN": "模型已安装，可直接使用",
+    "en": "Model installed and ready"
+  },
+  "studio.retryDownload": {
+    "zh-CN": "重试下载",
+    "en": "Retry download"
+  },
+  "studio.error.classInvalid": {
+    "zh-CN": "类别名称不能为空或重复，最多100个字符",
+    "en": "Use a unique class name of 1–100 characters"
+  },
+  "studio.error.classReferenced": {
+    "zh-CN": "该类别仍被标注或快照引用，或为项目最后一个类别，不能删除",
+    "en": "Class is used by annotations or snapshots, or is the last class; cannot delete"
+  },
+  "studio.newBox": {
+    "zh-CN": "新建框 W",
+    "en": "New box W"
   }
 }
