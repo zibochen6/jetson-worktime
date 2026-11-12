@@ -151,9 +151,9 @@ class DetectionTests(unittest.TestCase):
         service = self.service()
         tracker = MagicMock()
         track = MagicMock(return_value=[SimpleNamespace()])
-        model = SimpleNamespace(predictor=SimpleNamespace(trackers=[tracker]),track=track,
-            model=SimpleNamespace(parameters=lambda:iter([SimpleNamespace(device=SimpleNamespace(type='cuda'))])))
-        fake_torch=SimpleNamespace(cuda=SimpleNamespace(synchronize=lambda:None))
+        model = SimpleNamespace(predict=lambda *a,**k:None,predictor=SimpleNamespace(trackers=[tracker]),track=track,
+            model=SimpleNamespace(predict=lambda *a,**k:None,parameters=lambda:iter([SimpleNamespace(device=SimpleNamespace(type='cuda'))])))
+        fake_torch=SimpleNamespace(cuda=SimpleNamespace(synchronize=lambda:None,empty_cache=lambda:None))
         fake_yolo=SimpleNamespace(YOLO=lambda *args:model)
         first=threading.Event()
         errors=[]
@@ -163,8 +163,6 @@ class DetectionTests(unittest.TestCase):
             published.append((config['revision'],len(people)))
             if len(published)==1:
                 first.set()
-            else:
-                service.stop.set()
             return {'zh-CN':b'zh','en':b'en'}
         def protect(image,people,config):
             candidates.append(len(people))
@@ -185,14 +183,27 @@ class DetectionTests(unittest.TestCase):
         thread=threading.Thread(target=configure,daemon=True)
         with patch.dict('sys.modules',{'torch':fake_torch,'ultralytics':fake_yolo}), \
                 patch.object(runtime,'extract_persons',side_effect=lambda result:[person()]), \
-                patch.object(service,'guard'), \
+                patch.object(service,'guard'), patch.object(service.studio,'model',return_value={'path':'test-model.pt'}), \
                 patch('jetson_worktime.behavior_service.protect_frame',side_effect=protect), \
                 patch('jetson_worktime.behavior_service.encode_overlays',side_effect=encode):
+            # Invalidation replaces the cache, so intercept the class method instead.
+            from jetson_worktime.api import ObservationCache
+            original_class_publish = ObservationCache.publish
+            def class_publish(cache, *args):
+                original_class_publish(cache, *args)
+                if len(published) == 2:
+                    service.stop.set()
+            publisher_patch = patch.object(ObservationCache, 'publish', class_publish)
+            publisher_patch.start()
+            media = threading.Thread(target=service.media_worker)
+            media.start()
             thread.start()
             try:
                 service._inference_loop()
             finally:
                 thread.join(timeout=6)
+                media.join(timeout=3)
+                publisher_patch.stop()
                 service.stop.clear()
         self.assertFalse(errors)
         self.assertEqual(published,[(0,1),(1,0)])

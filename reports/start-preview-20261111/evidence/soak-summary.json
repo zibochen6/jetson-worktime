@@ -1,0 +1,283 @@
+{
+  "duration_seconds": 600.5741745309997,
+  "samples": 600,
+  "errors": [],
+  "fresh_fraction": 1.0,
+  "fps": {
+    "n": 600,
+    "p50": 11.88,
+    "p95": 11.99,
+    "max": 12.08,
+    "min": 11.15
+  },
+  "observation_age_ms": {
+    "n": 600,
+    "p50": 205.16828850000002,
+    "p95": 264.801794,
+    "max": 436.460792,
+    "min": 128.395754
+  },
+  "cpu_percent": {
+    "n": 600,
+    "p50": 174.0,
+    "p95": 182.4,
+    "max": 189.7,
+    "min": 154.7
+  },
+  "rss_mb": {
+    "n": 600,
+    "p50": 1484.669921875,
+    "p95": 1499.90234375,
+    "max": 1523.0,
+    "min": 1439.71875
+  },
+  "first": {
+    "elapsed": 0.02091507899967837,
+    "camera_status": "online",
+    "fps": 12.03,
+    "config_revision": 30,
+    "state": "NOT_STARTED",
+    "reason_code": "reason.missing",
+    "start_confirmation": {
+      "state": "WAITING",
+      "elapsed_seconds": 0.0,
+      "required_seconds": 10,
+      "candidate_track_id": null,
+      "blocker_code": null,
+      "blocker_params": {},
+      "last_reset": null
+    },
+    "camera_changed": false,
+    "runtime_quality": {
+      "receive_interval_ms": {
+        "count": 624,
+        "window_count": 624,
+        "p50": 107.11654,
+        "p95": 131.77794,
+        "max": 323.010199,
+        "over_500ms": 0
+      },
+      "inference_ms": {
+        "count": 557,
+        "window_count": 557,
+        "p50": 63.283489,
+        "p95": 70.425981,
+        "max": 3899.770625,
+        "over_500ms": 0
+      },
+      "receive_to_result_ms": {
+        "count": 557,
+        "window_count": 557,
+        "p50": 88.104158,
+        "p95": 140.731639,
+        "max": 3961.711014,
+        "over_500ms": 0
+      },
+      "result_interval_ms": {
+        "count": 556,
+        "window_count": 556,
+        "p50": 83.602428,
+        "p95": 96.312592,
+        "max": 340.4965,
+        "over_500ms": 0
+      },
+      "observation_write_ms": {
+        "count": 556,
+        "window_count": 556,
+        "p50": 0.330472,
+        "p95": 0.676239,
+        "max": 1.491264,
+        "over_500ms": 0
+      },
+      "jpeg_encode_ms": {
+        "count": 556,
+        "window_count": 556,
+        "p50": 46.284719,
+        "p95": 53.523693,
+        "max": 169.65355,
+        "over_500ms": 0
+      },
+      "jpeg_publish_interval_ms": {
+        "count": 555,
+        "window_count": 555,
+        "p50": 83.091473,
+        "p95": 102.988353,
+        "max": 330.65027,
+        "over_500ms": 0
+      }
+    },
+    "persistence": {
+      "queue_size": 0,
+      "capacity": 256,
+      "written": 556,
+      "error": null
+    },
+    "video": {
+      "webrtc_available": true,
+      "preview": {
+        "width": 640,
+        "max_fps": 10,
+        "bitrate": 600000
+      },
+      "profiles": {
+        "remote": {
+          "width": 640,
+          "max_fps": 10,
+          "bitrate": 600000
+        },
+        "local": {
+          "width": 1920,
+          "max_fps": 12,
+          "bitrate": 4000000
+        }
+      },
+      "viewers": 0,
+      "fallback": {
+        "width": 640,
+        "max_fps": 5,
+        "jpeg_quality": 45
+      },
+      "error": null,
+      "epoch": 0,
+      "runtime_quality": {}
+    },
+    "fresh": true,
+    "age_ms": 128.395754,
+    "observation_id": "74fe6f3e44964da4b3f9bd9d19567989-da878f51e61248ad831044c7a3175e81-1050",
+    "cpu_percent": 188.9,
+    "rss_mb": 1455.39453125
+  },
+  "last": {
+    "elapsed": 599.5910698779999,
+    "camera_status": "online",
+    "fps": 11.81,
+    "config_revision": 30,
+    "state": "NOT_STARTED",
+    "reason_code": "reason.missing",
+    "start_confirmation": {
+      "state": "WAITING",
+      "elapsed_seconds": 0.0,
+      "required_seconds": 10,
+      "candidate_track_id": null,
+      "blocker_code": null,
+      "blocker_params": {},
+      "last_reset": null
+    },
+    "camera_changed": false,
+    "runtime_quality": {
+      "receive_interval_ms": {
+        "count": 7734,
+        "window_count": 2048,
+        "p50": 105.97565,
+        "p95": 135.294591,
+        "max": 288.551302,
+        "over_500ms": 0
+      },
+      "inference_ms": {
+        "count": 7666,
+        "window_count": 2048,
+        "p50": 63.342498,
+        "p95": 78.178469,
+        "max": 360.619302,
+        "over_500ms": 0
+      },
+      "receive_to_result_ms": {
+        "count": 7666,
+        "window_count": 2048,
+        "p50": 90.412207,
+        "p95": 148.948137,
+        "max": 361.454392,
+        "over_500ms": 0
+      },
+      "result_interval_ms": {
+        "count": 7665,
+        "window_count": 2048,
+        "p50": 83.472729,
+        "p95": 105.353588,
+        "max": 396.595349,
+        "over_500ms": 0
+      },
+      "observation_write_ms": {
+        "count": 7665,
+        "window_count": 2048,
+        "p50": 0.315431,
+        "p95": 1.015702,
+        "max": 7.494147,
+        "over_500ms": 0
+      },
+      "jpeg_encode_ms": {
+        "count": 7664,
+        "window_count": 2048,
+        "p50": 45.02866,
+        "p95": 57.860874,
+        "max": 79.897098,
+        "over_500ms": 0
+      },
+      "jpeg_publish_interval_ms": {
+        "count": 7663,
+        "window_count": 2048,
+        "p50": 82.648838,
+        "p95": 113.864302,
+        "max": 329.181305,
+        "over_500ms": 0
+      }
+    },
+    "persistence": {
+      "queue_size": 0,
+      "capacity": 256,
+      "written": 7665,
+      "error": null
+    },
+    "video": {
+      "webrtc_available": true,
+      "preview": {
+        "width": 640,
+        "max_fps": 10,
+        "bitrate": 600000
+      },
+      "profiles": {
+        "remote": {
+          "width": 640,
+          "max_fps": 10,
+          "bitrate": 600000
+        },
+        "local": {
+          "width": 1920,
+          "max_fps": 12,
+          "bitrate": 4000000
+        }
+      },
+      "viewers": 1,
+      "fallback": {
+        "width": 640,
+        "max_fps": 5,
+        "jpeg_quality": 45
+      },
+      "error": null,
+      "epoch": 0,
+      "runtime_quality": {
+        "encoder_submit_ms": {
+          "count": 5018,
+          "window_count": 2048,
+          "p50": 0.672814,
+          "p95": 1.283324,
+          "max": 12.199913,
+          "over_500ms": 0
+        },
+        "video_send_zh-CN_remote_interval_ms": {
+          "count": 5017,
+          "window_count": 2048,
+          "p50": 101.268444,
+          "p95": 111.52745,
+          "max": 5671.076408,
+          "over_500ms": 14
+        }
+      }
+    },
+    "fresh": true,
+    "age_ms": 230.796381,
+    "observation_id": "74fe6f3e44964da4b3f9bd9d19567989-da878f51e61248ad831044c7a3175e81-13016",
+    "cpu_percent": 181.8,
+    "rss_mb": 1498.21875
+  }
+}

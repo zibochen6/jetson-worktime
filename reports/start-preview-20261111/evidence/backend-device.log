@@ -1,0 +1,187 @@
+test_bounded_atomic_pair_and_immutable_public_snapshot (test_api.ApiContractTest) ... ok
+test_freshness_uses_receive_time_and_acceptance_not_query_time (test_api.ApiContractTest) ... ok
+test_lossless_nanoseconds_and_null_pts (test_api.ApiContractTest) ... ok
+test_dedup (test_behavior.DetectionTests) ... ok
+test_regions_multipeople_and_size (test_behavior.DetectionTests) ... ok
+test_61_seconds_entire_absence_is_rest (test_behavior.TimingTests) ... ok
+test_frame_rate_independent (test_behavior.TimingTests) ... ok
+test_late_and_repeated_observations_ignored (test_behavior.TimingTests) ... ok
+test_long_absence_backdated (test_behavior.TimingTests) ... ok
+test_manual_and_review (test_behavior.TimingTests) ... ok
+test_manual_end_holds_until_leave_or_manual_start (test_behavior.TimingTests) ... ok
+test_nearby_does_not_end_session (test_behavior.TimingTests) ... ok
+test_short_59_seconds (test_behavior.TimingTests) ... ok
+test_short_missing_bridges (test_behavior.TimingTests) ... ok
+test_stable_start_backdated (test_behavior.TimingTests) ... ok
+test_stream_change_and_interruption (test_behavior.TimingTests) ... ok
+test_tick_does_not_extend_work_forever (test_behavior.TimingTests) ... ok
+test_unknown_does_not_count (test_behavior.TimingTests) ... ok
+test_adopting_legacy_source_persists_then_repeat_is_noop (test_camera_sources.CameraSourceTests) ... ok
+test_credentials_and_retention (test_camera_sources.CameraSourceTests) ... ok
+test_enumeration_filters_formats_and_uses_stable_identity (test_camera_sources.CameraSourceTests) ... ok
+test_failed_candidate_or_persist_keeps_old_reader (test_camera_sources.CameraSourceTests) ... ok
+test_production_http_test_and_switch_routes (test_camera_sources.CameraSourceTests) ... ok
+test_switch_finishes_once_invalidates_and_persists (test_camera_sources.CameraSourceTests) ... ok
+test_test_does_not_switch_and_token_is_bound (test_camera_sources.CameraSourceTests) ... ok
+test_extract_person_scores_and_coordinate_floor (test_detection.DetectionTests) ... ok
+test_failed_persistence_keeps_active_session_and_settings (test_detection.DetectionTests) ... ok
+test_keypoint_threshold_affects_decisions_and_privacy_is_independent (test_detection.DetectionTests) ... ok
+test_legacy_defaults_and_independent_privacy_threshold_survive_restart (test_detection.DetectionTests) ... ok
+test_legacy_subfloor_keypoints_preserve_effective_behavior (test_detection.DetectionTests) ... ok
+test_save_ends_once_invalidates_and_keeps_event_thresholds (test_detection.DetectionTests) ... ok
+test_score_filter_is_inclusive_and_rejects_unknown_scores (test_detection.DetectionTests) ... ok
+test_validation_bounds_booleans_nonfinite_and_partial_payloads (test_detection.DetectionTests) ... ok
+test_worker_resets_tracker_filters_business_and_protects_all_candidates (test_detection.DetectionTests) ... ok
+test_production_http_root_matches_canonical_frontend (test_homepage.HomepageTests) ... ok
+test_language_cache_isolated_and_geometry_and_privacy_layers_preserved (test_localization.LocalizationTests) ... ok
+test_observation_carries_reason_details (test_localization.LocalizationTests) ... ok
+test_reason_metadata_preserves_existing_string_and_tuple_contracts (test_localization.LocalizationTests) ... ok
+test_duplicate_pts_not_new_observation (test_m1.M1Tests) ... ok
+test_latest_once_and_bounded (test_m1.M1Tests) ... ok
+test_pts_reset_new_session (test_m1.M1Tests) ... ok
+test_roi_unscaled_and_missing_wrist (test_m1.M1Tests) ... ok
+test_snapshot_language_selection_and_invalid_language_are_read_only (test_media_language.MediaLanguageTests) ... ok
+test_fill_is_subtle_and_freshness_and_switches_are_independent (test_overlay.IndustrialOverlayTests) ... ok
+test_labels_are_bounded_nonoverlapping_and_small_frames_survive (test_overlay.IndustrialOverlayTests) ... ok
+test_privacy_hides_face_keypoints_and_keeps_body (test_overlay.IndustrialOverlayTests) ... ok
+test_shared_style_and_sparse_corners (test_overlay.IndustrialOverlayTests) ... ok
+test_deterministic_and_cached (test_overlay.OverlayTests) ... ok
+test_frame_size_rebuilds_cache (test_overlay.OverlayTests) ... ok
+test_person_and_anchor (test_overlay.OverlayTests) ... ok
+test_bad_reference_expiry_and_lost_candidate_rejected (test_ownership.ConfirmationTests) ... ok
+test_confirmation_and_duplicate_rejection (test_ownership.ConfirmationTests) ... ok
+test_ended_session_disconnected_or_moved_camera_rejected (test_ownership.ConfirmationTests) ... ok
+test_production_http_confirmation_status_codes (test_ownership.ConfirmationTests) ... ok
+test_changed_id_teleport_duplicate_id_and_crossing_are_conservative (test_ownership.OwnershipTests) ... ok
+test_duplicate_sequence_late_results_and_old_stream_cannot_change_owner (test_ownership.OwnershipTests) ... ok
+test_frame_rate_does_not_change_timer_totals (test_ownership.OwnershipTests) ... ok
+test_health_tick_freezes_deadline_and_never_extends_work_forever (test_ownership.OwnershipTests) ... ok
+test_inflight_frame_before_manual_confirmation_cannot_change_the_binding (test_ownership.OwnershipTests) ... ok
+test_manual_confirmation_backdates_to_evidence_and_counts_each_interval_once (test_ownership.OwnershipTests) ... ok
+test_new_stream_with_reset_timestamp_creates_a_new_binding (test_ownership.OwnershipTests) ... ok
+test_no_id_and_multiple_people_cannot_start (test_ownership.OwnershipTests) ... ok
+test_other_people_do_not_interrupt_a_visible_owner (test_ownership.OwnershipTests) ... ok
+test_owner_continuously_nearby_can_return_after_a_long_break (test_ownership.OwnershipTests) ... ok
+test_poor_keypoints_of_visible_owner_suspend_departure_confirmation (test_ownership.OwnershipTests) ... ok
+test_repeated_passers_do_not_reset_absence_or_resume_work (test_ownership.OwnershipTests) ... ok
+test_return_at_end_deadline_starts_a_new_confirmation_period (test_ownership.OwnershipTests) ... ok
+test_short_loss_same_id_bridges_but_long_loss_requires_confirmation (test_ownership.OwnershipTests) ... ok
+test_start_requires_one_continuous_track_and_restarts_for_another_person (test_ownership.OwnershipTests) ... ok
+test_status_never_serializes_private_source_credentials (test_ownership.OwnershipTests) ... ok
+test_status_polling_does_not_commit_time_ahead_of_a_received_frame (test_ownership.OwnershipTests) ... ok
+test_unknown_preserves_progress_and_excludes_unobserved_time (test_ownership.OwnershipTests) ... ok
+test_unknown_time_is_not_reclassified_as_work_on_return (test_ownership.OwnershipTests) ... ok
+test_live_and_replay_with_manual_return_have_identical_totals (test_ownership_replay.OwnershipReplayTests) ... ok
+test_missing_track_evidence_is_explicitly_unverified (test_ownership_replay.OwnershipReplayTests) ... ok
+test_all_layers_off_equals_protected_image (test_privacy.PrivacyTests) ... ok
+test_diagnostic_writer_masks_unknown_frame (test_privacy.PrivacyTests) ... ok
+test_disabled_privacy_and_empty_scene (test_privacy.PrivacyTests) ... ok
+test_geometry_cache_changes_with_revision (test_privacy.PrivacyTests) ... ok
+test_head_mask_preserves_lower_body_and_input (test_privacy.PrivacyTests) ... ok
+test_invalid_geometry_keeps_full_frame_failure_protection (test_privacy.PrivacyTests) ... ok
+test_missing_head_masks_whole_person_and_bad_result_masks_frame (test_privacy.PrivacyTests) ... ok
+test_mosaic_core_is_fully_pixelated_and_feather_only_expands_outwards (test_privacy.PrivacyTests) ... ok
+test_multiple_people_and_clipped_bounds (test_privacy.PrivacyTests) ... ok
+test_profile_and_partial_head_keep_every_visible_landmark_in_core (test_privacy.PrivacyTests) ... ok
+test_media_clock_reset_records_a_new_origin (test_recording.RecordingTests) ... NvMMLiteOpen : Block : BlockType = 4
+===== NvVideo: NVENC =====
+NvMMLiteBlockCreate : Block : BlockType = 4
+H264: Profile = 66 Level = 0
+NVMEDIA: Need to set EMC bandwidth : 21000
+NvMMLiteOpen : Block : BlockType = 4
+===== NvVideo: NVENC =====
+NvMMLiteBlockCreate : Block : BlockType = 4
+H264: Profile = 66 Level = 0
+NVMEDIA: Need to set EMC bandwidth : 21000
+ok
+test_person_mosaic_survives_h264_recording (test_recording.RecordingTests) ... NvMMLiteOpen : Block : BlockType = 4
+===== NvVideo: NVENC =====
+NvMMLiteBlockCreate : Block : BlockType = 4
+H264: Profile = 66 Level = 0
+NVMEDIA: Need to set EMC bandwidth : 21000
+ok
+test_policy_change_opens_a_separate_recording (test_recording.RecordingTests) ... NvMMLiteOpen : Block : BlockType = 4
+===== NvVideo: NVENC =====
+NvMMLiteBlockCreate : Block : BlockType = 4
+H264: Profile = 66 Level = 0
+NVMEDIA: Need to set EMC bandwidth : 21000
+NvMMLiteOpen : Block : BlockType = 4
+===== NvVideo: NVENC =====
+NvMMLiteBlockCreate : Block : BlockType = 4
+H264: Profile = 66 Level = 0
+NVMEDIA: Need to set EMC bandwidth : 21000
+ok
+test_timestamps_final_frame_and_segment_finalization (test_recording.RecordingTests) ... NvMMLiteOpen : Block : BlockType = 4
+===== NvVideo: NVENC =====
+NvMMLiteBlockCreate : Block : BlockType = 4
+H264: Profile = 66 Level = 0
+NVMEDIA: Need to set EMC bandwidth : 21000
+NvMMLiteOpen : Block : BlockType = 4
+===== NvVideo: NVENC =====
+NvMMLiteBlockCreate : Block : BlockType = 4
+H264: Profile = 66 Level = 0
+NVMEDIA: Need to set EMC bandwidth : 21000
+ok
+test_atomic_write_failure_preserves_file_and_cleans_temporary (test_settings.SettingsTests) ... ok
+test_display_and_privacy_keep_session_and_invalidate_old_frames (test_settings.SettingsTests) ... ok
+test_existing_display_choices_survive_new_visual_defaults (test_settings.SettingsTests) ... ok
+test_invalid_values_and_conflict (test_settings.SettingsTests) ... ok
+test_legacy_defaults_and_restart (test_settings.SettingsTests) ... ok
+test_media_publication_is_frame_matched_with_either_privacy_setting (test_settings.SettingsTests) ... ok
+test_noop_keeps_revision (test_settings.SettingsTests) ... ok
+test_region_validation (test_settings.SettingsTests) ... ok
+test_roi_save_accepts_current_camera_and_marks_configured (test_settings.SettingsTests) ... ok
+test_stale_roi_and_save_failure_keep_active_session (test_settings.SettingsTests) ... ok
+test_timing_ends_once_and_restarts_confirmation (test_settings.SettingsTests) ... ok
+test_two_concurrent_writers_one_wins (test_settings.SettingsTests) ... ok
+test_blocker_and_same_track_confirmation_are_explicit (test_start_preview.StartPreviewTests) ... ok
+test_pacer_defers_a_new_frame_instead_of_dropping_it (test_start_preview.StartPreviewTests) ... Exception in thread Thread-36 (run):
+Opening in BLOCKING MODE
+Opening in BLOCKING MODE
+Opening in BLOCKING MODE
+Opening in BLOCKING MODE
+Opening in BLOCKING MODE
+Opening in BLOCKING MODE
+Opening in BLOCKING MODE
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/threading.py", line 1016, in _bootstrap_inner
+    self.run()
+  File "/usr/lib/python3.10/threading.py", line 953, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/seeed/workspace/jetson-worktime-start-preview-20261111/candidate/src/jetson_worktime/streaming.py", line 343, in run
+    self.process.terminate()
+AttributeError: 'types.SimpleNamespace' object has no attribute 'terminate'
+ok
+test_quality_is_bounded_but_total_stalls_remain_counted (test_start_preview.StartPreviewTests) ... ok
+test_slow_encoding_does_not_hold_service_lock_and_old_policy_cannot_publish (test_start_preview.StartPreviewTests) ... ok
+test_writer_drains_in_order_and_reports_disk_failure (test_start_preview.StartPreviewTests) ... ok
+test_invalidation_interrupts_a_blocked_socket (test_streaming.StreamingTests) ... ok
+test_latest_frame_replaces_previous_without_a_queue (test_streaming.StreamingTests) ... ok
+test_reconnecting_viewer_waits_for_fresh_frame_after_cached_frame_expires (test_streaming.StreamingTests) ... ok
+test_stream_network_write_does_not_hold_media_lock (test_streaming.StreamingTests) ... ok
+test_viewer_limit_and_invalidated_session (test_streaming.StreamingTests) ... ok
+test_cpu_delta_shared_cache_and_guest_time_not_counted_twice (test_system_metrics.SystemMetricsTests) ... ok
+test_cpu_reset_reestablishes_baseline (test_system_metrics.SystemMetricsTests) ... ok
+test_jetson_paths_units_available_memory_and_peak_chip_temperature (test_system_metrics.SystemMetricsTests) ... ok
+test_missing_and_invalid_sources_are_null_without_reusing_previous_values (test_system_metrics.SystemMetricsTests) ... ok
+test_bad_codec (test_video.VideoTests) ... ok
+test_bgrx_stride_and_lifetime (test_video.VideoTests) ... ok
+test_missing_input (test_video.VideoTests) ... ok
+test_pts (test_video.VideoTests) ... ok
+test_rtsp_funnel_accepts_extra_ssrc_and_releases_its_pad (test_video.VideoTests) ... ok
+test_rtsp_funnel_rejects_nonvideo_and_releases_failed_link (test_video.VideoTests) ... ok
+test_rtsp_selects_only_the_configured_video_track (test_video.VideoTests) ... ok
+test_timeout (test_video.VideoTests) ... ok
+test_usb_formats_use_v4l2_and_live_latest_frame (test_video.VideoTests) ... ok
+test_cached_region_fill_uses_saved_color_and_opacity (test_visualization.VisualizationTests) ... ok
+test_color_only_save_preserves_active_session_and_invalidates_media (test_visualization.VisualizationTests) ... ok
+test_failed_palette_save_keeps_configuration_and_session (test_visualization.VisualizationTests) ... ok
+test_invalid_palettes_never_modify_disk (test_visualization.VisualizationTests) ... ok
+test_legacy_defaults_and_saved_palette_survive_reload (test_visualization.VisualizationTests) ... ok
+test_regions_are_independent_and_legacy_switch_is_inherited (test_visualization.VisualizationTests) ... ok
+
+----------------------------------------------------------------------
+Ran 130 tests in 13.646s
+
+OK
+Opening in BLOCKING MODE

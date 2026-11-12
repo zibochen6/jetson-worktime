@@ -60,3 +60,12 @@ test('system telemetry preserves zero and rejects expired, invalid or missing me
   assert.equal(systemMetricsView({...sample,uptime_seconds:null}).uptime,null);
   assert.deepEqual(Object.values(systemMetricsView(null)),[null,null,null,null,null,null]);
 });
+
+ test('preview survives a slow structured-result request but stops on stale algorithm input',async()=>{
+ const {previewReady}=await import('../public/api.js');
+ const c={status:'online',algorithm_fresh:true,output_fps:12};
+ assert.equal(previewReady(c,null),true);
+ assert.equal(previewReady({...c,algorithm_fresh:false},null),false);
+ assert.equal(previewReady({...c,algorithm_error:'error'},null),false);
+ assert.equal(previewReady({...c,status:'reconnecting'},null),false);
+});

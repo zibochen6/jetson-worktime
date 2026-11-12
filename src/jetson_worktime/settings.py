@@ -49,6 +49,31 @@ def _inside(p, polygon):
     return any(_on_segment(p, a, b) for a, b in zip(polygon, polygon[1:]+polygon[:1])) or point_in_polygon(p, polygon)
 
 
+def validate_polygon(polygon, size, name='region'):
+    if not isinstance(size,list) or len(size)!=2 or any(type(v) is not int or v<2 for v in size):
+        raise LocalizedError('error.imageSize')
+    if not isinstance(polygon,list) or not 3<=len(polygon)<=32:
+        raise LocalizedError('roi.vertexCount',region=name)
+    if any(not isinstance(p,list) or len(p)!=2 or any(not _number(v) for v in p) for p in polygon):
+        raise LocalizedError('error.vertexNumber',region=name)
+    if any(not all(0<=p[i]<=size[i]-1 for i in (0,1)) for p in polygon):
+        raise LocalizedError('roi.bounds',region=name)
+    if len({tuple(p) for p in polygon})!=len(polygon):
+        raise LocalizedError('roi.duplicate',region=name)
+    edges=list(zip(polygon,polygon[1:]+polygon[:1]))
+    if abs(sum(a[0]*b[1]-b[0]*a[1] for a,b in edges))/2<1:
+        raise LocalizedError('roi.area',region=name)
+    for i,(a,b) in enumerate(edges):
+        for j in range(i+1,len(edges)):
+            if j==i+1 or (i==0 and j==len(edges)-1): continue
+            if _intersects(a,b,*edges[j]): raise LocalizedError('roi.crossing',region=name)
+
+
+def polygons_intersect(a,b):
+    return (any(_inside(p,b) for p in a) or any(_inside(p,a) for p in b)
+            or any(_intersects(c,d,e,f) for c,d in zip(a,a[1:]+a[:1]) for e,f in zip(b,b[1:]+b[:1])))
+
+
 def validate_regions(regions, size):
     if not isinstance(size, list) or len(size) != 2 or any(type(v) is not int or v < 2 for v in size):
         raise LocalizedError('error.imageSize')
@@ -107,6 +132,12 @@ def normalize(config):
             raise LocalizedError('detection.invalid', field=key, minimum=minimum)
     if not _number(config['privacy_keypoint_confidence']) or not 0 <= config['privacy_keypoint_confidence'] <= 1:
         raise LocalizedError('detection.invalidPrivacy')
+    from .materials import MATERIAL_DEFAULTS, MODEL_DEFAULTS, validate_materials
+    config.setdefault('models', deepcopy(MODEL_DEFAULTS))
+    config.setdefault('materials', deepcopy(MATERIAL_DEFAULTS))
+    if not isinstance(config['models'],dict) or set(config['models']) != {'person','material'} or not isinstance(config['models']['person'],str) or not config['models']['person'] or (config['models']['material'] is not None and not isinstance(config['models']['material'],str)):
+        raise ValueError('Invalid model selection')
+    config['materials'] = validate_materials(config['materials'],config['image_size'])
     config.setdefault('revision', 0)
     config.setdefault('privacy', {'enabled': True})
     config.setdefault('display', DISPLAY_DEFAULTS.copy())
@@ -159,7 +190,7 @@ class SettingsStore:
                 fcntl.flock(guard, fcntl.LOCK_UN)
 
     def commit(self, request):
-        allowed = {'expected_revision', 'privacy', 'display', 'timing', 'regions', 'image_size', 'reference_frame', 'camera_source', 'detection', 'visualization'}
+        allowed = {'expected_revision', 'privacy', 'display', 'timing', 'regions', 'image_size', 'reference_frame', 'camera_source', 'detection', 'visualization', 'models', 'materials'}
         if not isinstance(request, dict) or set(request)-allowed:
             raise LocalizedError('error.unknownField')
         if type(request.get('expected_revision')) is not int:
@@ -171,7 +202,7 @@ class SettingsStore:
                 if request['expected_revision'] != old['revision']:
                     raise SettingsConflict('error.SETTINGS_CONFLICT')
                 new = deepcopy(old)
-                for key in ('privacy', 'display', 'regions', 'image_size', 'visualization'):
+                for key in ('privacy', 'display', 'regions', 'image_size', 'visualization', 'models', 'materials'):
                     if key in request:
                         new[key] = deepcopy(request[key])
                 if 'detection' in request:
@@ -192,8 +223,13 @@ class SettingsStore:
                     from .camera_sources import normalize_source
                     new['camera_source'] = normalize_source(request['camera_source'])
                     new['roi_configured'] = False
+                    new['materials']['enabled'] = False
+                    new['materials']['configured'] = False
+                    new['materials']['regions'] = {'pending':[], 'completed':[]}
                 elif 'regions' in request:
                     new['roi_configured'] = True
+                if new['image_size']!=old['image_size'] and 'materials' not in request:
+                    new['materials'].update(enabled=False,configured=False,regions={'pending':[],'completed':[]})
                 new = normalize(new)
                 changed = old != new or 'regions' in request
                 if changed:
@@ -209,7 +245,9 @@ class SettingsStore:
                     finally:
                         if temporary and os.path.exists(temporary):
                             os.unlink(temporary)
-                detection_changed = source_changed or any(old[k] != new[k] for k in ('regions', 'image_size', *TIMING_KEYS, *DETECTION_DEFAULTS)) or ('regions' in request and changed)
+                detection_changed = source_changed or any(old[k] != new[k] for k in ('regions', 'image_size', *TIMING_KEYS, *DETECTION_DEFAULTS, 'models')) or ('regions' in request and changed)
+                from .materials import material_behavior_changed
+                detection_changed = detection_changed or material_behavior_changed(old['materials'],new['materials'])
                 return new, changed, detection_changed
             finally:
                 fcntl.flock(guard, fcntl.LOCK_UN)
@@ -220,7 +258,7 @@ class SettingsStore:
                     privacy=deepcopy(config['privacy']), display=deepcopy(config['display']),
                     visualization=visualization_settings(config), visualization_defaults=deepcopy(DEFAULT_VISUALIZATION),
                     image_size=config['image_size'][:], regions=deepcopy(config['regions']),
-                    roi_configured=config['roi_configured'],
+                    roi_configured=config['roi_configured'], models=deepcopy(config['models']), materials=deepcopy(config['materials']),
                     detection=detection_settings(config), detection_defaults=DETECTION_DEFAULTS.copy(),
                     timing={k: config[k] for k in TIMING_KEYS},
                     defaults={k: DEFAULTS[k] for k in TIMING_KEYS})

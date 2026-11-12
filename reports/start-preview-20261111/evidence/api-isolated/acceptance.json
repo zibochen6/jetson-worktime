@@ -1,0 +1,28 @@
+{
+  "checks": {
+    "canonical_home_with_settings": "PASS",
+    "pipeline_language_brand_in_actual_home": "PASS",
+    "localized_snapshot_zh-CN": "PASS",
+    "localized_snapshot_en": "PASS",
+    "invalid_language_400": "PASS",
+    "real_camera_online": "PASS",
+    "fresh_gpu_observation": "PASS",
+    "lossless_timestamp": "PASS",
+    "persons_keypoints": "PASS",
+    "exact_observation_image": "PASS",
+    "raw_jpeg": "PASS",
+    "versioned_work_status": "PASS",
+    "stable_reason_metadata": "PASS",
+    "legacy_compatibility": "PASS",
+    "invalid_action_400_without_mutation": "PASS",
+    "cross_origin_write_403": "PASS",
+    "missing_id_400": "PASS",
+    "unknown_frame_410": "PASS",
+    "multipart_boundary": "PASS",
+    "mjpeg_new_frames_only": "PASS",
+    "bounded_cache_eviction_410": "PASS",
+    "no_rtsp_credentials": "PASS"
+  },
+  "status": "PASS",
+  "note": "Real camera read-only API checks. No behavior accuracy or forced camera disconnect assessment."
+}

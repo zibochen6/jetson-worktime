@@ -252,15 +252,25 @@
                 "type": "object"
               },
               "error": {
-                "type": [
-                  "string",
-                  "null"
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
                 ]
               },
               "epoch": {
                 "type": "integer"
               }
             }
+          },
+          "operating_mode": {
+            "enum": [
+              "business",
+              "training"
+            ]
           }
         },
         "required": [
@@ -611,6 +621,12 @@
           },
           "visualization_defaults": {
             "$ref": "#/components/schemas/VisualizationSettings"
+          },
+          "models": {
+            "$ref": "#/components/schemas/ModelSelection"
+          },
+          "materials": {
+            "$ref": "#/components/schemas/MaterialSettings"
           }
         }
       },
@@ -928,6 +944,25 @@
           },
           "visualization": {
             "$ref": "#/components/schemas/VisualizationSettings"
+          },
+          "models": {
+            "$ref": "#/components/schemas/ModelSelection"
+          },
+          "model_weights": {
+            "type": "object",
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "materials": {
+            "$ref": "#/components/schemas/MaterialSettings"
           }
         },
         "required": [
@@ -1339,6 +1374,12 @@
           },
           "visualization": {
             "$ref": "#/components/schemas/VisualizationSettings"
+          },
+          "models": {
+            "$ref": "#/components/schemas/ModelSelection"
+          },
+          "materials": {
+            "$ref": "#/components/schemas/MaterialSettings"
           }
         }
       },
@@ -1762,6 +1803,25 @@
           },
           "ownership": {
             "$ref": "#/components/schemas/Ownership"
+          },
+          "operating_mode": {
+            "enum": [
+              "business",
+              "training"
+            ]
+          },
+          "materials": {
+            "$ref": "#/components/schemas/MaterialStatus"
+          },
+          "material_error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "required": [
@@ -1792,6 +1852,571 @@
           "server_monotonic_seconds",
           "server_wall_time_ms"
         ]
+      },
+      "StartConfirmation": {
+        "type": "object",
+        "properties": {
+          "state": {
+            "type": "string",
+            "enum": [
+              "WAITING",
+              "CONFIRMING",
+              "BLOCKED",
+              "ACTIVE"
+            ]
+          },
+          "elapsed_seconds": {
+            "type": "number",
+            "minimum": 0
+          },
+          "required_seconds": {
+            "type": "number",
+            "minimum": 0
+          },
+          "candidate_track_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "blocker_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "blocker_params": {
+            "type": "object"
+          },
+          "last_reset": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "ModelSelection": {
+        "type": "object",
+        "properties": {
+          "person": {
+            "type": "string"
+          },
+          "material": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "person",
+          "material"
+        ]
+      },
+      "RegisteredModel": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "revision": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "role": {
+            "enum": [
+              "person",
+              "material"
+            ]
+          },
+          "task": {
+            "enum": [
+              "pose",
+              "detect"
+            ]
+          },
+          "classes": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "sha256": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "builtin": {
+            "type": "boolean"
+          },
+          "installed": {
+            "type": "boolean"
+          },
+          "source": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "revision",
+          "role",
+          "task"
+        ]
+      },
+      "MaterialSettings": {
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "type": "boolean"
+          },
+          "configured": {
+            "type": "boolean"
+          },
+          "class_id": {
+            "type": "integer"
+          },
+          "confidence": {
+            "type": "number",
+            "minimum": 0.01,
+            "maximum": 1
+          },
+          "stable_seconds": {
+            "type": "number",
+            "minimum": 0.1,
+            "maximum": 60
+          },
+          "missing_seconds": {
+            "type": "number",
+            "minimum": 0.1,
+            "maximum": 60
+          },
+          "sample_hz": {
+            "type": "number",
+            "minimum": 0.2,
+            "maximum": 10
+          },
+          "regions": {
+            "type": "object",
+            "properties": {
+              "pending": {
+                "type": "array",
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 2,
+                  "maxItems": 2
+                }
+              },
+              "completed": {
+                "type": "array",
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 2,
+                  "maxItems": 2
+                }
+              }
+            },
+            "required": [
+              "pending",
+              "completed"
+            ]
+          },
+          "display": {
+            "type": "object",
+            "properties": {
+              "pending": {
+                "type": "boolean"
+              },
+              "completed": {
+                "type": "boolean"
+              }
+            }
+          },
+          "colors": {
+            "type": "object",
+            "properties": {
+              "pending": {
+                "type": "string",
+                "pattern": "^#[0-9a-fA-F]{6}$"
+              },
+              "completed": {
+                "type": "string",
+                "pattern": "^#[0-9a-fA-F]{6}$"
+              }
+            }
+          },
+          "opacity": {
+            "type": "object",
+            "properties": {
+              "pending": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "completed": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              }
+            }
+          }
+        }
+      },
+      "TrainingParameters": {
+        "type": "object",
+        "properties": {
+          "epochs": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000,
+            "default": 100
+          },
+          "lr0": {
+            "type": "number",
+            "minimum": 1e-06,
+            "maximum": 0.1,
+            "default": 0.001
+          },
+          "batch": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 16
+          }
+        }
+      },
+      "TrainingJob": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "revision": {
+            "type": "integer"
+          },
+          "control_revision": {
+            "type": "integer"
+          },
+          "state": {
+            "enum": [
+              "queued",
+              "preparing",
+              "running",
+              "validating",
+              "saving",
+              "stopping",
+              "completed",
+              "paused",
+              "interrupted",
+              "failed",
+              "cancelled"
+            ]
+          },
+          "stage": {
+            "type": "string"
+          },
+          "epoch": {
+            "type": "integer"
+          },
+          "progress": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "parameters": {
+            "$ref": "#/components/schemas/TrainingParameters"
+          },
+          "metrics": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "number"
+            }
+          },
+          "test_metrics": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "number"
+            }
+          },
+          "checkpoint": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "batch_index": {
+            "type": "integer"
+          },
+          "batches_total": {
+            "type": "integer"
+          },
+          "losses": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "number"
+            }
+          },
+          "peak_memory_allocated_bytes": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "revision",
+          "control_revision",
+          "state",
+          "progress"
+        ]
+      },
+      "Dataset": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "revision": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "class_name": {
+            "type": "string"
+          }
+        }
+      },
+      "DatasetImage": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "dataset_id": {
+            "type": "string"
+          },
+          "revision": {
+            "type": "integer"
+          },
+          "group_id": {
+            "type": "string"
+          },
+          "width": {
+            "type": "integer"
+          },
+          "height": {
+            "type": "integer"
+          },
+          "boxes": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 4,
+              "maxItems": 4
+            }
+          },
+          "annotated": {
+            "type": "boolean"
+          },
+          "privacy_applied": {
+            "type": "boolean"
+          }
+        }
+      },
+      "DatasetSnapshot": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "dataset_id": {
+            "type": "string"
+          },
+          "dataset_revision": {
+            "type": "integer"
+          },
+          "sha256": {
+            "type": "string"
+          },
+          "counts": {
+            "type": "object",
+            "properties": {
+              "train": {
+                "type": "integer"
+              },
+              "val": {
+                "type": "integer"
+              },
+              "test": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      },
+      "MaterialEvent": {
+        "type": "object",
+        "required": [
+          "id",
+          "session_id",
+          "kind",
+          "delta",
+          "timestamp"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "session_id": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string"
+          },
+          "delta": {
+            "type": "integer"
+          },
+          "timestamp": {
+            "type": "number"
+          },
+          "config_revision": {
+            "type": "integer"
+          },
+          "model_id": {
+            "type": "string"
+          },
+          "model_sha256": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "event_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "MaterialStatus": {
+        "type": "object",
+        "required": [
+          "enabled",
+          "available",
+          "pending",
+          "completed",
+          "cumulative",
+          "reviews"
+        ],
+        "properties": {
+          "enabled": {
+            "type": "boolean"
+          },
+          "available": {
+            "type": "boolean"
+          },
+          "initialized": {
+            "type": "boolean"
+          },
+          "pending": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "completed": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "cumulative": {
+            "type": "integer"
+          },
+          "session_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "reviews": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MaterialEvent"
+            }
+          },
+          "age_ms": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
       }
     }
   },
@@ -2470,6 +3095,914 @@
           },
           "409": {
             "description": "Already expired"
+          }
+        }
+      }
+    },
+    "/api/v1/models": {
+      "get": {
+        "summary": "GET /models",
+        "operationId": "studio_get_models",
+        "tags": [
+          "Local studio"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "Invalid or incompatible input"
+          },
+          "409": {
+            "description": "Version conflict, busy device or referenced resource"
+          },
+          "500": {
+            "description": "Device storage failure"
+          }
+        }
+      },
+      "post": {
+        "summary": "POST /models",
+        "operationId": "studio_post_models",
+        "tags": [
+          "Local studio"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "Invalid or incompatible input"
+          },
+          "409": {
+            "description": "Version conflict, busy device or referenced resource"
+          },
+          "500": {
+            "description": "Device storage failure"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/octet-stream": {
+              "schema": {
+                "type": "string",
+                "format": "binary"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "role",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/api/v1/models/catalog": {
+      "get": {
+        "summary": "GET /models/catalog",
+        "operationId": "studio_get_models_catalog",
+        "tags": [
+          "Local studio"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "Invalid or incompatible input"
+          },
+          "409": {
+            "description": "Version conflict, busy device or referenced resource"
+          },
+          "500": {
+            "description": "Device storage failure"
+          }
+        }
+      }
+    },
+    "/api/v1/models/{model_id}": {
+      "delete": {
+        "summary": "DELETE /models/{model_id}",
+        "operationId": "studio_delete_models_model_id",
+        "tags": [
+          "Local studio"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "Invalid or incompatible input"
+          },
+          "409": {
+            "description": "Version conflict, busy device or referenced resource"
+          },
+          "500": {
+            "description": "Device storage failure"
+          }
+        },
+        "parameters": [
+          {
+            "name": "model_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/models/downloads": {
+      "get": {
+        "summary": "GET /models/downloads",
+        "operationId": "studio_get_models_downloads",
+        "tags": [
+          "Local studio"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "Invalid or incompatible input"
+          },
+          "409": {
+            "description": "Version conflict, busy device or referenced resource"
+          },
+          "500": {
+            "description": "Device storage failure"
+          }
+        }
+      },
+      "post": {
+        "summary": "POST /models/downloads",
+        "operationId": "studio_post_models_downloads",
+        "tags": [
+          "Local studio"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "Invalid or incompatible input"
+          },
+          "409": {
+            "description": "Version conflict, busy device or referenced resource"
+          },
+          "500": {
+            "description": "Device storage failure"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/datasets": {
+      "get": {
+        "summary": "GET /datasets",
+        "operationId": "studio_get_datasets",
+        "tags": [
+          "Local studio"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "Invalid or incompatible input"
+          },
+          "409": {
+            "description": "Version conflict, busy device or referenced resource"
+          },
+          "500": {
+            "description": "Device storage failure"
+          }
+        }
+      },
+      "post": {
+        "summary": "POST /datasets",
+        "operationId": "studio_post_datasets",
+        "tags": [
+          "Local studio"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "Invalid or incompatible input"
+          },
+          "409": {
+            "description": "Version conflict, busy device or referenced resource"
+          },
+          "500": {
+            "description": "Device storage failure"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/datasets/{dataset_id}": {
+      "get": {
+        "summary": "GET /datasets/{dataset_id}",
+        "operationId": "studio_get_datasets_dataset_id",
+        "tags": [
+          "Local studio"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Dataset"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid or incompatible input"
+          },
+          "409": {
+            "description": "Version conflict, busy device or referenced resource"
+          },
+          "500": {
+            "description": "Device storage failure"
+          }
+        },
+        "parameters": [
+          {
+            "name": "dataset_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/api/v1/datasets/{dataset_id}/images": {
+      "post": {
+        "summary": "POST /datasets/{dataset_id}/images",
+        "operationId": "studio_post_datasets_dataset_id_images",
+        "tags": [
+          "Local studio"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "Invalid or incompatible input"
+          },
+          "409": {
+            "description": "Version conflict, busy device or referenced resource"
+          },
+          "500": {
+            "description": "Device storage failure"
+          }
+        },
+        "parameters": [
+          {
+            "name": "dataset_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "group",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/octet-stream": {
+              "schema": {
+                "type": "string",
+                "format": "binary"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/datasets/{dataset_id}/captures": {
+      "post": {
+        "summary": "POST /datasets/{dataset_id}/captures",
+        "operationId": "studio_post_datasets_dataset_id_captures",
+        "tags": [
+          "Local studio"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "Invalid or incompatible input"
+          },
+          "409": {
+            "description": "Version conflict, busy device or referenced resource"
+          },
+          "500": {
+            "description": "Device storage failure"
+          }
+        },
+        "parameters": [
+          {
+            "name": "dataset_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/datasets/{dataset_id}/images/{image_id}": {
+      "get": {
+        "summary": "GET /datasets/{dataset_id}/images/{image_id}",
+        "operationId": "studio_get_datasets_dataset_id_images_image_id",
+        "tags": [
+          "Local studio"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "Invalid or incompatible input"
+          },
+          "409": {
+            "description": "Version conflict, busy device or referenced resource"
+          },
+          "500": {
+            "description": "Device storage failure"
+          }
+        },
+        "parameters": [
+          {
+            "name": "dataset_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "image_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "delete": {
+        "summary": "DELETE /datasets/{dataset_id}/images/{image_id}",
+        "operationId": "studio_delete_datasets_dataset_id_images_image_id",
+        "tags": [
+          "Local studio"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "Invalid or incompatible input"
+          },
+          "409": {
+            "description": "Version conflict, busy device or referenced resource"
+          },
+          "500": {
+            "description": "Device storage failure"
+          }
+        },
+        "parameters": [
+          {
+            "name": "dataset_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "image_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/datasets/{dataset_id}/images/{image_id}/annotations": {
+      "put": {
+        "summary": "PUT /datasets/{dataset_id}/images/{image_id}/annotations",
+        "operationId": "studio_put_datasets_dataset_id_images_image_id_annotations",
+        "tags": [
+          "Local studio"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "Invalid or incompatible input"
+          },
+          "409": {
+            "description": "Version conflict, busy device or referenced resource"
+          },
+          "500": {
+            "description": "Device storage failure"
+          }
+        },
+        "parameters": [
+          {
+            "name": "dataset_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "image_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/datasets/{dataset_id}/snapshots": {
+      "get": {
+        "summary": "GET /datasets/{dataset_id}/snapshots",
+        "operationId": "studio_get_datasets_dataset_id_snapshots",
+        "tags": [
+          "Local studio"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "Invalid or incompatible input"
+          },
+          "409": {
+            "description": "Version conflict, busy device or referenced resource"
+          },
+          "500": {
+            "description": "Device storage failure"
+          }
+        },
+        "parameters": [
+          {
+            "name": "dataset_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "post": {
+        "summary": "POST /datasets/{dataset_id}/snapshots",
+        "operationId": "studio_post_datasets_dataset_id_snapshots",
+        "tags": [
+          "Local studio"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "Invalid or incompatible input"
+          },
+          "409": {
+            "description": "Version conflict, busy device or referenced resource"
+          },
+          "500": {
+            "description": "Device storage failure"
+          }
+        },
+        "parameters": [
+          {
+            "name": "dataset_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/training/jobs": {
+      "get": {
+        "summary": "GET /training/jobs",
+        "operationId": "studio_get_training_jobs",
+        "tags": [
+          "Local studio"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "Invalid or incompatible input"
+          },
+          "409": {
+            "description": "Version conflict, busy device or referenced resource"
+          },
+          "500": {
+            "description": "Device storage failure"
+          }
+        }
+      },
+      "post": {
+        "summary": "POST /training/jobs",
+        "operationId": "studio_post_training_jobs",
+        "tags": [
+          "Local studio"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "Invalid or incompatible input"
+          },
+          "409": {
+            "description": "Version conflict, busy device or referenced resource"
+          },
+          "500": {
+            "description": "Device storage failure"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "token",
+                  "expected_revision",
+                  "base_model_id",
+                  "snapshot_id"
+                ],
+                "properties": {
+                  "token": {
+                    "type": "string",
+                    "minLength": 8,
+                    "maxLength": 128
+                  },
+                  "expected_revision": {
+                    "type": "integer"
+                  },
+                  "base_model_id": {
+                    "type": "string"
+                  },
+                  "snapshot_id": {
+                    "type": "string"
+                  },
+                  "parameters": {
+                    "$ref": "#/components/schemas/TrainingParameters"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/training/jobs/{job_id}": {
+      "get": {
+        "summary": "GET /training/jobs/{job_id}",
+        "operationId": "studio_get_training_jobs_job_id",
+        "tags": [
+          "Local studio"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrainingJob"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid or incompatible input"
+          },
+          "409": {
+            "description": "Version conflict, busy device or referenced resource"
+          },
+          "500": {
+            "description": "Device storage failure"
+          }
+        },
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/api/v1/training/jobs/{job_id}/actions": {
+      "post": {
+        "summary": "POST /training/jobs/{job_id}/actions",
+        "operationId": "studio_post_training_jobs_job_id_actions",
+        "tags": [
+          "Local studio"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "Invalid or incompatible input"
+          },
+          "409": {
+            "description": "Version conflict, busy device or referenced resource"
+          },
+          "500": {
+            "description": "Device storage failure"
+          }
+        },
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/training/jobs/{job_id}/preview": {
+      "post": {
+        "summary": "POST /training/jobs/{job_id}/preview",
+        "operationId": "studio_post_training_jobs_job_id_preview",
+        "tags": [
+          "Local studio"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "Invalid or incompatible input"
+          },
+          "409": {
+            "description": "Version conflict, busy device or referenced resource"
+          },
+          "500": {
+            "description": "Device storage failure"
+          }
+        },
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/materials/status": {
+      "get": {
+        "summary": "GET /materials/status",
+        "operationId": "studio_get_materials_status",
+        "tags": [
+          "Local studio"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MaterialStatus"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid or incompatible input"
+          },
+          "409": {
+            "description": "Version conflict, busy device or referenced resource"
+          },
+          "500": {
+            "description": "Device storage failure"
+          }
+        }
+      }
+    },
+    "/api/v1/materials/sessions/{session_id}": {
+      "get": {
+        "summary": "GET /materials/sessions/{session_id}",
+        "operationId": "studio_get_materials_sessions_session_id",
+        "tags": [
+          "Local studio"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "Invalid or incompatible input"
+          },
+          "409": {
+            "description": "Version conflict, busy device or referenced resource"
+          },
+          "500": {
+            "description": "Device storage failure"
+          }
+        },
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/api/v1/materials/sessions/{session_id}/adjustments": {
+      "post": {
+        "summary": "POST /materials/sessions/{session_id}/adjustments",
+        "operationId": "studio_post_materials_sessions_session_id_adjustments",
+        "tags": [
+          "Local studio"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "Invalid or incompatible input"
+          },
+          "409": {
+            "description": "Version conflict, busy device or referenced resource"
+          },
+          "500": {
+            "description": "Device storage failure"
+          }
+        },
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
           }
         }
       }

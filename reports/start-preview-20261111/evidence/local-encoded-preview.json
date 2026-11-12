@@ -1,0 +1,9 @@
+{
+  "packets": 438,
+  "duration": 45.030624918000285,
+  "arrival_p50_ms": 107.34864000005473,
+  "arrival_p95_ms": 169.98324999985925,
+  "max_arrival_interval_ms": 318.2830850000755,
+  "gaps_over_500ms": 0,
+  "stderr": ""
+}

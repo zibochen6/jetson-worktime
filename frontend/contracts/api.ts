@@ -25,6 +25,7 @@ export interface ConfirmReturnRequest {
   config_revision:number;track_id:number;
 }
 export interface Observation {
+ models?:ModelSelection;model_weights?:Record<string,string|null>;materials?:MaterialSettings;
   visualization?:VisualizationSettings;
 
   ownership?:Ownership;
@@ -69,6 +70,7 @@ export interface DisplaySettings {boxes:boolean;regions:boolean;keypoints:boolea
 export interface TimingSettings {start_seconds:number;short_away_seconds:number;stop_absent_seconds:number;missing_grace_seconds:number;max_observation_age:number}
 export interface DetectionSettings {person_confidence:number;keypoint_confidence:number}
 export interface DeviceSettings {
+  models:ModelSelection;materials:MaterialSettings;
   visualization?:VisualizationSettings;visualization_defaults?:VisualizationSettings;
   detection?:DetectionSettings;detection_defaults?:DetectionSettings;
   schema_version:'1.0';revision:number;privacy:{enabled:boolean};display:DisplaySettings;
@@ -76,6 +78,7 @@ export interface DeviceSettings {
   image_size:Point;roi_configured:boolean;camera:Camera;camera_source?:CameraSource;
 }
 export interface SettingsUpdate {
+  models?:ModelSelection;materials?:MaterialSettings;
   visualization?:VisualizationSettings;
   detection?:DetectionSettings;
   camera_source?:CameraSourceInput;test_token?:string;
@@ -103,3 +106,19 @@ export type CameraSourceInput = {type:'rtsp';url:string;username:string;codec:'h
 export interface CameraDevices {schema_version:'1.0';devices:{device:string;name:string;formats:UsbFormat[]}[]}
 export interface CameraTestRequest {expected_revision:number;camera_source:CameraSourceInput}
 export interface CameraTestResult {schema_version:'1.0';test_token:string;expires_in_seconds:number;width:number;height:number}
+
+// Device-local material counting and training studio.
+export interface ModelSelection {person:string;material:string|null}
+export interface MaterialSettings {
+ enabled:boolean;configured:boolean;class_id:number;confidence:number;stable_seconds:number;
+ missing_seconds:number;sample_hz:number;regions:{pending:Point[];completed:Point[]};
+ display:{pending:boolean;completed:boolean};colors:{pending:string;completed:string};opacity:{pending:number;completed:number};
+}
+export interface RegisteredModel {id:string;revision:number;name:string;role:'person'|'material';task:'pose'|'detect';classes:Record<string,string>;sha256:string|null;builtin:boolean;installed:boolean;source:'builtin'|'upload'|'official'|'trained'}
+export interface Dataset {id:string;revision:number;name:string;class_name:string;images?:DatasetImage[]}
+export interface DatasetImage {id:string;dataset_id:string;revision:number;group_id:string;width:number;height:number;boxes:[number,number,number,number][];annotated:boolean;privacy_applied:boolean;config_revision:number}
+export interface DatasetSnapshot {id:string;dataset_id:string;dataset_revision:number;sha256:string;counts:{train:number;val:number;test:number};ratios:[number,number,number];seed:42}
+export type TrainingState='queued'|'preparing'|'running'|'validating'|'saving'|'stopping'|'completed'|'paused'|'interrupted'|'failed'|'cancelled';
+export interface TrainingJob {batch_index?:number;batches_total?:number;losses?:Record<string,number>;peak_memory_allocated_bytes?:number;id:string;revision:number;control_revision:number;state:TrainingState;stage:string;epoch:number;progress:number;snapshot_id:string;base_model_id:string;parameters:{epochs:number;lr0:number;batch:number;optimizer:'AdamW';imgsz:640;workers:0;seed:42;patience:20;device:0;amp:boolean};metrics:Record<string,number>;test_metrics?:Record<string,number>;elapsed_seconds?:number;eta_seconds?:number;checkpoint:string|null;result_model_id?:string;error:string|null;log?:string}
+export interface MaterialEvent {id:string;session_id:string;kind:string;delta:number;timestamp:number;reason?:string;event_id?:string;before?:number;after?:number;config_revision?:number;model_id?:string;model_sha256?:string;stream_session_id?:string;frame_sequence?:number}
+export interface MaterialStatus {enabled:boolean;available:boolean;initialized:boolean;pending:number|null;completed:number|null;cumulative:number;session_id:string|null;reviews:MaterialEvent[];age_ms:number|null}

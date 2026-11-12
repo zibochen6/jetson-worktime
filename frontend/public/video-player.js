@@ -12,6 +12,8 @@ export class VideoPlayer {
     this.generation = 0;
     this.mode = 'idle';
     this.metrics = null;
+    this.renderIntervals = [];
+    this.renderStalls = 0;
     video.onloadeddata = () => this.changed(true);
     fallback.onload = () => this.changed(true);
     fallback.onerror = () => this.changed(false);
@@ -21,6 +23,10 @@ export class VideoPlayer {
     clearTimeout(this.deadline);
     clearTimeout(this.retry);
     clearInterval(this.interval);
+    if (this.renderCallback != null) this.video.cancelVideoFrameCallback?.(this.renderCallback);
+    this.renderCallback = null;
+    this.renderIntervals = [];
+    this.renderStalls = 0;
     this.abort?.abort();
     this.pc?.close();
     this.pc = null;
@@ -52,6 +58,7 @@ export class VideoPlayer {
       this.video.hidden = false;
       this.fallback.hidden = true;
       this.video.play().catch(() => this.useFallback(generation));
+      this.measureDisplay(generation);
     };
     pc.onconnectionstatechange = () => {
       if (pc.connectionState === 'failed') this.useFallback(generation);
@@ -140,11 +147,35 @@ export class VideoPlayer {
     this.changed(false);
     this.retry=setTimeout(() => {this.stop();this.changed(false,true);},30000);
   }
+  measureDisplay(generation) {
+    if (!this.video.requestVideoFrameCallback) return;
+    let previous = null;
+    const displayed = (now) => {
+      if (generation !== this.generation) return;
+      if (previous !== null && !globalThis.document?.hidden) {
+        const interval = now-previous;
+        this.renderIntervals.push(interval);
+        if (this.renderIntervals.length > 600) this.renderIntervals.shift();
+        if (interval > 500) this.renderStalls++;
+      }
+      previous = now;
+      if (this.video.dataset) this.video.dataset.displayQuality = JSON.stringify(this.displayQuality());
+      this.renderCallback = this.video.requestVideoFrameCallback(displayed);
+    };
+    this.renderCallback = this.video.requestVideoFrameCallback(displayed);
+  }
+  displayQuality() {
+    const intervals = [...this.renderIntervals].sort((a,b)=>a-b);
+    return {samples:intervals.length, p95_ms:intervals.length?intervals[Math.floor((intervals.length-1)*.95)]:null,
+      stalls_over_500ms:this.renderStalls};
+  }
   summary() {
     if (this.mode==='webrtc' && this.metrics) {
       const m=this.metrics;
       const value=n=>Number.isFinite(n)?Math.round(n):'—';
-      return tr('video.webrtcStats',{quality:tr(this.profile==='local'?'video.hd':'video.fluent'),fps:this.metrics.fps.toFixed(1),kbps:value(m.kbps),rtt:value(m.rtt_ms),buffer:value(m.buffer_ms)});
+      const quality = this.displayQuality();
+      const detail = quality.samples ? ' · '+tr('video.renderQuality',{p95:Math.round(quality.p95_ms),stalls:quality.stalls_over_500ms}) : '';
+      return tr('video.webrtcStats',{quality:tr(this.profile==='local'?'video.hd':'video.fluent'),fps:this.metrics.fps.toFixed(1),kbps:value(m.kbps),rtt:value(m.rtt_ms),buffer:value(m.buffer_ms)}) + detail;
     }
     return tr(this.mode==='mjpeg'?'video.lowBandwidth':this.mode==='connecting'?'video.connectingRTC':'video.waiting');
   }

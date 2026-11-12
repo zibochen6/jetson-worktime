@@ -94,7 +94,7 @@ def _build(width, height, config, locale):
     keys = [(TITLES['station'], colors['station']), (TITLES['seat'], colors['seat']),
             ('overlay.person', colors['person']), ('overlay.inside', colors['anchor']),
             ('overlay.operator', colors['person']), ('overlay.otherPerson', colors['station']),
-            ('overlay.outside', colors['anchor'])]
+            ('overlay.outside', colors['anchor']), ('overlay.regionPending', colors['station'])]
     return dict(metrics=metrics, scale_x=scale_x, scale_y=scale_y, polygons=polygons,
                 station_segments=_dash_segments(polygons['station'], metrics['dash_length'], metrics['dash_gap']),
                 fills=fills, colors=colors,
@@ -171,6 +171,9 @@ def draw_overlay(frame, persons, config, fresh=True, locale='zh-CN'):
                           colors[name],metrics['line_width'],cv2.LINE_AA)
         x,y = min(layer['polygons'][name],key=lambda p:(p[1],p[0]))
         region_labels.append((x+metrics['label_gap'],y+metrics['label_gap'],title))
+    sprites=layer['sprites'].copy()
+    for x,y,key,sprite in draw_material_regions(frame,config,locale):
+        region_labels.append((x,y,key));sprites[key]=sprite
     if fresh:
         for person in persons:
             box = person['bbox_xyxy']
@@ -204,10 +207,11 @@ def draw_overlay(frame, persons, config, fresh=True, locale='zh-CN'):
             if anchor:
                 point = xy(anchor)
                 cv2.circle(frame, point, metrics['anchor_radius'], colors['anchor'], metrics['line_width'], cv2.LINE_AA)
-                key = 'overlay.inside' if point_in_polygon(anchor, config['regions']['seat']) else 'overlay.outside'
+                key = ('overlay.regionPending' if not config.get('regions_confirmed', True) else
+                       'overlay.inside' if point_in_polygon(anchor, config['regions']['seat']) else 'overlay.outside')
                 anchor_labels.append((point[0]+metrics['anchor_radius']+metrics['label_gap'], point[1]+metrics['label_gap'], key))
-    for x, y, w, h, key in place_labels(person_labels+anchor_labels+region_labels, layer['sprites'], width, height, metrics):
-        sprite = layer['sprites'][key]
+    for x, y, w, h, key in place_labels(person_labels+anchor_labels+region_labels, sprites, width, height, metrics):
+        sprite = sprites[key]
         patch = frame[y:y+h, x:x+w]
         patch[:] = np.rint(sprite['pixels']+patch*sprite['inverse']).astype(np.uint8)
     return frame
@@ -225,3 +229,43 @@ def encode_overlays(frame, persons, config, fresh=True, regions_match=True):
             raise RuntimeError('Annotation encoding failed')
         variants[locale] = encoded.tobytes()
     return variants
+
+
+@lru_cache(maxsize=12)
+def _material_masks(width,height,size,serialized):
+    value=json.loads(serialized)
+    masks=[]
+    for name in ('pending','completed'):
+        polygon=value['regions'][name]
+        if not polygon: continue
+        points=np.asarray([[round(x*width/size[0]),round(y*height/size[1])] for x,y in polygon],np.int32)
+        x,y,w,h=cv2.boundingRect(points)
+        x=max(0,x);y=max(0,y);w=min(w,width-x);h=min(h,height-y)
+        if w<=0 or h<=0: continue
+        mask=np.zeros((h,w),np.uint8);cv2.fillPoly(mask,[points-[x,y]],255)
+        color=tuple(bytes.fromhex(value['colors'][name][1:])[::-1]);alpha=value['opacity'][name]
+        lut=np.asarray([[(1-alpha)*i+alpha*c for c in color] for i in range(256)],np.uint8).reshape(256,1,3)
+        masks.append((name,points,x,y,w,h,mask,lut,color))
+    return masks
+
+
+@lru_cache(maxsize=32)
+def _material_sprite(text,color,width):
+    return _sprite(text,color,dimensions(width),max(1,width-2*dimensions(width)['margin']))
+
+
+def draw_material_regions(frame,config,locale='zh-CN'):
+    value=config.get('materials')
+    if not value or not value['enabled'] or not value['configured'] or not config.get('materials_confirmed',True): return []
+    height,width=frame.shape[:2]
+    serialized=json.dumps({k:value[k] for k in ('regions','colors','opacity')},sort_keys=True)
+    labels=[]
+    for name,points,x,y,w,h,mask,lut,color in _material_masks(width,height,tuple(config['image_size']),serialized):
+        if not value['display'][name]: continue
+        patch=frame[y:y+h,x:x+w];cv2.copyTo(cv2.LUT(patch,lut),mask,patch)
+        cv2.polylines(frame,[points],True,color,max(1,round(width/1280)),cv2.LINE_AA)
+        point=min(points.tolist(),key=lambda p:(p[1],p[0]))
+        label=translate('studio.'+name,locale=locale)
+        sprite=_material_sprite(label,color,width)
+        labels.append((point[0]+4,point[1]+4,'material.'+name,sprite))
+    return labels

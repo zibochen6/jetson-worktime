@@ -1180,8 +1180,8 @@
     "en": "Waiting to start"
   },
   "state.reconfirm": {
-    "zh-CN": "区域待确认",
-    "en": "Confirm regions"
+    "zh-CN": "需要确认机位",
+    "en": "Confirm camera position"
   },
   "state.rest": {
     "zh-CN": "休息中",
@@ -1570,5 +1570,865 @@
   "video.fluent": {
     "zh-CN": "流畅",
     "en": "Fluent"
+  },
+  "overlay.regionPending": {
+    "zh-CN": "区域待确认",
+    "en": "Confirm regions"
+  },
+  "startup.trackChanged": {
+    "zh-CN": "候选人员轨迹变化，重新确认在位",
+    "en": "Candidate track changed; confirming presence again"
+  },
+  "startup.progress": {
+    "zh-CN": "正在确认在位：{elapsed}/{target} 秒",
+    "en": "Confirming presence: {elapsed}/{target} seconds"
+  },
+  "startup.blocked": {
+    "zh-CN": "计时未开始：{reason}",
+    "en": "Timing blocked: {reason}"
+  },
+  "startup.reset": {
+    "zh-CN": "上次确认中断：{reason}",
+    "en": "Last confirmation reset: {reason}"
+  },
+  "startup.review": {
+    "zh-CN": "查看画面并确认检测区域",
+    "en": "Review image and confirm regions"
+  },
+  "reason.storage": {
+    "zh-CN": "观测存储异常，暂停计时",
+    "en": "Observation storage unavailable; timing suspended"
+  },
+  "video.renderQuality": {
+    "zh-CN": "显示间隔 P95 {p95} ms · 停顿 >500ms：{stalls}",
+    "en": "Display interval P95 {p95} ms · stalls >500ms: {stalls}"
+  },
+  "startup.noTrack": {
+    "zh-CN": "已检测到在位人员，但尚无可靠轨迹编号",
+    "en": "Person detected in presence zone; waiting for a reliable track ID"
+  },
+  "studio.title": {
+    "zh-CN": "AI 工作区",
+    "en": "AI workspace"
+  },
+  "studio.materials": {
+    "zh-CN": "物料计数",
+    "en": "Material counting"
+  },
+  "studio.materialsBrief": {
+    "zh-CN": "划定区域 · 计数与核对",
+    "en": "Zones · Counts · Review"
+  },
+  "studio.models": {
+    "zh-CN": "模型管理",
+    "en": "Models"
+  },
+  "studio.modelsBrief": {
+    "zh-CN": "上传 · 选择 · 切换模型",
+    "en": "Upload · Select · Activate"
+  },
+  "studio.training": {
+    "zh-CN": "训练中心",
+    "en": "Training studio"
+  },
+  "studio.trainingBrief": {
+    "zh-CN": "采集 · 标注 · 本地训练",
+    "en": "Capture · Label · Train locally"
+  },
+  "studio.close": {
+    "zh-CN": "关闭",
+    "en": "Close"
+  },
+  "studio.regions": {
+    "zh-CN": "划定物料区域",
+    "en": "Material zones"
+  },
+  "studio.regionsHelp": {
+    "zh-CN": "两个区域不能重叠。按产品框中心判断归属，独立于人员在位区。重新取图后支持矩形、多边形和顶点编辑。",
+    "en": "Zones must not overlap. Product box centres determine membership, independently of human presence zones. Capture a reference to draw rectangles or polygons and edit vertices."
+  },
+  "studio.captureFrame": {
+    "zh-CN": "获取参考画面",
+    "en": "Capture reference"
+  },
+  "studio.pending": {
+    "zh-CN": "待完成区",
+    "en": "Pending zone"
+  },
+  "studio.completed": {
+    "zh-CN": "完成区",
+    "en": "Completed zone"
+  },
+  "studio.cumulative": {
+    "zh-CN": "会话累计",
+    "en": "Session total"
+  },
+  "studio.rectangle": {
+    "zh-CN": "矩形",
+    "en": "Rectangle"
+  },
+  "studio.polygon": {
+    "zh-CN": "多边形",
+    "en": "Polygon"
+  },
+  "studio.finish": {
+    "zh-CN": "完成多边形",
+    "en": "Finish polygon"
+  },
+  "studio.edit": {
+    "zh-CN": "编辑顶点",
+    "en": "Edit vertices"
+  },
+  "studio.undo": {
+    "zh-CN": "撤销",
+    "en": "Undo"
+  },
+  "studio.clear": {
+    "zh-CN": "清除本区",
+    "en": "Clear zone"
+  },
+  "studio.countSettings": {
+    "zh-CN": "计数规则",
+    "en": "Counting rules"
+  },
+  "studio.enable": {
+    "zh-CN": "启用物料计数",
+    "en": "Enable material counting"
+  },
+  "studio.countRule": {
+    "zh-CN": "新会话将完成区已有产品计入累计。成品取走不扣减；身份不明确的回流先核对。保存规则会结算当前会话。",
+    "en": "Existing completed products count toward each new session. Removing products does not reduce the total. Ambiguous returns require review. Saving rules ends the active session."
+  },
+  "studio.save": {
+    "zh-CN": "保存并应用",
+    "en": "Save and apply"
+  },
+  "studio.currentCounts": {
+    "zh-CN": "数量与人工核对",
+    "en": "Counts and review"
+  },
+  "studio.delta": {
+    "zh-CN": "调整数量（可负数）",
+    "en": "Adjustment (negative allowed)"
+  },
+  "studio.reason": {
+    "zh-CN": "调整原因",
+    "en": "Reason"
+  },
+  "studio.adjust": {
+    "zh-CN": "记录调整",
+    "en": "Record adjustment"
+  },
+  "studio.selection": {
+    "zh-CN": "当前模型",
+    "en": "Active models"
+  },
+  "studio.personModel": {
+    "zh-CN": "人员姿态模型",
+    "en": "Person pose model"
+  },
+  "studio.materialModel": {
+    "zh-CN": "物料检测模型",
+    "en": "Material detector"
+  },
+  "studio.classId": {
+    "zh-CN": "参与计数的产品类别",
+    "en": "Product class to count"
+  },
+  "studio.switchHelp": {
+    "zh-CN": "选择兼容模型后保存。实际切换会结算当前会话并重置追踪，失败时恢复原模型。",
+    "en": "Activate a compatible model. Switching ends the current session and resets tracking. A failed switch restores the previous model."
+  },
+  "studio.apply": {
+    "zh-CN": "启用所选模型",
+    "en": "Activate selection"
+  },
+  "studio.uploadModel": {
+    "zh-CN": "上传自定义权重",
+    "en": "Upload custom weights"
+  },
+  "studio.role": {
+    "zh-CN": "模型用途",
+    "en": "Model role"
+  },
+  "studio.modelFile": {
+    "zh-CN": "选择 .pt 文件",
+    "en": "Choose .pt file"
+  },
+  "studio.modelHelp": {
+    "zh-CN": "仅上传可信来源的兼容 YOLO11 权重。人员模型需包含 COCO 17关键点。上传后独立检查兼容性，不立即投用。",
+    "en": "Upload trusted, compatible YOLO11 weights only. Person models require COCO 17-keypoint pose. Uploading runs a compatibility check and does not activate the model."
+  },
+  "studio.upload": {
+    "zh-CN": "上传",
+    "en": "Upload"
+  },
+  "studio.installed": {
+    "zh-CN": "模型库",
+    "en": "Model library"
+  },
+  "studio.notInstalled": {
+    "zh-CN": "尚未安装",
+    "en": "Not installed"
+  },
+  "studio.remove": {
+    "zh-CN": "删除",
+    "en": "Delete"
+  },
+  "studio.noModel": {
+    "zh-CN": "未选择物料模型",
+    "en": "No material model"
+  },
+  "studio.downloadFirst": {
+    "zh-CN": "请先下载基础模型",
+    "en": "Download a base model first"
+  },
+  "studio.prepare": {
+    "zh-CN": "准备模型",
+    "en": "Prepare model"
+  },
+  "studio.collect": {
+    "zh-CN": "采集数据",
+    "en": "Capture"
+  },
+  "studio.annotate": {
+    "zh-CN": "标注图片",
+    "en": "Annotate"
+  },
+  "studio.split": {
+    "zh-CN": "划分数据集",
+    "en": "Split dataset"
+  },
+  "studio.train": {
+    "zh-CN": "本地训练",
+    "en": "Train locally"
+  },
+  "studio.validate": {
+    "zh-CN": "验证效果",
+    "en": "Validate"
+  },
+  "studio.deploy": {
+    "zh-CN": "选择投用",
+    "en": "Activate model"
+  },
+  "studio.project": {
+    "zh-CN": "训练项目",
+    "en": "Training project"
+  },
+  "studio.chooseProject": {
+    "zh-CN": "选择项目",
+    "en": "Choose project"
+  },
+  "studio.refresh": {
+    "zh-CN": "刷新",
+    "en": "Refresh"
+  },
+  "studio.projectName": {
+    "zh-CN": "项目名称",
+    "en": "Project name"
+  },
+  "studio.productName": {
+    "zh-CN": "产品类别名称",
+    "en": "Product class name"
+  },
+  "studio.create": {
+    "zh-CN": "创建项目",
+    "en": "Create project"
+  },
+  "studio.captureHelp": {
+    "zh-CN": "使用已配置的摄像头，保留完整画面及设备隐私处理，不写入检测图层。每次重新摆放后开始新采集组，至少准备3组独立场景。",
+    "en": "Uses the configured camera. Saves full-frame, privacy-processed images without overlays. Start a new group after rearranging the scene; prepare at least three independent groups."
+  },
+  "studio.capture": {
+    "zh-CN": "拍一张",
+    "en": "Capture image"
+  },
+  "studio.timer": {
+    "zh-CN": "定时采集",
+    "en": "Interval capture"
+  },
+  "studio.stopCapture": {
+    "zh-CN": "停止采集",
+    "en": "Stop capture"
+  },
+  "studio.interval": {
+    "zh-CN": "采集间隔（秒）",
+    "en": "Interval (seconds)"
+  },
+  "studio.newGroup": {
+    "zh-CN": "新采集组",
+    "en": "New capture group"
+  },
+  "studio.cameraConfig": {
+    "zh-CN": "选择／配置摄像头",
+    "en": "Select / configure camera"
+  },
+  "studio.uploadImages": {
+    "zh-CN": "选择 JPEG／PNG 图片",
+    "en": "Choose JPEG / PNG images"
+  },
+  "studio.annotationHelp": {
+    "zh-CN": "拖动框出每一个产品。点击已有框可移动，拖动角点可缩放。无产品的图片点击“确认无目标”。修改自动保存，切换图片前会等待保存。",
+    "en": "Drag boxes around every product. Select a box to move it, or drag a corner to resize. Confirm empty images explicitly. Changes save automatically before navigating."
+  },
+  "studio.deleteBox": {
+    "zh-CN": "删除选中框",
+    "en": "Delete selected box"
+  },
+  "studio.emptyImage": {
+    "zh-CN": "确认无目标",
+    "en": "Confirm no objects"
+  },
+  "studio.saveAnnotations": {
+    "zh-CN": "保存标注",
+    "en": "Save annotations"
+  },
+  "studio.deleteImage": {
+    "zh-CN": "删除图片",
+    "en": "Delete image"
+  },
+  "studio.splitHelp": {
+    "zh-CN": "拖动调整训练占比，或输入三个比例。按采集组划分，连续图片不会跨集合；实际占比取决于组大小。每个集合都需要有目标样本。",
+    "en": "Drag to adjust the training share or enter all three percentages. Whole capture groups stay together; actual proportions depend on group sizes. Every split needs positive samples."
+  },
+  "studio.trainSet": {
+    "zh-CN": "训练集 %",
+    "en": "Train %"
+  },
+  "studio.valSet": {
+    "zh-CN": "验证集 %",
+    "en": "Validation %"
+  },
+  "studio.testSet": {
+    "zh-CN": "测试集 %",
+    "en": "Test %"
+  },
+  "studio.snapshot": {
+    "zh-CN": "生成不可变快照",
+    "en": "Create immutable snapshot"
+  },
+  "studio.snapshotChoice": {
+    "zh-CN": "训练数据快照",
+    "en": "Dataset snapshot"
+  },
+  "studio.makeSnapshot": {
+    "zh-CN": "请先生成快照",
+    "en": "Create a snapshot first"
+  },
+  "studio.snapshotMade": {
+    "zh-CN": "快照已保存：训练 {train} 张／验证 {val} 张／测试 {test} 张",
+    "en": "Snapshot: train {train} / validation {val} / test {test} images"
+  },
+  "studio.baseModel": {
+    "zh-CN": "官方预训练模型",
+    "en": "Official pretrained model"
+  },
+  "studio.download": {
+    "zh-CN": "下载权重",
+    "en": "Download weights"
+  },
+  "studio.downloadedBase": {
+    "zh-CN": "已安装的基础权重",
+    "en": "Installed base weights"
+  },
+  "studio.baseHelp": {
+    "zh-CN": "默认 YOLO11n。m／l 更大，需通过设备资源检查。官方预训练模型是训练起点，并不表示已能识别你的产品。",
+    "en": "YOLO11n is the default. Larger m / l models require resource checks. Pretrained weights are a starting point, not a detector already trained for your product."
+  },
+  "studio.parameters": {
+    "zh-CN": "训练参数",
+    "en": "Training parameters"
+  },
+  "studio.epochs": {
+    "zh-CN": "训练轮数",
+    "en": "Epochs"
+  },
+  "studio.learningRate": {
+    "zh-CN": "初始学习率",
+    "en": "Initial learning rate"
+  },
+  "studio.trainingHelp": {
+    "zh-CN": "Jetson 本地训练，AdamW、640尺寸、固定种子。训练期间暂停业务检测与直播，正常结束或停止后恢复原生产模型。关闭网页不会停止训练。",
+    "en": "Trains locally on Jetson using AdamW, 640-pixel input and a fixed seed. Business detection and live video pause during training, then resume with the original model. Closing the browser does not stop training."
+  },
+  "studio.startTraining": {
+    "zh-CN": "结束会话并开始训练",
+    "en": "End session and train"
+  },
+  "studio.progress": {
+    "zh-CN": "训练进度与结果",
+    "en": "Progress and results"
+  },
+  "studio.job": {
+    "zh-CN": "训练任务",
+    "en": "Training job"
+  },
+  "studio.stop": {
+    "zh-CN": "停止并保留检查点",
+    "en": "Stop, keep checkpoint"
+  },
+  "studio.cancel": {
+    "zh-CN": "取消任务",
+    "en": "Cancel job"
+  },
+  "studio.resume": {
+    "zh-CN": "从检查点恢复",
+    "en": "Resume checkpoint"
+  },
+  "studio.preview": {
+    "zh-CN": "预览现场效果",
+    "en": "Preview on site"
+  },
+  "studio.deployHelp": {
+    "zh-CN": "训练完成后不会自动替换生产模型。先查看独立测试指标和现场预览，再选择投用。区域与计数类别仍需确认。",
+    "en": "Training never replaces the live model automatically. Check independent test metrics and a live-scene preview before activating. Confirm counting zones and class."
+  },
+  "studio.ready": {
+    "zh-CN": "已读取设备配置",
+    "en": "Device settings loaded"
+  },
+  "studio.draft": {
+    "zh-CN": "区域草稿未保存",
+    "en": "Zone draft not saved"
+  },
+  "studio.saved": {
+    "zh-CN": "已保存并应用",
+    "en": "Saved and applied"
+  },
+  "studio.drawRegions": {
+    "zh-CN": "参考画面已冻结，请划定两个物料区域",
+    "en": "Reference captured. Draw both material zones."
+  },
+  "studio.checkingModel": {
+    "zh-CN": "正在上传并检查模型兼容性…",
+    "en": "Uploading and checking model compatibility…"
+  },
+  "studio.uploaded": {
+    "zh-CN": "上传完成",
+    "en": "Upload complete"
+  },
+  "studio.reviewItem": {
+    "zh-CN": "{time} · 回流身份待核对",
+    "en": "{time} · Review returning product"
+  },
+  "studio.newItem": {
+    "zh-CN": "新件，累计 +1",
+    "en": "New product, add 1"
+  },
+  "studio.returnedItem": {
+    "zh-CN": "旧件，不增加",
+    "en": "Returning product, no change"
+  },
+  "studio.created": {
+    "zh-CN": "项目已创建",
+    "en": "Project created"
+  },
+  "studio.saving": {
+    "zh-CN": "正在保存标注…",
+    "en": "Saving annotations…"
+  },
+  "studio.boxCount": {
+    "zh-CN": "已保存 {count} 个产品框",
+    "en": "Saved {count} product boxes"
+  },
+  "studio.group": {
+    "zh-CN": "当前采集组 {group}；同组图片不会跨数据集合",
+    "en": "Capture group {group}; images in this group stay in the same split"
+  },
+  "studio.captured": {
+    "zh-CN": "图片已采集，重复图片会自动去重",
+    "en": "Image captured; exact duplicates are removed"
+  },
+  "studio.snapshotReady": {
+    "zh-CN": "快照已生成，后续改标注不会影响此版本",
+    "en": "Snapshot created; later edits do not change this version"
+  },
+  "studio.downloading": {
+    "zh-CN": "下载已开始，可在此查看进度",
+    "en": "Download started; progress appears here"
+  },
+  "studio.startConfirm": {
+    "zh-CN": "开始训练将结算当前工作会话，并暂停业务检测和直播。是否现在开始？",
+    "en": "Training ends the current work session and pauses business detection and live video. Start now?"
+  },
+  "studio.trainingStarted": {
+    "zh-CN": "训练任务已提交，关闭网页不会停止",
+    "en": "Training submitted. Closing the browser does not stop it."
+  },
+  "studio.noJob": {
+    "zh-CN": "暂无训练任务",
+    "en": "No training jobs"
+  },
+  "studio.previewing": {
+    "zh-CN": "正在使用当前脱敏画面验证…",
+    "en": "Testing the current privacy-processed image…"
+  },
+  "studio.previewReady": {
+    "zh-CN": "现场预览完成",
+    "en": "Preview ready"
+  },
+  "studio.deployed": {
+    "zh-CN": "模型已启用，请确认计数区域与产品类别",
+    "en": "Model activated. Confirm zones and product class."
+  },
+  "studio.elapsed": {
+    "zh-CN": "已用时间",
+    "en": "Elapsed"
+  },
+  "studio.eta": {
+    "zh-CN": "预计剩余",
+    "en": "Estimated remaining"
+  },
+  "studio.confidence": {
+    "zh-CN": "物料置信度",
+    "en": "Product confidence"
+  },
+  "studio.stable_seconds": {
+    "zh-CN": "稳定进入时间（秒）",
+    "en": "Stable entry (seconds)"
+  },
+  "studio.missing_seconds": {
+    "zh-CN": "漏检缓冲（秒）",
+    "en": "Missing grace (seconds)"
+  },
+  "studio.sample_hz": {
+    "zh-CN": "检测频率（次／秒）",
+    "en": "Detection rate (Hz)"
+  },
+  "studio.show_pending": {
+    "zh-CN": "显示待完成区",
+    "en": "Show pending zone"
+  },
+  "studio.show_completed": {
+    "zh-CN": "显示完成区",
+    "en": "Show completed zone"
+  },
+  "studio.color": {
+    "zh-CN": "颜色",
+    "en": "Colour"
+  },
+  "studio.opacity": {
+    "zh-CN": "蒙版不透明度",
+    "en": "Mask opacity"
+  },
+  "studio.reason.training": {
+    "zh-CN": "本地训练中，业务检测已暂停",
+    "en": "Local training: business detection paused"
+  },
+  "studio.unavailable": {
+    "zh-CN": "物料检测待确认／不可用",
+    "en": "Material detection unconfirmed / unavailable"
+  },
+  "studio.reviewCount": {
+    "zh-CN": "{count} 项待核对",
+    "en": "{count} items need review"
+  },
+  "studio.error.notFound": {
+    "zh-CN": "记录不存在",
+    "en": "Record not found"
+  },
+  "studio.error.conflict": {
+    "zh-CN": "内容已被修改，请刷新后重试；当前草稿仍保留",
+    "en": "Content changed. Refresh before retrying; your draft is retained."
+  },
+  "studio.error.idempotency": {
+    "zh-CN": "操作标识无效，请刷新后重试",
+    "en": "Invalid operation identifier; refresh and retry"
+  },
+  "studio.error.materialsInvalid": {
+    "zh-CN": "物料参数不合法，请检查范围及区域",
+    "en": "Invalid material parameters or zones"
+  },
+  "studio.error.materialsOverlap": {
+    "zh-CN": "两个物料区域不能重叠或相交",
+    "en": "Material zones must not overlap or intersect"
+  },
+  "studio.error.materialsRoi": {
+    "zh-CN": "请先划定并确认两个物料区域",
+    "en": "Define and confirm both material zones first"
+  },
+  "studio.error.adjustment": {
+    "zh-CN": "调整需要有效会话、整数数量和原因，且总量不能为负",
+    "en": "An adjustment needs a valid session, integer amount and reason; total cannot be negative"
+  },
+  "studio.error.modelMissing": {
+    "zh-CN": "模型未安装或不匹配，请先上传兼容模型",
+    "en": "Model missing or incompatible; upload a compatible model"
+  },
+  "studio.error.classMissing": {
+    "zh-CN": "模型中不存在所选产品类别",
+    "en": "Selected class is not present in this model"
+  },
+  "studio.error.busy": {
+    "zh-CN": "训练或模型操作进行中，请稍后重试",
+    "en": "A training or model operation is active; retry later"
+  },
+  "studio.error.modelInvalid": {
+    "zh-CN": "模型检查失败，仅支持兼容的 YOLO11 Detect／COCO 17点 Pose .pt 权重",
+    "en": "Compatibility check failed. Use compatible YOLO11 Detect or COCO 17-keypoint Pose .pt weights"
+  },
+  "studio.error.referenced": {
+    "zh-CN": "该模型为内置或仍被配置、训练及恢复任务引用，不能删除",
+    "en": "Built-in or referenced models cannot be deleted"
+  },
+  "studio.error.fileSize": {
+    "zh-CN": "文件超过限制：模型512 MB，图片20 MB／2400万像素",
+    "en": "File limit exceeded: models 512 MB; images 20 MB / 24 MP"
+  },
+  "studio.error.checksum": {
+    "zh-CN": "文件校验不一致，请重新下载或检查数据",
+    "en": "Checksum mismatch; download again or verify data"
+  },
+  "studio.error.downloadFailed": {
+    "zh-CN": "下载失败，请检查外网连接并重试",
+    "en": "Download failed; check internet access and retry"
+  },
+  "studio.error.datasetInvalid": {
+    "zh-CN": "请先选择项目，或填写项目名称及产品名称",
+    "en": "Select a project or enter its name and product class"
+  },
+  "studio.error.imageInvalid": {
+    "zh-CN": "图片无效，仅支持限额内的 JPEG／PNG",
+    "en": "Invalid image; use JPEG / PNG within size limits"
+  },
+  "studio.error.annotationInvalid": {
+    "zh-CN": "标注框无效，请检查是否超出图片范围",
+    "en": "Invalid bounding boxes; check image boundaries"
+  },
+  "studio.error.splitInvalid": {
+    "zh-CN": "三个比例需为正整数，且合计为100%",
+    "en": "Split percentages must be positive integers totalling 100%"
+  },
+  "studio.error.splitGroups": {
+    "zh-CN": "至少需要3个独立采集组，请重新摆放并分组采集",
+    "en": "At least three independent capture groups are required"
+  },
+  "studio.error.splitPositive": {
+    "zh-CN": "至少3个独立采集组需有已标注产品，供训练、验证和测试使用",
+    "en": "At least three independent groups need annotated products for train, validation and test"
+  },
+  "studio.error.baseModel": {
+    "zh-CN": "请选择已下载的官方基础权重",
+    "en": "Choose downloaded official base weights"
+  },
+  "studio.error.trainingParams": {
+    "zh-CN": "训练参数不合法，请检查轮数、学习率及 Batch",
+    "en": "Invalid epochs, learning rate or batch size"
+  },
+  "studio.error.checkpoint": {
+    "zh-CN": "没有可恢复的有效检查点",
+    "en": "No valid resumable checkpoint"
+  },
+  "studio.error.interrupted": {
+    "zh-CN": "任务中断，可从最近完整检查点恢复",
+    "en": "Job interrupted; resume from the last complete checkpoint"
+  },
+  "studio.error.gpuBusy": {
+    "zh-CN": "GPU尚未释放，未开始训练",
+    "en": "GPU was not released; training did not start"
+  },
+  "studio.error.cuda": {
+    "zh-CN": "CUDA不可用，训练未开始",
+    "en": "CUDA unavailable; training did not start"
+  },
+  "studio.error.diskSpace": {
+    "zh-CN": "磁盘可用空间不足，至少需要2 GB",
+    "en": "Insufficient disk space; at least 2 GB is required"
+  },
+  "studio.error.trainingFailed": {
+    "zh-CN": "训练失败，请查看日志，原生产模型将恢复",
+    "en": "Training failed. Review the log; the original live model will resume"
+  },
+  "studio.error.memory": {
+    "zh-CN": "训练内存不足，请新建任务降低 Batch 或选择较小模型",
+    "en": "Training ran out of memory. Create a job with a smaller batch or model"
+  },
+  "studio.error.request": {
+    "zh-CN": "请求不合法，请检查输入",
+    "en": "Invalid request; check inputs"
+  },
+  "studio.error.storage": {
+    "zh-CN": "设备文件或数据库操作失败，请检查存储",
+    "en": "Device file or database operation failed; check storage"
+  },
+  "studio.error.frameUnavailable": {
+    "zh-CN": "没有可用的最新脱敏画面，请等待摄像头连接",
+    "en": "No fresh privacy-processed frame; wait for the camera"
+  },
+  "studio.error.staleReference": {
+    "zh-CN": "参考画面已过期或机位变化，请重新取图并确认",
+    "en": "Reference expired or camera changed; capture a new reference"
+  },
+  "studio.error.agentOffline": {
+    "zh-CN": "训练后台服务未运行，请安装或启动训练服务",
+    "en": "Training service is offline; install or start it"
+  },
+  "studio.state.queued": {
+    "zh-CN": "排队中",
+    "en": "Queued"
+  },
+  "studio.state.preparing": {
+    "zh-CN": "准备中",
+    "en": "Preparing"
+  },
+  "studio.state.running": {
+    "zh-CN": "进行中",
+    "en": "Running"
+  },
+  "studio.state.validating": {
+    "zh-CN": "独立测试中",
+    "en": "Testing"
+  },
+  "studio.state.saving": {
+    "zh-CN": "保存结果",
+    "en": "Saving results"
+  },
+  "studio.state.stopping": {
+    "zh-CN": "正在停止",
+    "en": "Stopping"
+  },
+  "studio.state.completed": {
+    "zh-CN": "已完成",
+    "en": "Completed"
+  },
+  "studio.state.paused": {
+    "zh-CN": "已停止，可恢复",
+    "en": "Paused, resumable"
+  },
+  "studio.state.interrupted": {
+    "zh-CN": "中断待恢复",
+    "en": "Interrupted"
+  },
+  "studio.state.failed": {
+    "zh-CN": "失败",
+    "en": "Failed"
+  },
+  "studio.state.cancelled": {
+    "zh-CN": "已取消",
+    "en": "Cancelled"
+  },
+  "studio.trainingActive": {
+    "zh-CN": "训练中",
+    "en": "Training"
+  },
+  "studio.stage.queued": {
+    "zh-CN": "等待开始",
+    "en": "Waiting"
+  },
+  "studio.stage.preparing": {
+    "zh-CN": "准备资源",
+    "en": "Preparing resources"
+  },
+  "studio.stage.preflight": {
+    "zh-CN": "资源预检",
+    "en": "Resource preflight"
+  },
+  "studio.stage.training": {
+    "zh-CN": "训练",
+    "en": "Training"
+  },
+  "studio.stage.testing": {
+    "zh-CN": "独立测试",
+    "en": "Independent test"
+  },
+  "studio.stage.saving": {
+    "zh-CN": "保存产物",
+    "en": "Saving artifacts"
+  },
+  "studio.stage.completed": {
+    "zh-CN": "已完成",
+    "en": "Completed"
+  },
+  "studio.stage.stopped": {
+    "zh-CN": "已停止",
+    "en": "Stopped"
+  },
+  "studio.stage.failed": {
+    "zh-CN": "失败",
+    "en": "Failed"
+  },
+  "studio.stage.interrupted": {
+    "zh-CN": "中断",
+    "en": "Interrupted"
+  },
+  "studio.rawLog": {
+    "zh-CN": "原始训练日志（高级）",
+    "en": "Raw training log (advanced)"
+  },
+  "studio.trainBoundary": {
+    "zh-CN": "训练集与验证集分界",
+    "en": "Train / validation boundary"
+  },
+  "studio.validationBoundary": {
+    "zh-CN": "验证集与测试集分界",
+    "en": "Validation / test boundary"
+  },
+  "studio.error.annotationIncomplete": {
+    "zh-CN": "还有 {count} 张图片未确认，请完成标注、确认无目标或删除",
+    "en": "{count} images are unconfirmed. Label them, confirm empty, or delete them"
+  },
+  "studio.error.workerStart": {
+    "zh-CN": "无法启动训练进程，请检查设备环境与服务日志",
+    "en": "Unable to start the training process; check the environment and service log"
+  },
+  "studio.peakMemory": {
+    "zh-CN": "训练峰值 GPU 分配",
+    "en": "Peak training GPU allocation"
+  },
+  "studio.metric.boxLoss": {
+    "zh-CN": "框位置损失",
+    "en": "Box loss"
+  },
+  "studio.metric.classLoss": {
+    "zh-CN": "类别损失",
+    "en": "Class loss"
+  },
+  "studio.metric.dflLoss": {
+    "zh-CN": "分布损失",
+    "en": "Distribution loss"
+  },
+  "studio.metric.precision": {
+    "zh-CN": "精确率",
+    "en": "Precision"
+  },
+  "studio.metric.recall": {
+    "zh-CN": "召回率",
+    "en": "Recall"
+  },
+  "studio.metric.map50": {
+    "zh-CN": "mAP50",
+    "en": "mAP50"
+  },
+  "studio.metric.map5095": {
+    "zh-CN": "mAP50–95",
+    "en": "mAP50–95"
+  },
+  "studio.metric.fitness": {
+    "zh-CN": "综合指标",
+    "en": "Fitness"
+  },
+  "studio.error.modelActivation": {
+    "zh-CN": "模型试运行失败，已恢复原模型并暂停物料计数；请检查模型兼容性与设备资源。",
+    "en": "Model trial failed. The previous model was restored and material counting paused. Check compatibility and device resources."
+  },
+  "studio.actualLearningRate": {
+    "zh-CN": "实际学习率",
+    "en": "Actual learning rate"
+  },
+  "studio.batch": {
+    "zh-CN": "批次",
+    "en": "batch"
+  },
+  "studio.metricScope.train": {
+    "zh-CN": "训练集",
+    "en": "Training"
+  },
+  "studio.metricScope.validation": {
+    "zh-CN": "验证集",
+    "en": "Validation"
+  },
+  "studio.metricScope.test": {
+    "zh-CN": "独立测试集",
+    "en": "Test"
   }
 }

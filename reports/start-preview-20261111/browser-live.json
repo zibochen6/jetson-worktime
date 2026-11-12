@@ -1,0 +1,9 @@
+{
+  "state": "等待开工",
+  "reason": "有效画面中未观察到工位人员",
+  "stream": "低带宽预览 · MJPEG",
+  "display": "{\"samples\":0,\"p95_ms\":null,\"stalls_over_500ms\":0}",
+  "documentHidden": false,
+  "documentFocused": false,
+  "note": "Remote browser automation; animation callbacks were observed at about 1–2 Hz. This is not a factory local-browser smoothness acceptance."
+}

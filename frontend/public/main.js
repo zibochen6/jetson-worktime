@@ -1,6 +1,6 @@
 import {applyVisualization} from './overlay.js';
 import {VideoPlayer} from './video-player.js';
-import {getJSON, workAction, duration, dashboardView, displayMode, systemMetricsView, currentObservation, matchingImage, drawResult} from './api.js';
+import {getJSON, workAction, duration, dashboardView, displayMode, systemMetricsView, currentObservation, previewReady, matchingImage, drawResult} from './api.js';
 import {tr, text, getLanguage, errorDetails} from './i18n.js';
 import {pipelineState} from './pipeline.js';
 
@@ -335,6 +335,7 @@ settingsFrame.addEventListener('load', () => {
   // Keyboard events in the embedded settings document do not bubble to the homepage.
   settingsFrame.contentDocument.addEventListener('keydown', event => {
     if (event.key !== 'Escape' || event.defaultPrevented || document.fullscreenElement) return;
+    if(settingsFrame.contentDocument.querySelector('dialog[open]'))return;
     event.preventDefault();
     settingsDialog.close();
   });
@@ -347,6 +348,10 @@ for (const button of document.querySelectorAll('[data-action]')) {
     actionPending = true;
     for (const control of document.querySelectorAll('[data-action]')) control.disabled = true;
     try {
+      if (button.dataset.action === 'confirm_camera') {
+        $('reviewRegions').click();
+        return;
+      }
       await workAction(button.dataset.action);
       text('actionResult', 'actions.recorded');
     } catch (error) { const details = errorDetails(error); text('actionResult', details.key, details.params); }
@@ -379,8 +384,8 @@ function renderPipeline(camera, work) {
   if (state.phase === 'done') text('phase-done-detail', 'state.done');
   if (state.phase === 'idle') text('phase-idle-detail', 'pipeline.waiting');
   if (state.phase === 'working') text('phase-working-detail', 'pipeline.workingHint');
-  text('workState', state.key);
-  const className='state ' + state.tone;
+  text('workState', work.operating_mode==='training'?'studio.trainingActive':state.key);
+  const className='state ' + (work.operating_mode==='training'?'away':state.tone);
   if($('workState').className!==className)$('workState').className=className;
 }
 function render() {
@@ -423,10 +428,19 @@ function render() {
     text('emptyHint', 'video.background');
   } else {
     $('empty').hidden = outputReady && frameReady;
-    text('emptyTitle', camera.algorithm_error ? 'camera.algorithmRecovering' : cameraOnline ? 'camera.preparing' : 'camera.deviceLost');
-    text('emptyHint', 'camera.recoveryHint');
+    text('emptyTitle', work.operating_mode==='training'?'studio.trainingActive':camera.algorithm_error ? 'camera.algorithmRecovering' : cameraOnline ? 'camera.preparing' : 'camera.deviceLost');
+    text('emptyHint', work.operating_mode==='training'?'studio.reason.training':'camera.recoveryHint');
   }
   renderPipeline(camera, work);
+  const confirmation = work.start_confirmation;
+  $('reviewRegions').hidden = !(camera.camera_changed || work.camera_changed || camera.regions_match === false || work.roi_provisional);
+  $('startProgress').textContent = '';
+  $('startReset').textContent = '';
+  delete $('startProgress').dataset.i18n;
+  delete $('startReset').dataset.i18n;
+  if (confirmation?.state === 'CONFIRMING') text('startProgress','startup.progress',{elapsed:Math.floor(confirmation.elapsed_seconds),target:confirmation.required_seconds});
+  else if (confirmation?.blocker_code) text('startProgress','startup.blocked',{reason:tr(confirmation.blocker_code,confirmation.blocker_params||{})});
+  if (!work.active && confirmation?.last_reset) text('startReset','startup.reset',{reason:tr(confirmation.last_reset.reason_code,confirmation.last_reset.reason_params||{})});
   if (camera.camera_changed || work.camera_changed || camera.regions_match === false) text('reason', 'camera.moved');
   else if (camera.algorithm_error) text('reason', 'camera.algorithmHint');
   else if (!cameraOnline) text('reason', 'camera.retrying');
@@ -441,9 +455,9 @@ function render() {
 }
 async function update() {
   try {
-    const [camera, work, envelope] = await Promise.all([getJSON('/api/v1/camera'), getJSON('/api/v1/work/status'), getJSON('/api/v1/observations/latest',{signal:AbortSignal.timeout(1000)}).catch(() => null)]);
+    const [camera, work, envelope] = await Promise.all([getJSON('/api/v1/camera'), getJSON('/api/v1/work/status'), getJSON('/api/v1/observations/latest',{signal:AbortSignal.timeout(4000)}).catch(() => null)]);
     cameraOnline = camera.status === 'online';
-    outputReady = currentObservation(camera, envelope) && (camera.output_fps === undefined || camera.output_fps > 0);
+    outputReady = previewReady(camera, envelope);
     if (streamSession !== null && streamSession !== camera.stream_session_id) resetStream();
     if (revision !== camera.config_revision) {
       resetStream();
@@ -455,6 +469,16 @@ async function update() {
           roiConfigured = settings.roi_configured;
         }
       } catch { roiConfigured = null; }
+    }
+    const material=work.materials;
+    const materialPanel=$('materialDashboard');
+    if(materialPanel){
+      materialPanel.hidden=!material?.enabled;
+      if(material?.enabled){
+        materialPanel.replaceChildren();
+        for(const key of ['pending','completed','cumulative']){const item=document.createElement('div');const title=document.createElement('span');title.textContent=tr('studio.'+key);const value=document.createElement('strong');value.textContent=key==='cumulative'?material[key]??'—':material.available?material[key]??'—':'—';item.append(title,value);materialPanel.append(item);}
+        if(!material.available||material.reviews?.length){const note=document.createElement('span');note.className='material-note';note.textContent=!material.available?tr('studio.unavailable'):tr('studio.reviewCount',{count:material.reviews.length});materialPanel.append(note);}
+      }
     }
     lastStatus = {camera, work, envelope};
     if (!outputReady) resetStream();

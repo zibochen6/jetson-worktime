@@ -19,6 +19,7 @@ from jetson_worktime.api import work_status
 from jetson_worktime.behavior_service import BehaviorService
 from jetson_worktime.localization import LANGUAGES, LocalizedError
 from jetson_worktime.settings import SettingsConflict
+from jetson_worktime.studio_store import StudioError
 from jetson_worktime.system_metrics import SystemMetrics
 from jetson_worktime.video import VideoReader
 from jetson_worktime.streaming import VideoTransport, PROFILES
@@ -27,6 +28,8 @@ from jetson_worktime.camera_sources import CameraSources, normalize_source, usb_
 os.chdir(ROOT)
 behavior = BehaviorService(ROOT)
 behavior.transport = VideoTransport(ROOT)
+from jetson_worktime.studio_http import StudioHTTP
+studio_http = StudioHTTP(behavior.studio)
 system_metrics = SystemMetrics()
 atexit.register(behavior.close)
 if (ROOT/'.env').exists():
@@ -129,6 +132,12 @@ class Handler(BaseHTTPRequestHandler):
         with behavior.lock:
             times = behavior.publish_times
             output_fps = (len(times)-1)/(times[-1]-times[0]) if len(times) > 1 and time.monotonic()-times[-1] < 5 else 0
+            observed = behavior.frame_ref.get('receive_monotonic_ns')
+            age = max(0,(time.monotonic_ns()-observed)/1e6) if observed is not None else None
+            info.update(algorithm_observation_age_ms=age,
+                        operating_mode=behavior.operating_mode,
+                        algorithm_fresh=bool(behavior.operating_mode=='business' and behavior.connected and not behavior.error and age is not None
+                                             and age <= behavior.config['max_observation_age']*1000))
             info.update(config_revision=behavior.config['revision'], privacy_applied=behavior.config['privacy']['enabled'],
                         output_fps=round(output_fps, 2), algorithm_error=behavior.error,
                         regions_match=behavior.config['image_size'] == [info['width'], info['height']],
@@ -149,7 +158,7 @@ class Handler(BaseHTTPRequestHandler):
                 'X-Config-Revision': media['revision'],
                 'X-Privacy-Applied': str(media['privacy_applied']).lower()}
 
-    def send_media(self, data, headers):
+    def send_media(self, data, headers, content_type='image/jpeg'):
         transport = behavior.transport
         with transport.condition:
             if int(headers['X-Config-Revision']) != behavior.config['revision']:
@@ -158,7 +167,7 @@ class Handler(BaseHTTPRequestHandler):
             transport.output_sockets.add(self.connection)
         try:
             self.connection.settimeout(2)
-            self.send_bytes(data,'image/jpeg',headers=headers)
+            self.send_bytes(data,content_type,headers=headers)
         except (BrokenPipeError, ConnectionResetError, TimeoutError, OSError):
             self.close_connection = True
         finally:
@@ -271,6 +280,7 @@ class Handler(BaseHTTPRequestHandler):
         self.whep('DELETE')
 
     def do_GET(self):
+        if studio_http.handle(self,'GET'): return
         parsed = urlsplit(self.path)
         path = parsed.path
         locale = 'zh-CN'
@@ -293,6 +303,9 @@ class Handler(BaseHTTPRequestHandler):
                   '/roi-editor.js': ('roi-editor.js', 'text/javascript; charset=utf-8'),
                   '/api.js': ('api.js', 'text/javascript; charset=utf-8'),
                   '/main.js': ('main.js', 'text/javascript; charset=utf-8'),
+                  '/annotation.js': ('annotation.js','text/javascript; charset=utf-8'),
+                  '/studio.js': ('studio.js','text/javascript; charset=utf-8'),
+                  '/studio.css': ('studio.css','text/css; charset=utf-8'),
                   '/main.css': ('main.css', 'text/css; charset=utf-8')}
         if path == '/':
             self.send_bytes((ROOT/'frontend/public/index.html').read_bytes(), 'text/html; charset=utf-8')
@@ -370,6 +383,7 @@ class Handler(BaseHTTPRequestHandler):
         return data
 
     def do_PUT(self):
+        if studio_http.handle(self,'PUT'): return
         if not self.check_origin():
             return
         if self.path != '/api/v1/settings':
@@ -386,6 +400,11 @@ class Handler(BaseHTTPRequestHandler):
                                      source_fps=None, receive_sequence=None, pts_ns=None)
             else:
                 result = behavior.apply_settings(request, self.camera())
+        except StudioError as exc:
+            exc.message_key='studio.error.'+exc.code
+            exc.message_params=exc.params
+            self.error(exc.status,'STUDIO_ERROR',exc)
+            return
         except SettingsConflict as exc:
             self.error(409, 'SETTINGS_CONFLICT', exc)
             return
@@ -399,7 +418,11 @@ class Handler(BaseHTTPRequestHandler):
         result['camera'] = self.camera()
         self.json(result)
 
+    def do_DELETE(self):
+        studio_http.handle(self,'DELETE') or self.error(404,'NOT_FOUND','Unknown endpoint')
+
     def do_POST(self):
+        if studio_http.handle(self,'POST'): return
         if not self.check_origin():
             return
         if self.path.startswith('/api/v1/video/'):

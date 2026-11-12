@@ -27,6 +27,7 @@ class MediaLanguageTests(unittest.TestCase):
         behavior=SimpleNamespace(lock=threading.RLock(),media=media,config={'max_observation_age':1.5,'revision':9},transport=SimpleNamespace(condition=threading.Condition(),output_sockets=set()))
         namespace=dict(ROOT=ROOT,urlsplit=urlsplit,parse_qs=parse_qs,LANGUAGES=LANGUAGES,
                        LocalizedError=LocalizedError,json=json,time=time,behavior=behavior)
+        namespace['studio_http']=SimpleNamespace(handle=lambda *args:False)
         exec(compile(ast.Module(body=methods,type_ignores=[]),'production_http_methods','exec'),namespace)
         attributes={node.name:namespace[node.name] for node in methods}
         namespace['json']=json

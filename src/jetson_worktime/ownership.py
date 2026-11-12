@@ -100,7 +100,7 @@ class SessionOwnership:
                 self.track_id = None
                 self.last_person = None
                 self.state = 'UNBOUND'
-                return ('UNKNOWN' if label == 'SEATED' else label), reason('ownership.waiting'), people, True
+                return ('UNKNOWN' if label == 'SEATED' else label), (reason('startup.noTrack') if label == 'SEATED' else detail), people, True
             person = seated[0]
             reset_start = (person['person_track_id'] != self.track_id
                            or self.last_person is None or not spatially_continuous(self.last_person, person))

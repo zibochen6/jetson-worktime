@@ -128,6 +128,10 @@ class CameraSourceTests(unittest.TestCase):
                          urlsplit=urlsplit, parse_qs=parse_qs, behavior=self.service,
                          cameras=self.sources, state=state, state_lock=threading.Lock(), ROOT=root,
                          SettingsConflict=SettingsConflict)
+        from types import SimpleNamespace
+        from jetson_worktime.studio_store import StudioError
+        namespace['studio_http']=SimpleNamespace(handle=lambda *args:False)
+        namespace['StudioError']=StudioError
         exec(compile(ast.Module(body=[handler], type_ignores=[]), 'preview.py', 'exec'), namespace)
         server = ThreadingHTTPServer(('127.0.0.1', 0), namespace['Handler'])
         thread = threading.Thread(target=server.serve_forever, daemon=True)

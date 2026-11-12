@@ -21,6 +21,7 @@ class HomepageTests(unittest.TestCase):
         metrics = dict(schema_version='1.0', gpu_percent=23.4)
         namespace = dict(ROOT=ROOT, urlsplit=urlsplit,
                          system_metrics=SimpleNamespace(snapshot=lambda: metrics))
+        namespace['studio_http']=SimpleNamespace(handle=lambda *args:False)
         exec(compile(ast.Module(body=[method], type_ignores=[]), str(ROOT/'scripts/preview.py'), 'exec'), namespace)
 
         class Handler(BaseHTTPRequestHandler):

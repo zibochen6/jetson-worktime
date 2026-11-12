@@ -6,6 +6,7 @@
   <script>if (window.parent !== window && new URLSearchParams(location.search).get('embedded') === '1') document.documentElement.classList.add('embedded');</script>
   <title data-i18n="app.settingsTitle">场景设置 · 工时统计系统</title>
   <link rel="stylesheet" href="/settings.css">
+  <link rel="stylesheet" href="/studio.css">
 </head>
 <body>
   <header class="site-header">
@@ -15,6 +16,11 @@
   </header>
   <main>
     <div class="page-heading"><div><p class="eyebrow" data-i18n="config.eyebrow">设备设置</p><h1><span data-i18n="config.heading">让相机适应你的工位</span></h1><p class="intro"><span data-i18n="config.intro">划定观察范围，调整计时规则，统一管理画面隐私与检测图层。</span></p></div><div class="device-badges"><span id="connection" class="badge"><span data-i18n="camera.connectingDevice">正在连接设备</span></span><span id="revision" class="badge neutral"><span data-i18n="config.reading">读取配置中</span></span></div></div>
+    <nav class="studio-entry" aria-label="AI workspace">
+      <button type="button" data-studio="materials"><b data-i18n="studio.materials">物料计数</b><small data-i18n="studio.materialsBrief">划定区域 · 计数与核对</small></button>
+      <button type="button" data-studio="models"><b data-i18n="studio.models">模型管理</b><small data-i18n="studio.modelsBrief">上传 · 选择 · 切换模型</small></button>
+      <button type="button" data-studio="training"><b data-i18n="studio.training">训练中心</b><small data-i18n="studio.trainingBrief">采集 · 标注 · 本地训练</small></button>
+    </nav>
     <section class="panel camera-source-panel" aria-labelledby="sourceTitle">
       <div class="panel-heading"><div><p class="eyebrow" data-i18n="source.step">00 / 摄像头</p><h2 id="sourceTitle" data-i18n="source.title">摄像头接入</h2></div><span class="badge neutral" id="sourceCurrent"></span></div>
       <p class="section-description" data-i18n="source.help">选择摄像头并测试连接，通过后点击保存并切换。切换会结束当前会话并重置区域草稿，需要重新确认检测区域。</p>
@@ -78,5 +84,6 @@
   </main>
   <footer><span data-i18n="app.name">工时统计系统</span> <span><span data-i18n="config.persist">本页配置保存在设备，重启后自动加载。</span></span></footer>
   <script type="module" src="/settings.js"></script>
+  <script type="module" src="/studio.js"></script>
 </body>
 </html>

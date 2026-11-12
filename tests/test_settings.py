@@ -154,18 +154,25 @@ class SettingsTests(unittest.TestCase):
                 meta = dict(session_id='matched-stream',receive_sequence=7)
                 service.submit(frame,123,received,meta)
                 result = SimpleNamespace(boxes=SimpleNamespace(conf=SimpleNamespace(cpu=lambda:SimpleNamespace(tolist=lambda:[]))))
-                model = SimpleNamespace(predictor=None, track=lambda *a,**k:[result],
+                model = SimpleNamespace(predict=lambda *a,**k:None,predictor=None, track=lambda *a,**k:[result],
                     model=SimpleNamespace(parameters=lambda:iter([SimpleNamespace(device=SimpleNamespace(type='cuda'))])))
-                fake_torch = SimpleNamespace(cuda=SimpleNamespace(synchronize=lambda:None))
+                fake_torch = SimpleNamespace(cuda=SimpleNamespace(synchronize=lambda:None,empty_cache=lambda:None))
                 fake_yolo = SimpleNamespace(YOLO=lambda *a:model)
                 def encode(*args, **kwargs):
-                    service.stop.set()
                     return {'zh-CN':b'zh','en':b'en'}
                 with patch.dict('sys.modules',{'torch':fake_torch,'ultralytics':fake_yolo}), \
                         patch.object(runtime,'extract_persons',return_value=[]), \
-                        patch.object(service,'guard'), \
+                        patch.object(service,'guard'), patch.object(service.studio,'model',return_value={'path':'test-model.pt'}), \
                         patch('jetson_worktime.behavior_service.encode_overlays',side_effect=encode):
-                    service._inference_loop()
+                    original_publish = service.observations.publish
+                    def publish(*args):
+                        original_publish(*args)
+                        service.stop.set()
+                    with patch.object(service.observations, 'publish', side_effect=publish):
+                        media = threading.Thread(target=service.media_worker)
+                        media.start()
+                        service._inference_loop()
+                        media.join(timeout=3)
                 self.assertEqual(service.media['meta'],meta)
                 self.assertEqual(service.media['received'],received)
                 self.assertEqual(service.media['privacy_applied'],enabled)

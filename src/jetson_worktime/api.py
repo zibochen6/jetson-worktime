@@ -64,5 +64,5 @@ def make_observation(run_id, meta, pts, received, started, completed, width, hei
         persons=[{**p, 'upper_body_anchor': p.get('upper_body_anchor')} for p in persons],
         regions=config['regions'], roi_provisional=not config.get('roi_configured', False), camera_changed=camera_changed,
         config_revision=config.get('revision', 0), privacy_applied=config.get('privacy', {}).get('enabled', True),
-        display=config.get('display', DISPLAY_DEFAULTS), visualization=visualization_settings(config), detection=detection_settings(config),
+        models=config.get('models'), model_weights=config.get('model_weights'), materials=config.get('materials'), display=config.get('display', DISPLAY_DEFAULTS), visualization=visualization_settings(config), detection=detection_settings(config),
         matching_frame_url='/api/v1/observations/frame.jpg?'+urlencode({'observation_id': key})))

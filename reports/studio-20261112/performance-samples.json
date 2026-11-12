@@ -1,0 +1,2026 @@
+{
+  "before_revision": 30,
+  "windows": [
+    {
+      "name": "YOLO11n",
+      "median_fps": 10.3,
+      "valid_samples": 60,
+      "samples": [
+        {
+          "fps": 10.34,
+          "age_ms": 199.692563,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 10.38,
+          "age_ms": 227.306004,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 10.35,
+          "age_ms": 186.122941,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 10.52,
+          "age_ms": 108.629539,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 10.72,
+          "age_ms": 224.444398,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 10.72,
+          "age_ms": 259.669515,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 10.6,
+          "age_ms": 261.949072,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 10.41,
+          "age_ms": 181.851257,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 10.26,
+          "age_ms": 137.953091,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 10.21,
+          "age_ms": 177.665086,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 10.24,
+          "age_ms": 187.142549,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 10.26,
+          "age_ms": 207.90812,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 10.43,
+          "age_ms": 126.433417,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 10.68,
+          "age_ms": 255.915029,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 10.58,
+          "age_ms": 237.535593,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 10.47,
+          "age_ms": 260.179778,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 10.43,
+          "age_ms": 167.146703,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 10.42,
+          "age_ms": 175.920794,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 10.48,
+          "age_ms": 209.905912,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 10.23,
+          "age_ms": 130.865557,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 10.34,
+          "age_ms": 177.176823,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 10.35,
+          "age_ms": 197.321061,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 10.25,
+          "age_ms": 116.789907,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 10.29,
+          "age_ms": 273.468722,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 10.44,
+          "age_ms": 223.071048,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 10.47,
+          "age_ms": 256.256677,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 10.43,
+          "age_ms": 167.415894,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 10.48,
+          "age_ms": 206.000917,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 10.4,
+          "age_ms": 227.902233,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 10.35,
+          "age_ms": 160.226748,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 10.27,
+          "age_ms": 164.563422,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 10.24,
+          "age_ms": 202.276173,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 9.57,
+          "age_ms": 501.229545,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 9.35,
+          "age_ms": 169.097546,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 9.45,
+          "age_ms": 183.751492,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 9.55,
+          "age_ms": 238.184002,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 9.54,
+          "age_ms": 140.313657,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 9.65,
+          "age_ms": 223.097579,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 10.2,
+          "age_ms": 156.100634,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 10.31,
+          "age_ms": 173.69405,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 10.2,
+          "age_ms": 286.28903,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 10.32,
+          "age_ms": 184.64362,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 10.11,
+          "age_ms": 271.484218,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 10.14,
+          "age_ms": 160.440492,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 10.04,
+          "age_ms": 217.949257,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 9.99,
+          "age_ms": 243.164245,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 10.01,
+          "age_ms": 165.771036,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 10.04,
+          "age_ms": 117.415729,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 10.32,
+          "age_ms": 242.682552,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 10.34,
+          "age_ms": 249.905412,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 10.18,
+          "age_ms": 164.433154,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 9.92,
+          "age_ms": 235.602905,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 9.97,
+          "age_ms": 165.902776,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 9.94,
+          "age_ms": 104.32047,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 9.83,
+          "age_ms": 139.925569,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 9.79,
+          "age_ms": 216.641391,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 10.15,
+          "age_ms": 137.354115,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 10.43,
+          "age_ms": 188.439005,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 10.49,
+          "age_ms": 197.107907,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 10.64,
+          "age_ms": 219.161191,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        }
+      ]
+    },
+    {
+      "name": "YOLO11m",
+      "median_fps": 8.95,
+      "valid_samples": 60,
+      "samples": [
+        {
+          "fps": 9.03,
+          "age_ms": 239.05259,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 8.89,
+          "age_ms": 270.245587,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 8.87,
+          "age_ms": 194.284562,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 9.05,
+          "age_ms": 308.639484,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 9.02,
+          "age_ms": 308.753097,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 8.79,
+          "age_ms": 181.166778,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 8.94,
+          "age_ms": 217.753516,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 9.15,
+          "age_ms": 267.239247,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 9.15,
+          "age_ms": 162.156302,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 9.2,
+          "age_ms": 186.00283,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 9.05,
+          "age_ms": 213.099022,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 8.97,
+          "age_ms": 120.413778,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 9.11,
+          "age_ms": 142.395379,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 8.94,
+          "age_ms": 302.591462,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 8.93,
+          "age_ms": 208.696978,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 8.78,
+          "age_ms": 128.4434,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 8.96,
+          "age_ms": 205.982026,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 9.0,
+          "age_ms": 141.397607,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 9.03,
+          "age_ms": 154.378143,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 9.1,
+          "age_ms": 154.098117,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 9.2,
+          "age_ms": 216.08093,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 9.06,
+          "age_ms": 245.6416,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 9.05,
+          "age_ms": 163.849756,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 8.94,
+          "age_ms": 207.524599,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 8.88,
+          "age_ms": 247.837142,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 8.93,
+          "age_ms": 310.393719,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 9.06,
+          "age_ms": 262.821137,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 8.83,
+          "age_ms": 164.135676,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 8.84,
+          "age_ms": 303.438682,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 8.89,
+          "age_ms": 344.037609,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 8.83,
+          "age_ms": 257.336834,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 9.0,
+          "age_ms": 174.834805,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 9.01,
+          "age_ms": 210.662125,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 9.04,
+          "age_ms": 273.16279,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 8.7,
+          "age_ms": 175.758955,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 8.65,
+          "age_ms": 312.386235,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 8.63,
+          "age_ms": 231.904074,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 8.68,
+          "age_ms": 249.971199,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 8.6,
+          "age_ms": 134.620726,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 8.42,
+          "age_ms": 160.476433,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 8.59,
+          "age_ms": 184.480479,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 8.88,
+          "age_ms": 188.885843,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 8.86,
+          "age_ms": 148.519836,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 8.85,
+          "age_ms": 161.999558,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 8.83,
+          "age_ms": 199.529361,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 8.92,
+          "age_ms": 134.522715,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 8.99,
+          "age_ms": 384.16911,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 8.89,
+          "age_ms": 169.874936,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 8.96,
+          "age_ms": 206.871021,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 8.97,
+          "age_ms": 213.789389,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 8.92,
+          "age_ms": 162.670013,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 9.2,
+          "age_ms": 286.384698,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 9.19,
+          "age_ms": 318.704518,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 9.09,
+          "age_ms": 204.257765,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 8.91,
+          "age_ms": 255.520295,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 8.85,
+          "age_ms": 183.774918,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 9.02,
+          "age_ms": 233.651044,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 8.96,
+          "age_ms": 263.096602,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 9.12,
+          "age_ms": 268.179314,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        },
+        {
+          "fps": 9.15,
+          "age_ms": 175.87151,
+          "material_available": true,
+          "pending": 0,
+          "completed": 0
+        }
+      ]
+    },
+    {
+      "name": "YOLO11l",
+      "median_fps": 8.83,
+      "valid_samples": 60,
+      "samples": [
+        {
+          "fps": 9.13,
+          "age_ms": 372.407953,
+          "material_available": true,
+          "pending": 0,
+          "completed": 1
+        },
+        {
+          "fps": 9.0,
+          "age_ms": 200.934076,
+          "material_available": true,
+          "pending": 0,
+          "completed": 1
+        },
+        {
+          "fps": 8.83,
+          "age_ms": 201.5542,
+          "material_available": true,
+          "pending": 2,
+          "completed": 1
+        },
+        {
+          "fps": 8.69,
+          "age_ms": 226.83881,
+          "material_available": true,
+          "pending": 1,
+          "completed": 1
+        },
+        {
+          "fps": 8.83,
+          "age_ms": 250.217024,
+          "material_available": true,
+          "pending": 0,
+          "completed": 1
+        },
+        {
+          "fps": 8.83,
+          "age_ms": 258.281534,
+          "material_available": true,
+          "pending": 0,
+          "completed": 1
+        },
+        {
+          "fps": 8.79,
+          "age_ms": 156.624096,
+          "material_available": true,
+          "pending": 0,
+          "completed": 1
+        },
+        {
+          "fps": 8.75,
+          "age_ms": 172.663593,
+          "material_available": true,
+          "pending": 0,
+          "completed": 1
+        },
+        {
+          "fps": 8.74,
+          "age_ms": 207.273197,
+          "material_available": true,
+          "pending": 0,
+          "completed": 1
+        },
+        {
+          "fps": 8.81,
+          "age_ms": 218.138445,
+          "material_available": true,
+          "pending": 0,
+          "completed": 1
+        },
+        {
+          "fps": 8.72,
+          "age_ms": 177.026138,
+          "material_available": true,
+          "pending": 1,
+          "completed": 2
+        },
+        {
+          "fps": 8.99,
+          "age_ms": 117.194465,
+          "material_available": true,
+          "pending": 1,
+          "completed": 2
+        },
+        {
+          "fps": 8.92,
+          "age_ms": 288.443829,
+          "material_available": true,
+          "pending": 0,
+          "completed": 1
+        },
+        {
+          "fps": 8.79,
+          "age_ms": 181.587075,
+          "material_available": true,
+          "pending": 0,
+          "completed": 1
+        },
+        {
+          "fps": 8.86,
+          "age_ms": 213.487162,
+          "material_available": true,
+          "pending": 0,
+          "completed": 1
+        },
+        {
+          "fps": 8.79,
+          "age_ms": 180.087988,
+          "material_available": true,
+          "pending": 0,
+          "completed": 1
+        },
+        {
+          "fps": 8.98,
+          "age_ms": 224.219419,
+          "material_available": true,
+          "pending": 0,
+          "completed": 1
+        },
+        {
+          "fps": 9.02,
+          "age_ms": 247.600759,
+          "material_available": true,
+          "pending": 0,
+          "completed": 1
+        },
+        {
+          "fps": 8.86,
+          "age_ms": 151.479766,
+          "material_available": true,
+          "pending": 0,
+          "completed": 1
+        },
+        {
+          "fps": 8.88,
+          "age_ms": 200.247332,
+          "material_available": true,
+          "pending": 1,
+          "completed": 1
+        },
+        {
+          "fps": 8.83,
+          "age_ms": 194.92075,
+          "material_available": true,
+          "pending": 1,
+          "completed": 1
+        },
+        {
+          "fps": 8.94,
+          "age_ms": 242.309463,
+          "material_available": true,
+          "pending": 1,
+          "completed": 1
+        },
+        {
+          "fps": 8.83,
+          "age_ms": 271.822208,
+          "material_available": true,
+          "pending": 1,
+          "completed": 2
+        },
+        {
+          "fps": 8.6,
+          "age_ms": 190.99981,
+          "material_available": true,
+          "pending": 1,
+          "completed": 2
+        },
+        {
+          "fps": 8.76,
+          "age_ms": 239.670426,
+          "material_available": true,
+          "pending": 0,
+          "completed": 1
+        },
+        {
+          "fps": 8.65,
+          "age_ms": 167.302912,
+          "material_available": true,
+          "pending": 0,
+          "completed": 1
+        },
+        {
+          "fps": 8.67,
+          "age_ms": 168.71234,
+          "material_available": true,
+          "pending": 0,
+          "completed": 1
+        },
+        {
+          "fps": 8.7,
+          "age_ms": 202.822109,
+          "material_available": true,
+          "pending": 0,
+          "completed": 1
+        },
+        {
+          "fps": 8.61,
+          "age_ms": 194.887616,
+          "material_available": true,
+          "pending": 0,
+          "completed": 1
+        },
+        {
+          "fps": 8.13,
+          "age_ms": 492.799478,
+          "material_available": true,
+          "pending": 0,
+          "completed": 1
+        },
+        {
+          "fps": 8.14,
+          "age_ms": 152.61251,
+          "material_available": true,
+          "pending": 0,
+          "completed": 1
+        },
+        {
+          "fps": 8.04,
+          "age_ms": 288.640694,
+          "material_available": true,
+          "pending": 0,
+          "completed": 1
+        },
+        {
+          "fps": 8.09,
+          "age_ms": 240.508223,
+          "material_available": true,
+          "pending": 0,
+          "completed": 1
+        },
+        {
+          "fps": 8.28,
+          "age_ms": 283.695773,
+          "material_available": true,
+          "pending": 1,
+          "completed": 1
+        },
+        {
+          "fps": 8.16,
+          "age_ms": 259.672086,
+          "material_available": true,
+          "pending": 1,
+          "completed": 1
+        },
+        {
+          "fps": 8.24,
+          "age_ms": 170.197753,
+          "material_available": true,
+          "pending": 1,
+          "completed": 1
+        },
+        {
+          "fps": 8.77,
+          "age_ms": 203.075066,
+          "material_available": true,
+          "pending": 0,
+          "completed": 1
+        },
+        {
+          "fps": 8.45,
+          "age_ms": 219.644503,
+          "material_available": true,
+          "pending": 0,
+          "completed": 1
+        },
+        {
+          "fps": 8.42,
+          "age_ms": 219.008547,
+          "material_available": true,
+          "pending": 0,
+          "completed": 1
+        },
+        {
+          "fps": 8.6,
+          "age_ms": 239.630619,
+          "material_available": true,
+          "pending": 1,
+          "completed": 1
+        },
+        {
+          "fps": 8.64,
+          "age_ms": 263.841662,
+          "material_available": true,
+          "pending": 1,
+          "completed": 1
+        },
+        {
+          "fps": 8.72,
+          "age_ms": 285.413033,
+          "material_available": true,
+          "pending": 1,
+          "completed": 1
+        },
+        {
+          "fps": 8.69,
+          "age_ms": 183.329808,
+          "material_available": true,
+          "pending": 1,
+          "completed": 1
+        },
+        {
+          "fps": 8.72,
+          "age_ms": 231.61279,
+          "material_available": true,
+          "pending": 1,
+          "completed": 1
+        },
+        {
+          "fps": 8.98,
+          "age_ms": 127.867706,
+          "material_available": true,
+          "pending": 1,
+          "completed": 1
+        },
+        {
+          "fps": 9.09,
+          "age_ms": 282.103986,
+          "material_available": true,
+          "pending": 1,
+          "completed": 1
+        },
+        {
+          "fps": 9.19,
+          "age_ms": 282.731685,
+          "material_available": true,
+          "pending": 1,
+          "completed": 1
+        },
+        {
+          "fps": 9.08,
+          "age_ms": 191.912571,
+          "material_available": true,
+          "pending": 1,
+          "completed": 1
+        },
+        {
+          "fps": 9.16,
+          "age_ms": 232.530403,
+          "material_available": true,
+          "pending": 1,
+          "completed": 1
+        },
+        {
+          "fps": 9.24,
+          "age_ms": 160.570516,
+          "material_available": true,
+          "pending": 1,
+          "completed": 2
+        },
+        {
+          "fps": 9.07,
+          "age_ms": 220.090134,
+          "material_available": true,
+          "pending": 1,
+          "completed": 2
+        },
+        {
+          "fps": 9.13,
+          "age_ms": 363.83976,
+          "material_available": true,
+          "pending": 1,
+          "completed": 2
+        },
+        {
+          "fps": 9.08,
+          "age_ms": 272.795062,
+          "material_available": true,
+          "pending": 1,
+          "completed": 2
+        },
+        {
+          "fps": 8.98,
+          "age_ms": 179.782563,
+          "material_available": true,
+          "pending": 1,
+          "completed": 1
+        },
+        {
+          "fps": 8.92,
+          "age_ms": 188.635891,
+          "material_available": true,
+          "pending": 1,
+          "completed": 2
+        },
+        {
+          "fps": 8.9,
+          "age_ms": 138.13548,
+          "material_available": true,
+          "pending": 0,
+          "completed": 2
+        },
+        {
+          "fps": 8.87,
+          "age_ms": 156.784335,
+          "material_available": true,
+          "pending": 0,
+          "completed": 2
+        },
+        {
+          "fps": 9.04,
+          "age_ms": 318.279921,
+          "material_available": true,
+          "pending": 0,
+          "completed": 2
+        },
+        {
+          "fps": 9.14,
+          "age_ms": 231.635277,
+          "material_available": true,
+          "pending": 1,
+          "completed": 2
+        },
+        {
+          "fps": 9.2,
+          "age_ms": 159.802972,
+          "material_available": true,
+          "pending": 2,
+          "completed": 2
+        }
+      ]
+    },
+    {
+      "name": "counting-off-1",
+      "median_fps": 11.74,
+      "samples": [
+        {
+          "fps": 11.48,
+          "age_ms": 177.174865
+        },
+        {
+          "fps": 11.64,
+          "age_ms": 219.374378
+        },
+        {
+          "fps": 11.86,
+          "age_ms": 145.004031
+        },
+        {
+          "fps": 11.86,
+          "age_ms": 151.086001
+        },
+        {
+          "fps": 11.99,
+          "age_ms": 162.927199
+        },
+        {
+          "fps": 11.99,
+          "age_ms": 170.643016
+        },
+        {
+          "fps": 11.86,
+          "age_ms": 169.06572
+        },
+        {
+          "fps": 11.84,
+          "age_ms": 90.651268
+        },
+        {
+          "fps": 11.72,
+          "age_ms": 154.792683
+        },
+        {
+          "fps": 11.75,
+          "age_ms": 143.746362
+        },
+        {
+          "fps": 11.83,
+          "age_ms": 172.430987
+        },
+        {
+          "fps": 11.81,
+          "age_ms": 94.402507
+        },
+        {
+          "fps": 11.81,
+          "age_ms": 159.012891
+        },
+        {
+          "fps": 11.84,
+          "age_ms": 186.927702
+        },
+        {
+          "fps": 11.83,
+          "age_ms": 87.261218
+        },
+        {
+          "fps": 11.8,
+          "age_ms": 140.320135
+        },
+        {
+          "fps": 11.75,
+          "age_ms": 193.652698
+        },
+        {
+          "fps": 11.81,
+          "age_ms": 179.964515
+        },
+        {
+          "fps": 11.94,
+          "age_ms": 113.808674
+        },
+        {
+          "fps": 11.84,
+          "age_ms": 185.351299
+        },
+        {
+          "fps": 11.9,
+          "age_ms": 125.235633
+        },
+        {
+          "fps": 11.64,
+          "age_ms": 216.635681
+        },
+        {
+          "fps": 11.74,
+          "age_ms": 171.108595
+        },
+        {
+          "fps": 11.88,
+          "age_ms": 93.782529
+        },
+        {
+          "fps": 11.81,
+          "age_ms": 103.255245
+        },
+        {
+          "fps": 11.7,
+          "age_ms": 155.104028
+        },
+        {
+          "fps": 11.94,
+          "age_ms": 170.56292
+        },
+        {
+          "fps": 11.74,
+          "age_ms": 167.430357
+        },
+        {
+          "fps": 11.82,
+          "age_ms": 182.934922
+        },
+        {
+          "fps": 11.68,
+          "age_ms": 173.127638
+        },
+        {
+          "fps": 11.76,
+          "age_ms": 156.908535
+        },
+        {
+          "fps": 11.55,
+          "age_ms": 178.451754
+        },
+        {
+          "fps": 11.72,
+          "age_ms": 196.45634
+        },
+        {
+          "fps": 11.67,
+          "age_ms": 143.070868
+        },
+        {
+          "fps": 11.7,
+          "age_ms": 163.273712
+        },
+        {
+          "fps": 11.76,
+          "age_ms": 90.563092
+        },
+        {
+          "fps": 11.86,
+          "age_ms": 211.222516
+        },
+        {
+          "fps": 11.02,
+          "age_ms": 417.745665
+        },
+        {
+          "fps": 11.07,
+          "age_ms": 184.936764
+        },
+        {
+          "fps": 11.12,
+          "age_ms": 202.830562
+        },
+        {
+          "fps": 11.15,
+          "age_ms": 202.072439
+        },
+        {
+          "fps": 11.15,
+          "age_ms": 123.482569
+        },
+        {
+          "fps": 11.82,
+          "age_ms": 115.752448
+        },
+        {
+          "fps": 11.8,
+          "age_ms": 150.186641
+        },
+        {
+          "fps": 11.74,
+          "age_ms": 88.308409
+        },
+        {
+          "fps": 11.69,
+          "age_ms": 116.684269
+        },
+        {
+          "fps": 11.81,
+          "age_ms": 151.126288
+        },
+        {
+          "fps": 11.69,
+          "age_ms": 177.816635
+        },
+        {
+          "fps": 11.7,
+          "age_ms": 160.67102
+        },
+        {
+          "fps": 11.58,
+          "age_ms": 176.203258
+        },
+        {
+          "fps": 11.52,
+          "age_ms": 189.651766
+        },
+        {
+          "fps": 11.53,
+          "age_ms": 201.826319
+        },
+        {
+          "fps": 11.56,
+          "age_ms": 226.373986
+        },
+        {
+          "fps": 11.63,
+          "age_ms": 171.894088
+        },
+        {
+          "fps": 11.77,
+          "age_ms": 227.702233
+        },
+        {
+          "fps": 11.72,
+          "age_ms": 154.690945
+        },
+        {
+          "fps": 11.58,
+          "age_ms": 152.447972
+        },
+        {
+          "fps": 11.64,
+          "age_ms": 83.535357
+        },
+        {
+          "fps": 11.57,
+          "age_ms": 223.537031
+        },
+        {
+          "fps": 11.53,
+          "age_ms": 238.597254
+        }
+      ]
+    },
+    {
+      "name": "counting-off-2",
+      "median_fps": 11.74,
+      "samples": [
+        {
+          "fps": 11.61,
+          "age_ms": 155.413316
+        },
+        {
+          "fps": 11.81,
+          "age_ms": 149.767748
+        },
+        {
+          "fps": 11.74,
+          "age_ms": 185.477561
+        },
+        {
+          "fps": 11.86,
+          "age_ms": 166.788314
+        },
+        {
+          "fps": 11.82,
+          "age_ms": 142.245303
+        },
+        {
+          "fps": 11.92,
+          "age_ms": 167.175058
+        },
+        {
+          "fps": 11.67,
+          "age_ms": 199.25363
+        },
+        {
+          "fps": 11.7,
+          "age_ms": 99.875023
+        },
+        {
+          "fps": 11.61,
+          "age_ms": 208.66078
+        },
+        {
+          "fps": 11.62,
+          "age_ms": 231.900603
+        },
+        {
+          "fps": 11.51,
+          "age_ms": 153.212987
+        },
+        {
+          "fps": 11.61,
+          "age_ms": 166.590308
+        },
+        {
+          "fps": 11.61,
+          "age_ms": 169.927181
+        },
+        {
+          "fps": 11.71,
+          "age_ms": 170.855066
+        },
+        {
+          "fps": 11.78,
+          "age_ms": 77.983082
+        },
+        {
+          "fps": 11.71,
+          "age_ms": 183.98411
+        },
+        {
+          "fps": 11.66,
+          "age_ms": 188.039728
+        },
+        {
+          "fps": 11.8,
+          "age_ms": 87.907967
+        },
+        {
+          "fps": 11.88,
+          "age_ms": 130.903906
+        },
+        {
+          "fps": 11.73,
+          "age_ms": 145.332234
+        },
+        {
+          "fps": 11.77,
+          "age_ms": 170.49043
+        },
+        {
+          "fps": 11.67,
+          "age_ms": 179.48294
+        },
+        {
+          "fps": 11.55,
+          "age_ms": 96.770187
+        },
+        {
+          "fps": 10.98,
+          "age_ms": 224.308498
+        },
+        {
+          "fps": 11.06,
+          "age_ms": 233.432026
+        },
+        {
+          "fps": 10.96,
+          "age_ms": 249.212141
+        },
+        {
+          "fps": 11.12,
+          "age_ms": 150.608643
+        },
+        {
+          "fps": 11.19,
+          "age_ms": 165.593784
+        },
+        {
+          "fps": 11.84,
+          "age_ms": 181.565764
+        },
+        {
+          "fps": 11.77,
+          "age_ms": 107.836743
+        },
+        {
+          "fps": 11.92,
+          "age_ms": 140.778298
+        },
+        {
+          "fps": 11.77,
+          "age_ms": 128.085005
+        },
+        {
+          "fps": 11.78,
+          "age_ms": 162.006369
+        },
+        {
+          "fps": 11.64,
+          "age_ms": 177.130659
+        },
+        {
+          "fps": 11.76,
+          "age_ms": 172.388054
+        },
+        {
+          "fps": 11.83,
+          "age_ms": 193.05318
+        },
+        {
+          "fps": 11.81,
+          "age_ms": 87.76589
+        },
+        {
+          "fps": 11.79,
+          "age_ms": 108.458913
+        },
+        {
+          "fps": 11.96,
+          "age_ms": 150.176568
+        },
+        {
+          "fps": 11.76,
+          "age_ms": 182.659778
+        },
+        {
+          "fps": 11.65,
+          "age_ms": 186.720209
+        },
+        {
+          "fps": 11.62,
+          "age_ms": 99.234086
+        },
+        {
+          "fps": 11.54,
+          "age_ms": 224.276339
+        },
+        {
+          "fps": 11.42,
+          "age_ms": 122.5507
+        },
+        {
+          "fps": 11.51,
+          "age_ms": 123.398772
+        },
+        {
+          "fps": 11.58,
+          "age_ms": 111.274627
+        },
+        {
+          "fps": 11.7,
+          "age_ms": 131.158056
+        },
+        {
+          "fps": 11.74,
+          "age_ms": 141.026008
+        },
+        {
+          "fps": 11.85,
+          "age_ms": 154.492582
+        },
+        {
+          "fps": 11.82,
+          "age_ms": 156.560648
+        },
+        {
+          "fps": 11.88,
+          "age_ms": 193.566841
+        },
+        {
+          "fps": 11.85,
+          "age_ms": 108.872088
+        },
+        {
+          "fps": 11.77,
+          "age_ms": 136.278599
+        },
+        {
+          "fps": 11.83,
+          "age_ms": 128.745471
+        },
+        {
+          "fps": 11.86,
+          "age_ms": 166.199358
+        },
+        {
+          "fps": 11.73,
+          "age_ms": 152.605678
+        },
+        {
+          "fps": 11.77,
+          "age_ms": 77.230073
+        },
+        {
+          "fps": 11.74,
+          "age_ms": 162.07447
+        },
+        {
+          "fps": 11.78,
+          "age_ms": 161.047717
+        },
+        {
+          "fps": 11.75,
+          "age_ms": 187.711707
+        }
+      ]
+    },
+    {
+      "name": "counting-off-3",
+      "median_fps": 11.725000000000001,
+      "samples": [
+        {
+          "fps": 11.66,
+          "age_ms": 186.647389
+        },
+        {
+          "fps": 11.67,
+          "age_ms": 107.779126
+        },
+        {
+          "fps": 11.61,
+          "age_ms": 120.463167
+        },
+        {
+          "fps": 11.64,
+          "age_ms": 144.333173
+        },
+        {
+          "fps": 11.69,
+          "age_ms": 170.363105
+        },
+        {
+          "fps": 11.78,
+          "age_ms": 183.313113
+        },
+        {
+          "fps": 11.53,
+          "age_ms": 205.897067
+        },
+        {
+          "fps": 11.63,
+          "age_ms": 276.590947
+        },
+        {
+          "fps": 11.64,
+          "age_ms": 178.397674
+        },
+        {
+          "fps": 11.03,
+          "age_ms": 200.841221
+        },
+        {
+          "fps": 11.18,
+          "age_ms": 151.177467
+        },
+        {
+          "fps": 11.35,
+          "age_ms": 176.614499
+        },
+        {
+          "fps": 11.4,
+          "age_ms": 208.046315
+        },
+        {
+          "fps": 11.27,
+          "age_ms": 231.904172
+        },
+        {
+          "fps": 11.94,
+          "age_ms": 150.926604
+        },
+        {
+          "fps": 11.71,
+          "age_ms": 157.639766
+        },
+        {
+          "fps": 11.85,
+          "age_ms": 188.699631
+        },
+        {
+          "fps": 11.84,
+          "age_ms": 184.518624
+        },
+        {
+          "fps": 11.77,
+          "age_ms": 187.140904
+        },
+        {
+          "fps": 11.84,
+          "age_ms": 204.760731
+        },
+        {
+          "fps": 11.77,
+          "age_ms": 221.542009
+        },
+        {
+          "fps": 11.75,
+          "age_ms": 128.598634
+        },
+        {
+          "fps": 11.79,
+          "age_ms": 149.559019
+        },
+        {
+          "fps": 11.82,
+          "age_ms": 167.567328
+        },
+        {
+          "fps": 11.89,
+          "age_ms": 95.46608
+        },
+        {
+          "fps": 12.06,
+          "age_ms": 116.08871
+        },
+        {
+          "fps": 11.93,
+          "age_ms": 147.429886
+        },
+        {
+          "fps": 11.85,
+          "age_ms": 157.865375
+        },
+        {
+          "fps": 11.88,
+          "age_ms": 173.837386
+        },
+        {
+          "fps": 11.72,
+          "age_ms": 178.461259
+        },
+        {
+          "fps": 11.74,
+          "age_ms": 200.127042
+        },
+        {
+          "fps": 11.84,
+          "age_ms": 88.550125
+        },
+        {
+          "fps": 11.77,
+          "age_ms": 221.765146
+        },
+        {
+          "fps": 11.75,
+          "age_ms": 131.22233
+        },
+        {
+          "fps": 11.91,
+          "age_ms": 141.911424
+        },
+        {
+          "fps": 11.69,
+          "age_ms": 161.983943
+        },
+        {
+          "fps": 11.62,
+          "age_ms": 159.795361
+        },
+        {
+          "fps": 11.67,
+          "age_ms": 176.217403
+        },
+        {
+          "fps": 11.55,
+          "age_ms": 184.174421
+        },
+        {
+          "fps": 11.63,
+          "age_ms": 118.780895
+        },
+        {
+          "fps": 11.58,
+          "age_ms": 104.435993
+        },
+        {
+          "fps": 11.54,
+          "age_ms": 221.303397
+        },
+        {
+          "fps": 11.66,
+          "age_ms": 119.196102
+        },
+        {
+          "fps": 11.76,
+          "age_ms": 138.630014
+        },
+        {
+          "fps": 11.67,
+          "age_ms": 88.833778
+        },
+        {
+          "fps": 11.79,
+          "age_ms": 111.070051
+        },
+        {
+          "fps": 11.85,
+          "age_ms": 155.012516
+        },
+        {
+          "fps": 11.74,
+          "age_ms": 159.283244
+        },
+        {
+          "fps": 11.73,
+          "age_ms": 192.175988
+        },
+        {
+          "fps": 11.83,
+          "age_ms": 84.744877
+        },
+        {
+          "fps": 11.72,
+          "age_ms": 94.848322
+        },
+        {
+          "fps": 11.79,
+          "age_ms": 93.223599
+        },
+        {
+          "fps": 11.8,
+          "age_ms": 100.214606
+        },
+        {
+          "fps": 11.83,
+          "age_ms": 111.486565
+        },
+        {
+          "fps": 11.81,
+          "age_ms": 114.367085
+        },
+        {
+          "fps": 11.11,
+          "age_ms": 128.043045
+        },
+        {
+          "fps": 11.18,
+          "age_ms": 137.679271
+        },
+        {
+          "fps": 11.24,
+          "age_ms": 165.924657
+        },
+        {
+          "fps": 11.16,
+          "age_ms": 167.349122
+        },
+        {
+          "fps": 11.16,
+          "age_ms": 190.70054
+        }
+      ]
+    }
+  ],
+  "restored_revision": 34,
+  "protected_settings_unchanged": true
+}

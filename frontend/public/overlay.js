@@ -116,6 +116,16 @@ export function drawDetectionOverlay(canvas, image, observation, {fresh=true, re
       regions.push(label(origin[0]+metrics.label_gap,origin[1]+metrics.label_gap,'overlay.'+name,colors[name]));
     }
   }
+  const materials=observation.materials;
+  if(materials?.enabled&&materials.configured&&!observation.camera_changed){
+    for(const name of ['pending','completed']){
+      const points=materials.regions[name];if(!materials.display[name]||!points?.length)continue;
+      ctx.beginPath();points.map(xy).forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.closePath();
+      ctx.fillStyle=materials.colors[name];ctx.globalAlpha=materials.opacity[name];ctx.fill();ctx.globalAlpha=1;
+      ctx.strokeStyle=materials.colors[name];ctx.lineWidth=metrics.line_width;ctx.stroke();
+      const origin=points.map(xy).sort((a,b)=>a[1]-b[1]||a[0]-b[0])[0];regions.push(label(origin[0]+metrics.label_gap,origin[1]+metrics.label_gap,'studio.'+name,materials.colors[name]));
+    }
+  }
   for (const person of fresh && observation.inference?.accepted!==false?observation.persons:[]) {
     const [x1,y1]=xy(person.bbox_xyxy.slice(0,2)),[x2,y2]=xy(person.bbox_xyxy.slice(2));
     ctx.strokeStyle=colors.person;
@@ -149,7 +159,7 @@ export function drawDetectionOverlay(canvas, image, observation, {fresh=true, re
       const point=xy(person.upper_body_anchor);
       ctx.strokeStyle=colors.anchor;
       ctx.beginPath();ctx.arc(...point,metrics.anchor_radius,0,2*Math.PI);ctx.stroke();
-      const key=inside(person.upper_body_anchor,observation.regions.seat)?'overlay.inside':'overlay.outside';
+      const key=observation.camera_changed || observation.roi_provisional?'overlay.regionPending':inside(person.upper_body_anchor,observation.regions.seat)?'overlay.inside':'overlay.outside';
       anchors.push(label(point[0]+metrics.anchor_radius+metrics.label_gap,point[1]+metrics.label_gap,key,colors.anchor));
     }
   }

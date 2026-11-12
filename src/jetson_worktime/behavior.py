@@ -35,6 +35,7 @@ class SessionEngine:
         self.ownership = None
         self.persons = []
         self.last_sequence = None
+        self.start_reset = None
         self.interrupted_stream = None
 
     def event(self, kind, t, **data):
@@ -245,6 +246,10 @@ class SessionEngine:
             persons, width, height, self.cfg, t, blocked_reason=blocked_reason)
         self.persons = people
         if reset_start:
+            if self.seat_since is not None and not self.current:
+                code = 'startup.trackChanged' if label == 'SEATED' else reason_fields(detail)['reason_code']
+                self.start_reset = dict(reason_code=code, reason_params=reason_fields(detail)['reason_params'] if label != 'SEATED' else {}, monotonic_seconds=t)
+                self.event('start_confirmation_reset', t, reason_code=code)
             self.seat_since = None
         if previous != self.ownership.state:
             self.event('operator_association_changed', t, previous=previous,
@@ -384,7 +389,12 @@ class SessionEngine:
             review=session.get('review', False) if session else False, **totals,
             start_pending_seconds=max(0, now-self.seat_since) if self.seat_since is not None and not self.current else 0,
             completed_sessions=len(self.completed), thresholds={k: self.cfg[k] for k in DEFAULTS},
-            ownership=deepcopy(ownership))
+            ownership=deepcopy(ownership),
+            start_confirmation=dict(state='ACTIVE' if self.current else 'BLOCKED' if self.raw == 'UNKNOWN' else 'CONFIRMING' if self.seat_since is not None else 'WAITING',
+                elapsed_seconds=min(self.cfg['start_seconds'], max(0, now-self.seat_since)) if self.seat_since is not None else 0.,
+                required_seconds=self.cfg['start_seconds'], candidate_track_id=self.ownership.track_id if self.ownership and not self.current else None,
+                blocker_code=reason_fields(self.reason)['reason_code'] if self.raw == 'UNKNOWN' else None,
+                blocker_params=reason_fields(self.reason)['reason_params'], last_reset=deepcopy(self.start_reset)))
 
 
 def iou(a,b):

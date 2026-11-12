@@ -1,0 +1,40 @@
+
+> jetson-worktime-frontend-handoff@1.0.0 test
+> node --test test/*.test.mjs
+
+✔ contain mapping includes letterbox offsets (1.461125ms)
+✔ stale and repeated results never become new current overlays (0.733333ms)
+✔ all states available without a camera; timer formatting does not recalculate totals (1.758166ms)
+✔ dashboard maps session totals, real ratios and incomplete data without invented values (0.281666ms)
+✔ health metrics discard unavailable, stale and differently versioned observations (0.142083ms)
+✔ system telemetry preserves zero and rejects expired, invalid or missing measurements (0.15825ms)
+✔ preview survives a slow structured-result request but stops on stale algorithm input (0.104375ms)
+✔ captured real responses agree with OpenAPI schemas (6.075458ms)
+✔ every mock scenario agrees with the same production contract (5.269625ms)
+✔ all translation entries have both languages and matching placeholders (9.309625ms)
+✔ pipeline maps normal states, provisional absence and completed sessions (0.838417ms)
+✔ shared overlay tokens default to quiet geometry and sparse corners (1.814667ms)
+✔ labels remain inside the image and omit crowded placements (0.277833ms)
+✔ frame canvas uses current layers, a subtle fill and short labels (1.395792ms)
+✔ stale canvas hides people and privacy suppresses facial landmarks (0.33125ms)
+✔ live observations expire across version, camera and freshness changes (0.112958ms)
+✔ pose canvas respects the effective keypoint threshold and legacy fallback (0.169917ms)
+✔ independent mock server serves UI, errors and disconnect/recovery without Jetson (105.626542ms)
+✔ ROI point mapping respects letterbox, scaling and boundaries (1.191958ms)
+✔ ROI geometry rejects crossing, degenerate and concave containment errors (0.673292ms)
+✔ settings mock shares versions, validates writes and marks media privacy (91.59575ms)
+✔ home presents an inline settings dialog using the shared editor (0.811042ms)
+✔ camera source controls and mock enforce test-before-save and shared revisions (50.053583ms)
+✔ detection settings share versions, validate ranges and reset mock sessions (62.238542ms)
+✔ fallback is bounded to one connection and stop clears both media elements (0.821709ms)
+✔ stale connection callbacks cannot replace a newer language stream (0.159791ms)
+✔ localhost and private LAN use HD while Tailscale uses fluent video (0.120084ms)
+✔ display diagnostics measure rendered frames and discard old callbacks on stop (0.435458ms)
+ℹ tests 28
+ℹ suites 0
+ℹ pass 28
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 259.213125

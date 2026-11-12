@@ -1,0 +1,41 @@
+{
+  "run_id": "74fe6f3e44964da4b3f9bd9d19567989",
+  "observations": 7109,
+  "receive_sequence_start": 1050,
+  "receive_sequence_end": 13016,
+  "receive_interval_ms": {
+    "n": 7108,
+    "p50": 106.324634,
+    "p95": 135.045531,
+    "max": 373.750565,
+    "over_500ms": 0
+  },
+  "result_interval_ms": {
+    "n": 7108,
+    "p50": 83.286212,
+    "p95": 105.518488,
+    "max": 396.595349,
+    "over_500ms": 0
+  },
+  "inference_ms": {
+    "n": 7109,
+    "p50": 63.921999,
+    "p95": 79.122202,
+    "max": 360.619302,
+    "over_500ms": 0
+  },
+  "receive_to_result_ms": {
+    "n": 7109,
+    "p50": 92.274679,
+    "p95": 151.099223,
+    "max": 422.269413,
+    "over_500ms": 0
+  },
+  "reasons": {
+    "reason.missing": 6975,
+    "reason.ambiguous": 132,
+    "startup.noTrack": 2
+  },
+  "persistence_peak_queue": 1,
+  "rss_delta_mb": 42.82421875
+}

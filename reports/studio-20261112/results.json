@@ -1,0 +1,1614 @@
+{
+  "date": "2026-11-12",
+  "backend_tests": 156,
+  "frontend_tests": 34,
+  "baseline": {
+    "samples": 180,
+    "three_medians_fps": [
+      11.93,
+      11.95,
+      11.93
+    ]
+  },
+  "benchmark": {
+    "before_revision": 30,
+    "windows": [
+      {
+        "name": "YOLO11n",
+        "median_fps": 10.3,
+        "valid_samples": 60
+      },
+      {
+        "name": "YOLO11m",
+        "median_fps": 8.95,
+        "valid_samples": 60
+      },
+      {
+        "name": "YOLO11l",
+        "median_fps": 8.83,
+        "valid_samples": 60
+      },
+      {
+        "name": "counting-off-1",
+        "median_fps": 11.74
+      },
+      {
+        "name": "counting-off-2",
+        "median_fps": 11.74
+      },
+      {
+        "name": "counting-off-3",
+        "median_fps": 11.725000000000001
+      }
+    ],
+    "restored_revision": 34,
+    "protected_settings_unchanged": true
+  },
+  "n_trial": {
+    "dataset_id": "96898d73d1a0440c9bc06d59a93ee365",
+    "snapshot": {
+      "id": "b6ba5b45c44149dab2d2df35126d2486",
+      "dataset_id": "96898d73d1a0440c9bc06d59a93ee365",
+      "dataset_revision": 7,
+      "counts": {
+        "train": 1,
+        "val": 1,
+        "test": 1
+      },
+      "ratios": [
+        80,
+        10,
+        10
+      ],
+      "seed": 42,
+      "sha256": "bc12950ce89b0fce6c3ab3d1f16168e7c61cd2b5aea6249d50ac846ad21b6e51",
+      "created_at": 1794454365.418266,
+      "revision": 1,
+      "updated_at": 1794454365.4185107
+    },
+    "job_id": "7a04e37e34104393ade57bd7b94ad331",
+    "states": [
+      {
+        "state": "queued",
+        "stage": "queued",
+        "epoch": 0,
+        "mode": "training",
+        "t": 1794454365.765162
+      },
+      {
+        "state": "preparing",
+        "stage": "preparing",
+        "epoch": 0,
+        "mode": "training",
+        "t": 1794454366.781831
+      },
+      {
+        "state": "preparing",
+        "stage": "preparing",
+        "epoch": 0,
+        "mode": "training",
+        "t": 1794454367.797256
+      },
+      {
+        "state": "preparing",
+        "stage": "preparing",
+        "epoch": 0,
+        "mode": "training",
+        "t": 1794454368.812751
+      },
+      {
+        "state": "preparing",
+        "stage": "preflight",
+        "epoch": 0,
+        "mode": "training",
+        "t": 1794454369.851627
+      },
+      {
+        "state": "preparing",
+        "stage": "preflight",
+        "epoch": 0,
+        "mode": "training",
+        "t": 1794454370.86287
+      },
+      {
+        "state": "preparing",
+        "stage": "preflight",
+        "epoch": 0,
+        "mode": "training",
+        "t": 1794454371.88011
+      },
+      {
+        "state": "preparing",
+        "stage": "preflight",
+        "epoch": 0,
+        "mode": "training",
+        "t": 1794454372.8986838
+      },
+      {
+        "state": "preparing",
+        "stage": "preflight",
+        "epoch": 0,
+        "mode": "training",
+        "t": 1794454373.915738
+      },
+      {
+        "state": "preparing",
+        "stage": "preflight",
+        "epoch": 0,
+        "mode": "training",
+        "t": 1794454374.935589
+      },
+      {
+        "state": "running",
+        "stage": "training",
+        "epoch": 0,
+        "mode": "training",
+        "t": 1794454375.953995
+      },
+      {
+        "state": "running",
+        "stage": "training",
+        "epoch": 0,
+        "mode": "training",
+        "t": 1794454376.966527
+      },
+      {
+        "state": "running",
+        "stage": "training",
+        "epoch": 0,
+        "mode": "training",
+        "t": 1794454377.9856331
+      },
+      {
+        "state": "running",
+        "stage": "training",
+        "epoch": 0,
+        "mode": "training",
+        "t": 1794454379.001802
+      },
+      {
+        "state": "running",
+        "stage": "training",
+        "epoch": 0,
+        "mode": "training",
+        "t": 1794454380.023492
+      },
+      {
+        "state": "running",
+        "stage": "training",
+        "epoch": 0,
+        "mode": "training",
+        "t": 1794454381.042517
+      },
+      {
+        "state": "running",
+        "stage": "training",
+        "epoch": 0,
+        "mode": "training",
+        "t": 1794454382.059392
+      },
+      {
+        "state": "running",
+        "stage": "training",
+        "epoch": 0,
+        "mode": "training",
+        "t": 1794454383.072363
+      },
+      {
+        "state": "running",
+        "stage": "training",
+        "epoch": 1,
+        "mode": "training",
+        "t": 1794454384.087635
+      },
+      {
+        "state": "running",
+        "stage": "training",
+        "epoch": 1,
+        "mode": "training",
+        "t": 1794454385.102773
+      },
+      {
+        "state": "running",
+        "stage": "training",
+        "epoch": 1,
+        "mode": "training",
+        "t": 1794454386.117141
+      },
+      {
+        "state": "running",
+        "stage": "training",
+        "epoch": 2,
+        "mode": "training",
+        "t": 1794454387.135623
+      },
+      {
+        "state": "running",
+        "stage": "training",
+        "epoch": 2,
+        "mode": "training",
+        "t": 1794454388.1496131
+      },
+      {
+        "state": "running",
+        "stage": "training",
+        "epoch": 3,
+        "mode": "training",
+        "t": 1794454389.161299
+      },
+      {
+        "state": "running",
+        "stage": "training",
+        "epoch": 3,
+        "mode": "training",
+        "t": 1794454390.178348
+      },
+      {
+        "state": "running",
+        "stage": "training",
+        "epoch": 3,
+        "mode": "training",
+        "t": 1794454391.1964648
+      },
+      {
+        "state": "running",
+        "stage": "training",
+        "epoch": 3,
+        "mode": "training",
+        "t": 1794454392.208849
+      },
+      {
+        "state": "running",
+        "stage": "training",
+        "epoch": 3,
+        "mode": "training",
+        "t": 1794454393.227467
+      },
+      {
+        "state": "running",
+        "stage": "training",
+        "epoch": 3,
+        "mode": "training",
+        "t": 1794454394.240233
+      },
+      {
+        "state": "running",
+        "stage": "training",
+        "epoch": 3,
+        "mode": "training",
+        "t": 1794454395.2521799
+      },
+      {
+        "state": "validating",
+        "stage": "testing",
+        "epoch": 3,
+        "mode": "training",
+        "t": 1794454396.26644
+      },
+      {
+        "state": "validating",
+        "stage": "testing",
+        "epoch": 3,
+        "mode": "training",
+        "t": 1794454397.2844968
+      },
+      {
+        "state": "validating",
+        "stage": "testing",
+        "epoch": 3,
+        "mode": "training",
+        "t": 1794454398.306156
+      },
+      {
+        "state": "validating",
+        "stage": "testing",
+        "epoch": 3,
+        "mode": "training",
+        "t": 1794454399.322809
+      },
+      {
+        "state": "completed",
+        "stage": "completed",
+        "epoch": 3,
+        "mode": "business",
+        "t": 1794454400.341629
+      }
+    ],
+    "result": {
+      "id": "7a04e37e34104393ade57bd7b94ad331",
+      "base_model_id": "e03975578e3845bd80add9719a206939",
+      "base_sha256": "0ebbc80d4a7680d14987a577cd21342b65ecfd94632bd9a8da63ae6417644ee1",
+      "snapshot_id": "b6ba5b45c44149dab2d2df35126d2486",
+      "snapshot_sha256": "bc12950ce89b0fce6c3ab3d1f16168e7c61cd2b5aea6249d50ac846ad21b6e51",
+      "parameters": {
+        "epochs": 3,
+        "lr0": 0.001,
+        "batch": 4,
+        "optimizer": "AdamW",
+        "imgsz": 640,
+        "workers": 0,
+        "seed": 42,
+        "patience": 20,
+        "device": 0,
+        "amp": true
+      },
+      "state": "completed",
+      "stage": "completed",
+      "progress": 1.0,
+      "epoch": 3,
+      "created_at": 1794454365.4327903,
+      "control_revision": 1,
+      "metrics": {
+        "metrics/precision(B)": 0.01667,
+        "metrics/recall(B)": 0.83333,
+        "metrics/mAP50(B)": 0.01773,
+        "metrics/mAP50-95(B)": 0.00649,
+        "val/box_loss": 2.18633,
+        "val/cls_loss": 3.45476,
+        "val/dfl_loss": 1.37973
+      },
+      "error": null,
+      "command": null,
+      "stop_requested": null,
+      "checkpoint": "resume.pt",
+      "revision": 16,
+      "updated_at": 1794454399.9245863,
+      "effective_amp": true,
+      "started_at": 1794454375.5402634,
+      "elapsed_seconds": 12.83606002900342,
+      "memory_allocated_bytes": 102735360,
+      "lr": {
+        "lr/pg0": 0.1,
+        "lr/pg1": 0.0,
+        "lr/pg2": 0.0
+      },
+      "eta_seconds": 0.0,
+      "training_complete": true,
+      "result_model_id": "d1cd37a35d1648e59a8157f47cba34a7",
+      "test_metrics": {
+        "metrics/precision(B)": 0.0033333333333333335,
+        "metrics/recall(B)": 1.0,
+        "metrics/mAP50(B)": 0.995,
+        "metrics/mAP50-95(B)": 0.8955,
+        "fitness": 0.90545
+      },
+      "finished_at": 1794454399.9237542
+    }
+  },
+  "m_l_trials": [
+    {
+      "name": "YOLO11m",
+      "job_id": "c914696c02534b46bb76933b0fdb9ee9",
+      "states": [
+        [
+          "queued",
+          "queued",
+          0
+        ],
+        [
+          "preparing",
+          "preparing",
+          0
+        ],
+        [
+          "preparing",
+          "preparing",
+          0
+        ],
+        [
+          "preparing",
+          "preparing",
+          0
+        ],
+        [
+          "preparing",
+          "preflight",
+          0
+        ],
+        [
+          "preparing",
+          "preflight",
+          0
+        ],
+        [
+          "preparing",
+          "preflight",
+          0
+        ],
+        [
+          "preparing",
+          "preflight",
+          0
+        ],
+        [
+          "preparing",
+          "preflight",
+          0
+        ],
+        [
+          "preparing",
+          "preflight",
+          0
+        ],
+        [
+          "running",
+          "training",
+          0
+        ],
+        [
+          "running",
+          "training",
+          0
+        ],
+        [
+          "running",
+          "training",
+          0
+        ],
+        [
+          "running",
+          "training",
+          0
+        ],
+        [
+          "running",
+          "training",
+          0
+        ],
+        [
+          "running",
+          "training",
+          0
+        ],
+        [
+          "running",
+          "training",
+          1
+        ],
+        [
+          "running",
+          "training",
+          1
+        ],
+        [
+          "running",
+          "training",
+          1
+        ],
+        [
+          "running",
+          "training",
+          1
+        ],
+        [
+          "running",
+          "training",
+          1
+        ],
+        [
+          "running",
+          "training",
+          1
+        ],
+        [
+          "running",
+          "training",
+          1
+        ],
+        [
+          "running",
+          "training",
+          1
+        ],
+        [
+          "running",
+          "training",
+          1
+        ],
+        [
+          "running",
+          "training",
+          1
+        ],
+        [
+          "running",
+          "training",
+          1
+        ],
+        [
+          "running",
+          "training",
+          1
+        ],
+        [
+          "running",
+          "training",
+          1
+        ],
+        [
+          "validating",
+          "testing",
+          1
+        ],
+        [
+          "validating",
+          "testing",
+          1
+        ],
+        [
+          "validating",
+          "testing",
+          1
+        ],
+        [
+          "validating",
+          "testing",
+          1
+        ],
+        [
+          "validating",
+          "testing",
+          1
+        ],
+        [
+          "completed",
+          "completed",
+          1
+        ]
+      ],
+      "result": {
+        "id": "c914696c02534b46bb76933b0fdb9ee9",
+        "base_model_id": "bd454e4a6ab341eda26c73238583cd4e",
+        "base_sha256": "d5ffc1a674953a08e11a8d21e022781b1b23a19b730afc309290bd9fb5305b95",
+        "snapshot_id": "b6ba5b45c44149dab2d2df35126d2486",
+        "snapshot_sha256": "bc12950ce89b0fce6c3ab3d1f16168e7c61cd2b5aea6249d50ac846ad21b6e51",
+        "parameters": {
+          "epochs": 1,
+          "lr0": 0.001,
+          "batch": 1,
+          "optimizer": "AdamW",
+          "imgsz": 640,
+          "workers": 0,
+          "seed": 42,
+          "patience": 20,
+          "device": 0,
+          "amp": true
+        },
+        "state": "completed",
+        "stage": "completed",
+        "progress": 1.0,
+        "epoch": 1,
+        "created_at": 1794455379.4918973,
+        "control_revision": 1,
+        "metrics": {
+          "metrics/precision(B)": 0.01667,
+          "metrics/recall(B)": 0.83333,
+          "metrics/mAP50(B)": 0.14127,
+          "metrics/mAP50-95(B)": 0.05993,
+          "val/box_loss": 1.5128,
+          "val/cls_loss": 3.0625,
+          "val/dfl_loss": 1.21429,
+          "train/box_loss": 2.63029,
+          "train/cls_loss": 3.66098,
+          "train/dfl_loss": 1.60517
+        },
+        "error": null,
+        "command": null,
+        "stop_requested": null,
+        "checkpoint": "resume.pt",
+        "revision": 13,
+        "updated_at": 1794455413.2585971,
+        "effective_amp": true,
+        "started_at": 1794455389.3069768,
+        "elapsed_seconds": 10.341350232993136,
+        "batch_index": 1,
+        "batches_total": 1,
+        "losses": {
+          "train/box_loss": 2.63029,
+          "train/cls_loss": 3.66098,
+          "train/dfl_loss": 1.60517
+        },
+        "memory_allocated_bytes": 234900480,
+        "lr": {},
+        "eta_seconds": 0.0,
+        "training_complete": true,
+        "result_model_id": "1aa82cd6eb4042378e673e566e56155c",
+        "test_metrics": {
+          "metrics/precision(B)": 0.8420491248326422,
+          "metrics/recall(B)": 1.0,
+          "metrics/mAP50(B)": 0.995,
+          "metrics/mAP50-95(B)": 0.8955,
+          "fitness": 0.90545
+        },
+        "finished_at": 1794455413.2575302
+      }
+    },
+    {
+      "name": "YOLO11l",
+      "job_id": "2f146d75e732432fa4c7d03dd7d430ad",
+      "states": [
+        [
+          "queued",
+          "queued",
+          0
+        ],
+        [
+          "preparing",
+          "preparing",
+          0
+        ],
+        [
+          "preparing",
+          "preparing",
+          0
+        ],
+        [
+          "preparing",
+          "preparing",
+          0
+        ],
+        [
+          "preparing",
+          "preparing",
+          0
+        ],
+        [
+          "preparing",
+          "preflight",
+          0
+        ],
+        [
+          "preparing",
+          "preflight",
+          0
+        ],
+        [
+          "preparing",
+          "preflight",
+          0
+        ],
+        [
+          "preparing",
+          "preflight",
+          0
+        ],
+        [
+          "preparing",
+          "preflight",
+          0
+        ],
+        [
+          "preparing",
+          "preflight",
+          0
+        ],
+        [
+          "running",
+          "training",
+          0
+        ],
+        [
+          "running",
+          "training",
+          0
+        ],
+        [
+          "running",
+          "training",
+          0
+        ],
+        [
+          "running",
+          "training",
+          0
+        ],
+        [
+          "running",
+          "training",
+          0
+        ],
+        [
+          "running",
+          "training",
+          0
+        ],
+        [
+          "running",
+          "training",
+          1
+        ],
+        [
+          "running",
+          "training",
+          1
+        ],
+        [
+          "running",
+          "training",
+          1
+        ],
+        [
+          "running",
+          "training",
+          1
+        ],
+        [
+          "running",
+          "training",
+          1
+        ],
+        [
+          "running",
+          "training",
+          1
+        ],
+        [
+          "running",
+          "training",
+          1
+        ],
+        [
+          "running",
+          "training",
+          1
+        ],
+        [
+          "running",
+          "training",
+          1
+        ],
+        [
+          "running",
+          "training",
+          1
+        ],
+        [
+          "running",
+          "training",
+          1
+        ],
+        [
+          "running",
+          "training",
+          1
+        ],
+        [
+          "running",
+          "training",
+          1
+        ],
+        [
+          "running",
+          "training",
+          1
+        ],
+        [
+          "running",
+          "training",
+          1
+        ],
+        [
+          "validating",
+          "testing",
+          1
+        ],
+        [
+          "validating",
+          "testing",
+          1
+        ],
+        [
+          "validating",
+          "testing",
+          1
+        ],
+        [
+          "validating",
+          "testing",
+          1
+        ],
+        [
+          "validating",
+          "testing",
+          1
+        ],
+        [
+          "saving",
+          "saving",
+          1
+        ],
+        [
+          "completed",
+          "completed",
+          1
+        ]
+      ],
+      "result": {
+        "id": "2f146d75e732432fa4c7d03dd7d430ad",
+        "base_model_id": "906b79c06554478e9ee34e0eee1140b1",
+        "base_sha256": "9ebd0e09d59811db4b1d61e2bc6730649608b1ac47f8dd01e2da6bca7c20023f",
+        "snapshot_id": "b6ba5b45c44149dab2d2df35126d2486",
+        "snapshot_sha256": "bc12950ce89b0fce6c3ab3d1f16168e7c61cd2b5aea6249d50ac846ad21b6e51",
+        "parameters": {
+          "epochs": 1,
+          "lr0": 0.001,
+          "batch": 1,
+          "optimizer": "AdamW",
+          "imgsz": 640,
+          "workers": 0,
+          "seed": 42,
+          "patience": 20,
+          "device": 0,
+          "amp": true
+        },
+        "state": "completed",
+        "stage": "completed",
+        "progress": 1.0,
+        "epoch": 1,
+        "created_at": 1794455413.9916885,
+        "control_revision": 1,
+        "metrics": {
+          "metrics/precision(B)": 0.0,
+          "metrics/recall(B)": 0.0,
+          "metrics/mAP50(B)": 0.0,
+          "metrics/mAP50-95(B)": 0.0,
+          "val/box_loss": 1.70035,
+          "val/cls_loss": 4.29327,
+          "val/dfl_loss": 1.24842,
+          "train/box_loss": 2.81601,
+          "train/cls_loss": 5.33767,
+          "train/dfl_loss": 1.82631
+        },
+        "error": null,
+        "command": null,
+        "stop_requested": null,
+        "checkpoint": "resume.pt",
+        "revision": 13,
+        "updated_at": 1794455451.6906645,
+        "effective_amp": true,
+        "started_at": 1794455424.9937224,
+        "elapsed_seconds": 11.69288706300722,
+        "batch_index": 1,
+        "batches_total": 1,
+        "losses": {
+          "train/box_loss": 2.81601,
+          "train/cls_loss": 5.33767,
+          "train/dfl_loss": 1.82631
+        },
+        "memory_allocated_bytes": 277919744,
+        "lr": {},
+        "eta_seconds": 0.0,
+        "training_complete": true,
+        "result_model_id": "1ffc191a51304e248f251c1d0f479b2f",
+        "test_metrics": {
+          "metrics/precision(B)": 0.1715029074549891,
+          "metrics/recall(B)": 1.0,
+          "metrics/mAP50(B)": 0.995,
+          "metrics/mAP50-95(B)": 0.9949999999999999,
+          "fitness": 0.995
+        },
+        "finished_at": 1794455451.6895676
+      }
+    }
+  ],
+  "stop_and_corrupt_checkpoint_recovery": {
+    "job_id": "e257da3c5ae6403aa83f98590f14f221",
+    "stopped": {
+      "id": "e257da3c5ae6403aa83f98590f14f221",
+      "base_model_id": "e03975578e3845bd80add9719a206939",
+      "base_sha256": "0ebbc80d4a7680d14987a577cd21342b65ecfd94632bd9a8da63ae6417644ee1",
+      "snapshot_id": "b6ba5b45c44149dab2d2df35126d2486",
+      "snapshot_sha256": "bc12950ce89b0fce6c3ab3d1f16168e7c61cd2b5aea6249d50ac846ad21b6e51",
+      "parameters": {
+        "epochs": 30,
+        "lr0": 0.001,
+        "batch": 4,
+        "optimizer": "AdamW",
+        "imgsz": 640,
+        "workers": 0,
+        "seed": 42,
+        "patience": 20,
+        "device": 0,
+        "amp": true
+      },
+      "state": "paused",
+      "stage": "stopped",
+      "progress": 0.06266666666666666,
+      "epoch": 2,
+      "created_at": 1794454618.974226,
+      "control_revision": 2,
+      "metrics": {
+        "metrics/precision(B)": 0.01333,
+        "metrics/recall(B)": 0.66667,
+        "metrics/mAP50(B)": 0.01473,
+        "metrics/mAP50-95(B)": 0.00467,
+        "val/box_loss": 2.18943,
+        "val/cls_loss": 3.45212,
+        "val/dfl_loss": 1.37993,
+        "train/box_loss": 3.20005,
+        "train/cls_loss": 4.22684,
+        "train/dfl_loss": 1.84182
+      },
+      "error": null,
+      "command": null,
+      "stop_requested": "stop",
+      "checkpoint": "resume.pt",
+      "revision": 13,
+      "updated_at": 1794454643.9578538,
+      "effective_amp": true,
+      "started_at": 1794454629.036627,
+      "elapsed_seconds": 7.4770665830001235,
+      "batch_index": 1,
+      "batches_total": 1,
+      "losses": {
+        "train/box_loss": 3.20005,
+        "train/cls_loss": 4.22684,
+        "train/dfl_loss": 1.84182
+      },
+      "memory_allocated_bytes": 99474944,
+      "lr": {
+        "lr/pg0": 0.1,
+        "lr/pg1": 0.0,
+        "lr/pg2": 0.0
+      },
+      "eta_seconds": 104.67893216200173,
+      "stop_requested_at": 1794454636.2159374,
+      "finished_at": 1794454643.9569829
+    },
+    "resumed": {
+      "id": "e257da3c5ae6403aa83f98590f14f221",
+      "base_model_id": "e03975578e3845bd80add9719a206939",
+      "base_sha256": "0ebbc80d4a7680d14987a577cd21342b65ecfd94632bd9a8da63ae6417644ee1",
+      "snapshot_id": "b6ba5b45c44149dab2d2df35126d2486",
+      "snapshot_sha256": "bc12950ce89b0fce6c3ab3d1f16168e7c61cd2b5aea6249d50ac846ad21b6e51",
+      "parameters": {
+        "epochs": 30,
+        "lr0": 0.001,
+        "batch": 4,
+        "optimizer": "AdamW",
+        "imgsz": 640,
+        "workers": 0,
+        "seed": 42,
+        "patience": 20,
+        "device": 0,
+        "amp": true
+      },
+      "state": "completed",
+      "stage": "completed",
+      "progress": 1.0,
+      "epoch": 30,
+      "created_at": 1794454618.974226,
+      "control_revision": 3,
+      "metrics": {
+        "metrics/precision(B)": 0.00667,
+        "metrics/recall(B)": 0.33333,
+        "metrics/mAP50(B)": 0.01864,
+        "metrics/mAP50-95(B)": 0.00537,
+        "val/box_loss": 2.56071,
+        "val/cls_loss": 3.48302,
+        "val/dfl_loss": 1.52697,
+        "train/box_loss": 2.09789,
+        "train/cls_loss": 3.15493,
+        "train/dfl_loss": 1.88419
+      },
+      "error": null,
+      "command": null,
+      "stop_requested": null,
+      "checkpoint": "resume.pt",
+      "revision": 80,
+      "updated_at": 1794454711.5559673,
+      "effective_amp": true,
+      "started_at": 1794454655.3995986,
+      "elapsed_seconds": 51.47654457400495,
+      "batch_index": 1,
+      "batches_total": 1,
+      "losses": {
+        "train/box_loss": 2.09789,
+        "train/cls_loss": 3.15493,
+        "train/dfl_loss": 1.88419
+      },
+      "memory_allocated_bytes": 157210112,
+      "lr": {
+        "lr/pg0": 0.07202128000000001,
+        "lr/pg1": 2.128e-05,
+        "lr/pg2": 2.128e-05
+      },
+      "eta_seconds": 0.0,
+      "stop_requested_at": 1794454636.2159374,
+      "finished_at": 1794454711.5550563,
+      "resuming": true,
+      "training_complete": true,
+      "result_model_id": "1c7120bcb6bd4937b8a9bf64d3756a56",
+      "test_metrics": {
+        "metrics/precision(B)": 0.0033333333333333335,
+        "metrics/recall(B)": 1.0,
+        "metrics/mAP50(B)": 0.018090909090909088,
+        "metrics/mAP50-95(B)": 0.01447272727272727,
+        "fitness": 0.014834545454545453
+      }
+    },
+    "states": [
+      [
+        "queued",
+        0
+      ],
+      [
+        "preparing",
+        0
+      ],
+      [
+        "preparing",
+        0
+      ],
+      [
+        "preparing",
+        0
+      ],
+      [
+        "preparing",
+        0
+      ],
+      [
+        "preparing",
+        0
+      ],
+      [
+        "preparing",
+        0
+      ],
+      [
+        "preparing",
+        0
+      ],
+      [
+        "preparing",
+        0
+      ],
+      [
+        "preparing",
+        0
+      ],
+      [
+        "running",
+        0
+      ],
+      [
+        "running",
+        0
+      ],
+      [
+        "running",
+        0
+      ],
+      [
+        "running",
+        0
+      ],
+      [
+        "running",
+        0
+      ],
+      [
+        "running",
+        0
+      ],
+      [
+        "running",
+        1
+      ],
+      [
+        "running",
+        2
+      ],
+      [
+        "queued",
+        "queued",
+        2
+      ],
+      [
+        "preparing",
+        "preparing",
+        2
+      ],
+      [
+        "preparing",
+        "preparing",
+        2
+      ],
+      [
+        "preparing",
+        "preparing",
+        2
+      ],
+      [
+        "preparing",
+        "preparing",
+        2
+      ],
+      [
+        "preparing",
+        "preparing",
+        2
+      ],
+      [
+        "preparing",
+        "preflight",
+        2
+      ],
+      [
+        "preparing",
+        "preflight",
+        2
+      ],
+      [
+        "preparing",
+        "preflight",
+        2
+      ],
+      [
+        "preparing",
+        "preflight",
+        2
+      ],
+      [
+        "preparing",
+        "preflight",
+        2
+      ],
+      [
+        "running",
+        "training",
+        2
+      ],
+      [
+        "running",
+        "training",
+        2
+      ],
+      [
+        "running",
+        "training",
+        2
+      ],
+      [
+        "running",
+        "training",
+        2
+      ],
+      [
+        "running",
+        "training",
+        2
+      ],
+      [
+        "running",
+        "training",
+        2
+      ],
+      [
+        "running",
+        "training",
+        2
+      ],
+      [
+        "running",
+        "training",
+        3
+      ],
+      [
+        "running",
+        "training",
+        4
+      ],
+      [
+        "running",
+        "training",
+        5
+      ],
+      [
+        "running",
+        "training",
+        6
+      ],
+      [
+        "running",
+        "training",
+        7
+      ],
+      [
+        "running",
+        "training",
+        8
+      ],
+      [
+        "running",
+        "training",
+        9
+      ],
+      [
+        "running",
+        "training",
+        9
+      ],
+      [
+        "running",
+        "training",
+        10
+      ],
+      [
+        "running",
+        "training",
+        11
+      ],
+      [
+        "running",
+        "training",
+        12
+      ],
+      [
+        "running",
+        "training",
+        12
+      ],
+      [
+        "running",
+        "training",
+        13
+      ],
+      [
+        "running",
+        "training",
+        14
+      ],
+      [
+        "running",
+        "training",
+        14
+      ],
+      [
+        "running",
+        "training",
+        15
+      ],
+      [
+        "running",
+        "training",
+        16
+      ],
+      [
+        "running",
+        "training",
+        17
+      ],
+      [
+        "running",
+        "training",
+        17
+      ],
+      [
+        "running",
+        "training",
+        18
+      ],
+      [
+        "running",
+        "training",
+        19
+      ],
+      [
+        "running",
+        "training",
+        20
+      ],
+      [
+        "running",
+        "training",
+        20
+      ],
+      [
+        "running",
+        "training",
+        21
+      ],
+      [
+        "running",
+        "training",
+        22
+      ],
+      [
+        "running",
+        "training",
+        22
+      ],
+      [
+        "running",
+        "training",
+        23
+      ],
+      [
+        "running",
+        "training",
+        24
+      ],
+      [
+        "running",
+        "training",
+        24
+      ],
+      [
+        "running",
+        "training",
+        25
+      ],
+      [
+        "running",
+        "training",
+        26
+      ],
+      [
+        "running",
+        "training",
+        27
+      ],
+      [
+        "running",
+        "training",
+        27
+      ],
+      [
+        "running",
+        "training",
+        28
+      ],
+      [
+        "running",
+        "training",
+        29
+      ],
+      [
+        "running",
+        "training",
+        29
+      ],
+      [
+        "running",
+        "training",
+        30
+      ],
+      [
+        "running",
+        "training",
+        30
+      ],
+      [
+        "running",
+        "training",
+        30
+      ],
+      [
+        "running",
+        "training",
+        30
+      ],
+      [
+        "running",
+        "training",
+        30
+      ],
+      [
+        "running",
+        "training",
+        30
+      ],
+      [
+        "running",
+        "training",
+        30
+      ],
+      [
+        "running",
+        "training",
+        30
+      ],
+      [
+        "validating",
+        "testing",
+        30
+      ],
+      [
+        "validating",
+        "testing",
+        30
+      ],
+      [
+        "validating",
+        "testing",
+        30
+      ],
+      [
+        "validating",
+        "testing",
+        30
+      ],
+      [
+        "validating",
+        "testing",
+        30
+      ],
+      [
+        "completed",
+        "completed",
+        30
+      ]
+    ]
+  },
+  "web_restart_during_training": {
+    "job_id": "598b9d33eead460bb7d03137aae0d982",
+    "before": {
+      "id": "598b9d33eead460bb7d03137aae0d982",
+      "base_model_id": "e03975578e3845bd80add9719a206939",
+      "base_sha256": "0ebbc80d4a7680d14987a577cd21342b65ecfd94632bd9a8da63ae6417644ee1",
+      "snapshot_id": "b6ba5b45c44149dab2d2df35126d2486",
+      "snapshot_sha256": "bc12950ce89b0fce6c3ab3d1f16168e7c61cd2b5aea6249d50ac846ad21b6e51",
+      "parameters": {
+        "epochs": 20,
+        "lr0": 0.001,
+        "batch": 4,
+        "optimizer": "AdamW",
+        "warmup_bias_lr": 0.0,
+        "imgsz": 640,
+        "workers": 0,
+        "seed": 42,
+        "patience": 20,
+        "device": 0,
+        "amp": true
+      },
+      "state": "running",
+      "stage": "training",
+      "progress": 0.094,
+      "epoch": 2,
+      "created_at": 1794457633.954071,
+      "control_revision": 1,
+      "metrics": {
+        "metrics/precision(B)": 0.01333,
+        "metrics/recall(B)": 0.66667,
+        "metrics/mAP50(B)": 0.01391,
+        "metrics/mAP50-95(B)": 0.00454,
+        "val/box_loss": 2.19213,
+        "val/cls_loss": 3.46026,
+        "val/dfl_loss": 1.39746,
+        "train/box_loss": 2.26884,
+        "train/cls_loss": 3.40488,
+        "train/dfl_loss": 1.44254
+      },
+      "error": null,
+      "command": null,
+      "stop_requested": null,
+      "checkpoint": "resume.pt",
+      "revision": 10,
+      "updated_at": 1794457649.8817015,
+      "effective_amp": true,
+      "started_at": 1794457643.134021,
+      "elapsed_seconds": 6.7439906369982054,
+      "batch_index": 1,
+      "batches_total": 1,
+      "losses": {
+        "train/box_loss": 3.20005,
+        "train/cls_loss": 4.22684,
+        "train/dfl_loss": 1.84182
+      },
+      "memory_allocated_bytes": 99474944,
+      "peak_memory_allocated_bytes": 970520576,
+      "lr": {
+        "lr/pg0": 0.0,
+        "lr/pg1": 0.0,
+        "lr/pg2": 0.0
+      },
+      "eta_seconds": 121.41766399201879
+    },
+    "restart": {
+      "worker_identity_preserved": true,
+      "job_state": "running",
+      "epoch": 5,
+      "new_launcher": 41358
+    },
+    "result": {
+      "id": "598b9d33eead460bb7d03137aae0d982",
+      "base_model_id": "e03975578e3845bd80add9719a206939",
+      "base_sha256": "0ebbc80d4a7680d14987a577cd21342b65ecfd94632bd9a8da63ae6417644ee1",
+      "snapshot_id": "b6ba5b45c44149dab2d2df35126d2486",
+      "snapshot_sha256": "bc12950ce89b0fce6c3ab3d1f16168e7c61cd2b5aea6249d50ac846ad21b6e51",
+      "parameters": {
+        "epochs": 20,
+        "lr0": 0.001,
+        "batch": 4,
+        "optimizer": "AdamW",
+        "warmup_bias_lr": 0.0,
+        "imgsz": 640,
+        "workers": 0,
+        "seed": 42,
+        "patience": 20,
+        "device": 0,
+        "amp": true
+      },
+      "state": "completed",
+      "stage": "completed",
+      "progress": 1.0,
+      "epoch": 20,
+      "created_at": 1794457633.954071,
+      "control_revision": 1,
+      "metrics": {
+        "metrics/precision(B)": 0.01333,
+        "metrics/recall(B)": 0.66667,
+        "metrics/mAP50(B)": 0.01491,
+        "metrics/mAP50-95(B)": 0.00621,
+        "val/box_loss": 2.08998,
+        "val/cls_loss": 3.4392,
+        "val/dfl_loss": 1.38804,
+        "train/box_loss": 1.74856,
+        "train/cls_loss": 3.85433,
+        "train/dfl_loss": 1.73479
+      },
+      "error": null,
+      "command": null,
+      "stop_requested": null,
+      "checkpoint": "resume.pt",
+      "revision": 50,
+      "updated_at": 1794457687.7837203,
+      "effective_amp": true,
+      "started_at": 1794457643.134021,
+      "elapsed_seconds": 33.02184570999816,
+      "batch_index": 1,
+      "batches_total": 1,
+      "losses": {
+        "train/box_loss": 1.74856,
+        "train/cls_loss": 3.85433,
+        "train/dfl_loss": 1.73479
+      },
+      "memory_allocated_bytes": 130746880,
+      "peak_memory_allocated_bytes": 970520576,
+      "lr": {
+        "lr/pg0": 1.9619999999999995e-05,
+        "lr/pg1": 1.9619999999999995e-05,
+        "lr/pg2": 1.9619999999999995e-05
+      },
+      "eta_seconds": 0.0,
+      "training_complete": true,
+      "result_model_id": "b0f0e89466df4fa4bbf54577aed99c71",
+      "test_metrics": {
+        "metrics/precision(B)": 0.0033333333333333335,
+        "metrics/recall(B)": 1.0,
+        "metrics/mAP50(B)": 0.995,
+        "metrics/mAP50-95(B)": 0.8955,
+        "fitness": 0.90545
+      },
+      "finished_at": 1794457687.782833
+    },
+    "camera_after": {
+      "status": "online",
+      "output_fps": 10.64,
+      "operating_mode": "business",
+      "algorithm_error": null
+    }
+  },
+  "final_system_sample": {
+    "schema_version": "1.0",
+    "sampled_at_ms": 1794458079514,
+    "cpu_percent": 34.8,
+    "gpu_percent": 1.7,
+    "memory_used_bytes": 5551898624,
+    "memory_total_bytes": 16416473088,
+    "temperature_celsius": 55.75,
+    "temperature_sensor": "tj-thermal",
+    "uptime_seconds": 70492.7,
+    "age_ms": 0.00409600033890456
+  },
+  "protected_existing_device_fields_changed": [],
+  "limitations": [
+    "COCO8 demo only: 3 images in independent groups, 1 train / 1 validation / 1 test; not industrial product accuracy",
+    "USB physical camera and full power-cycle not tested",
+    "GPU allocation peaks from training jobs; no continuous temperature or system-memory peak trace",
+    "Performance benchmark uses API-only observer without a browser video client; no multi-viewer load claim"
+  ],
+  "performance_recovery_percent": 98.40737636211233
+}

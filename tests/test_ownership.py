@@ -306,6 +306,10 @@ class ConfirmationTests(unittest.TestCase):
         definition=next(n for n in tree.body if isinstance(n,ast.ClassDef) and n.name=='Handler')
         namespace=dict(BaseHTTPRequestHandler=BaseHTTPRequestHandler,json=json,
             behavior=self.service,work_status=work_status,LocalizedError=LocalizedError,urlsplit=urlsplit)
+        from types import SimpleNamespace
+        from jetson_worktime.studio_store import StudioError
+        namespace['studio_http']=SimpleNamespace(handle=lambda *args:False)
+        namespace['StudioError']=StudioError
         exec(compile(ast.Module(body=[definition],type_ignores=[]),'production_handler','exec'),namespace)
         server=ThreadingHTTPServer(('127.0.0.1',0),namespace['Handler'])
         thread=threading.Thread(target=server.serve_forever,daemon=True)

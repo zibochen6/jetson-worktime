@@ -12,3 +12,5 @@ tests/fixtures/media/*.jpg
 tests/fixtures/media/*.png
 vendor/mediamtx/
 logs/
+
+data/

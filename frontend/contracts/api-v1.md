@@ -130,3 +130,23 @@ POST /api/v1/work/actions 的确认请求为以下结构。
 WebRTC WHEP 与 MJPEG 地址支持 `profile=remote|local`。remote 默认 640×360/10 FPS/600 Kbps，local 最大 1920×1080/12 FPS/4 Mbps。浏览器按地址自动选择，localhost、回环地址和 RFC1918 局域网地址使用 local，Tailscale 地址使用 remote。高清流在原始脱敏帧上降采样，保留输入细节。
 
 显示设置新增 station 和 seat，独立控制工位范围和在位判断区的蒙版、边界与标签。仍接受旧三字段显示配置，regions 的值同时应用于这两个开关。新配置保留 regions 兼容字段，其值为 station 或 seat 开启。
+
+## Local material counting and training studio
+
+`GET/PUT /api/v1/settings` adds `models: {person, material}` and the complete `materials` group. Old configurations are normalized in memory; material counting defaults to disabled. The existing `expected_revision` conflict rule applies. Material polygon changes require a fresh `reference_frame` from the current camera; polygons may not intersect, and do not inherit human-seat containment.
+
+Studio requests use `/api/v1/models`, `/api/v1/datasets`, `/api/v1/training/jobs`, and `/api/v1/materials`. Opaque resource identifiers are returned by creation calls; metadata does not expose filesystem access paths; the optional raw training log may contain working-directory names. All errors contain a stable `studio.error.*` message key.
+
+- Model upload: `POST /models?role=person|material&name=...`, raw `application/octet-stream`, maximum512 MiB. CPU task/shape and prediction checks precede registration. Selection is a separate settings write. `DELETE /models/{id}` requires `{expected_revision}` and refuses built-in/active/referenced weights.
+- Download: `POST /models/downloads` with `{catalog_id: "yolo11n"|"yolo11m"|"yolo11l"}`; poll `GET /models/downloads`. Only bundled official URLs and SHA-256 are used.
+- Dataset: `POST /datasets` with `{name,class_name}`; `GET /datasets/{id}` includes image metadata. `POST /datasets/{id}/images?group=...` uploads one raw JPEG/PNG (20 MiB / 24 MP limit). `POST /datasets/{id}/captures` with `{group_id}` shares the current protected full frame.
+- Annotation: `PUT /datasets/{id}/images/{image_id}/annotations` with `{expected_revision,boxes:[[x1,y1,x2,y2]],annotated:true}`. Coordinates refer to original image pixels. Empty confirmed annotations represent negative samples. `DELETE /datasets/{id}/images/{image_id}` soft-deletes with `{expected_revision}`.
+- Snapshot: `POST /datasets/{id}/snapshots` with `{expected_revision,ratios:[80,10,10]}`. Ratios are positive integer percentages totalling100. At least three positive capture groups are required; complete groups are allocated deterministically with seed42. Response contains actual split counts and snapshot SHA.
+- Start: `POST /training/jobs` with `{token,expected_revision,base_model_id,snapshot_id,parameters:{epochs,lr0,batch}}`. The token is an8–128 character idempotency identifier. Device configuration revision and service heartbeat are checked before queueing. Only one active job may exist.
+- Observe: `GET /training/jobs/{id}` returns state, stage, epoch, progress, metrics, checkpoint availability and bounded log tail. `control_revision` changes only for user actions; metrics may update `revision` each second.
+- Control: `POST /training/jobs/{id}/actions` with `{token,expected_revision:<control_revision>,action:"stop"|"cancel"|"resume"}`. Resume retains original dataset and parameters. Browser disconnect does not send a stop action.
+- Preview: `POST /training/jobs/{id}/preview` after successful training returns `{jpeg:<base64>,detections}` using a current protected still and CPU inference; it does not replace live weights. Activate explicitly through the settings model selection.
+- Counts: `GET /materials/status` returns current counts or null when invalid, cumulative total, session ID, source/version metadata and unresolved review events. `GET /materials/sessions/{id}` returns durable history.
+- Adjustment: `POST /materials/sessions/{id}/adjustments` with `{token,expected_total,delta,reason,event_id?}`. A review resolution uses delta0 for a return or1 for a new product. Total may not become negative. Duplicate tokens return the original result.
+
+Paths above are relative to `/api/v1`. Training state is one of `queued/preparing/running/validating/saving/stopping/completed/paused/interrupted/failed/cancelled`. A successful job registers an inactive material model. It never auto-activates a model or resets production camera settings.

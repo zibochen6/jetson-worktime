@@ -66,12 +66,13 @@ export function validateRegions(regions, size) {
 }
 
 export class RoiEditor {
-  constructor(canvas, onChange) {
+  constructor(canvas, onChange, names = ['station','seat']) {
     this.canvas = canvas;
     this.onChange = onChange;
-    this.regions = {station: [], seat: []};
+    this.names=names;
+    this.regions=Object.fromEntries(names.map(n=>[n,[]]));
     this.size = [1280, 720];
-    this.region = 'station';
+    this.region = names[0];
     this.tool = 'rectangle';
     this.image = null;
     this.history = [];
@@ -218,14 +219,14 @@ export class RoiEditor {
     const scaleX = this.canvas.width / this.size[0];
     const scaleY = this.canvas.height / this.size[1];
     const displayScale = this.canvas.width / Math.max(1, this.canvas.getBoundingClientRect().width);
-    for (const name of ['station', 'seat']) {
+    for (const name of this.names) {
       const points = name === this.region && this.draft.length ? this.draft : this.regions[name];
       if (!points.length) continue;
       const visualization = this.visualization ?? visualizationDefaults();
-      const color = visualization.colors[name];
+      const color = this.regionColors?.[name] ?? visualization.colors[name];
       context.strokeStyle = color;
       context.fillStyle = color;
-      context.globalAlpha = visualization[name+'_fill_alpha'];
+      context.globalAlpha = this.regionOpacity?.[name] ?? visualization[name+'_fill_alpha'];
       context.lineWidth = (name === this.region ? 2.5 : 1.5) * displayScale;
       context.setLineDash(name === this.region ? [] : [6 * displayScale, 4 * displayScale]);
       context.beginPath();

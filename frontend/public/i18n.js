@@ -14,6 +14,7 @@ export function tr(key, params = {}, locale = language) {
   const template = messages[key]?.[locale] ?? messages['error.generic'][locale];
   return template.replace(/\{(\w+)\}/g, (_, name) => {
     const value = params[name];
+    if (name === 'region' && ['pending','completed'].includes(value)) return tr('studio.'+value,{},locale);
     if (name === 'region' && ['station','seat'].includes(value)) return tr('roi.'+value, {}, locale);
     return String(value ?? '');
   });

@@ -1,0 +1,1629 @@
+{
+  "recorded_blocker": {
+    "labels": {
+      "UNKNOWN": 988
+    },
+    "events": [
+      {
+        "event": "operator_association_changed",
+        "monotonic_seconds": 18014.257427558,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "previous": "UNBOUND",
+        "state": "INPUT_UNKNOWN",
+        "ownership": {
+          "operator_id": null,
+          "track_id": null,
+          "run_id": null,
+          "stream_session_id": null
+        }
+      }
+    ],
+    "final": {
+      "state": "OBSERVATION_UNKNOWN",
+      "behavior": "UNKNOWN",
+      "reason": "机位可能移动，请检查区域并重新确认",
+      "reason_code": "reason.moved",
+      "reason_params": {},
+      "session_id": null,
+      "active": false,
+      "session_start": null,
+      "session_end": null,
+      "review": false,
+      "work_seconds": 0.0,
+      "rest_seconds": 0.0,
+      "unknown_seconds": 0.0,
+      "pending_seconds": 0.0,
+      "start_pending_seconds": 0,
+      "completed_sessions": 0,
+      "thresholds": {
+        "start_seconds": 10,
+        "short_away_seconds": 30,
+        "stop_absent_seconds": 31,
+        "missing_grace_seconds": 3,
+        "max_observation_age": 1.5,
+        "dedup_iou": 0.4,
+        "dedup_distance": 0.03,
+        "person_confidence": 0.1,
+        "keypoint_confidence": 0.4
+      },
+      "ownership": {
+        "operator_id": null,
+        "track_id": null,
+        "run_id": null,
+        "stream_session_id": null,
+        "state": "INPUT_UNKNOWN",
+        "needs_confirmation": false,
+        "candidates": [],
+        "ignored_track_ids": [],
+        "away_since": null,
+        "absent_since": null,
+        "away_seconds": 0.0,
+        "absent_seconds": 0.0,
+        "end_remaining_seconds": null
+      },
+      "start_confirmation": {
+        "state": "BLOCKED",
+        "elapsed_seconds": 0.0,
+        "required_seconds": 10,
+        "candidate_track_id": null,
+        "blocker_code": "reason.moved",
+        "blocker_params": {},
+        "last_reset": null
+      }
+    }
+  },
+  "confirmed_current_roi": {
+    "labels": {
+      "UNKNOWN": 195,
+      "ABSENT": 319,
+      "NEARBY": 16,
+      "SEATED": 458
+    },
+    "events": [
+      {
+        "event": "operator_association_changed",
+        "monotonic_seconds": 18028.016768769,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "previous": "UNBOUND",
+        "state": "CANDIDATE",
+        "ownership": {
+          "operator_id": null,
+          "track_id": 1168,
+          "run_id": null,
+          "stream_session_id": null
+        }
+      },
+      {
+        "event": "start_confirmation_reset",
+        "monotonic_seconds": 18029.41831556,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "reason_code": "reason.ambiguous"
+      },
+      {
+        "event": "operator_association_changed",
+        "monotonic_seconds": 18029.41831556,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "previous": "CANDIDATE",
+        "state": "UNBOUND",
+        "ownership": {
+          "operator_id": null,
+          "track_id": null,
+          "run_id": null,
+          "stream_session_id": null
+        }
+      },
+      {
+        "event": "operator_association_changed",
+        "monotonic_seconds": 18029.65895177,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "previous": "UNBOUND",
+        "state": "CANDIDATE",
+        "ownership": {
+          "operator_id": null,
+          "track_id": 1168,
+          "run_id": null,
+          "stream_session_id": null
+        }
+      },
+      {
+        "event": "start_confirmation_reset",
+        "monotonic_seconds": 18030.533803957,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "reason_code": "reason.nearby"
+      },
+      {
+        "event": "operator_association_changed",
+        "monotonic_seconds": 18030.533803957,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "previous": "CANDIDATE",
+        "state": "UNBOUND",
+        "ownership": {
+          "operator_id": null,
+          "track_id": null,
+          "run_id": null,
+          "stream_session_id": null
+        }
+      },
+      {
+        "event": "operator_association_changed",
+        "monotonic_seconds": 18031.166373482,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "previous": "UNBOUND",
+        "state": "CANDIDATE",
+        "ownership": {
+          "operator_id": null,
+          "track_id": 1168,
+          "run_id": null,
+          "stream_session_id": null
+        }
+      },
+      {
+        "event": "start_confirmation_reset",
+        "monotonic_seconds": 18034.426568236,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "reason_code": "reason.ambiguous"
+      },
+      {
+        "event": "operator_association_changed",
+        "monotonic_seconds": 18034.426568236,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "previous": "CANDIDATE",
+        "state": "UNBOUND",
+        "ownership": {
+          "operator_id": null,
+          "track_id": null,
+          "run_id": null,
+          "stream_session_id": null
+        }
+      },
+      {
+        "event": "operator_association_changed",
+        "monotonic_seconds": 18034.663531267,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "previous": "UNBOUND",
+        "state": "CANDIDATE",
+        "ownership": {
+          "operator_id": null,
+          "track_id": 1168,
+          "run_id": null,
+          "stream_session_id": null
+        }
+      },
+      {
+        "event": "operator_bound",
+        "monotonic_seconds": 18034.663531267,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e",
+        "ownership": {
+          "operator_id": "d700aae9f012487bb00a86068623f0b5",
+          "track_id": 1168,
+          "run_id": null,
+          "stream_session_id": "c681261fd8274ef6b733457711188ac5"
+        }
+      },
+      {
+        "event": "session_start",
+        "monotonic_seconds": 18034.663531267,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e",
+        "manual": false,
+        "ownership": {
+          "operator_id": "d700aae9f012487bb00a86068623f0b5",
+          "track_id": 1168,
+          "run_id": null,
+          "stream_session_id": "c681261fd8274ef6b733457711188ac5"
+        }
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18044.900757716,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1075,
+          1170
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18045.646974044,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1075
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18046.981133529,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1075,
+          1170
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18048.605787055,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1075
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18049.105666179,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1075,
+          1170
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18049.356770217,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1075
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18051.607065775,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1075,
+          1170
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18051.856594948,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1170
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18052.251528478,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1075,
+          1170
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18054.252362545,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1075,
+          1187
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18054.618598487,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1075,
+          1170
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18055.137086173,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1075
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18055.2514766,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1075,
+          1170
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18055.389744178,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1170
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18055.99776525,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1075,
+          1170
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18056.502156027,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1075
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18058.973069812,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1075,
+          1170
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18059.006647232,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1075
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18059.869673947,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1075,
+          1170
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18060.120131871,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1075
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18061.620206767,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1075,
+          1170
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18062.003843017,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1075
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18062.648182448,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1170
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18063.266323171,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1170,
+          1191
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18063.400721815,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1191
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18064.256431325,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1170,
+          1191
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18064.394507117,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1191
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18064.508073405,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1170,
+          1191
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18064.638779894,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1191
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18064.768864463,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1170,
+          1191
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18066.421955844,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1191
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18066.774004279,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1170,
+          1191
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18067.413693584,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1191
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18068.763498274,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1170,
+          1191
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18071.306890618,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1191
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18072.829015015,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1170,
+          1191
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18073.426937844,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1191
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18073.559720917,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1170,
+          1191
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18076.20242263,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1191
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18077.717325634,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1170
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18078.091871116,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1170,
+          1191
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18079.185729056,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1170,
+          1194
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18079.438698723,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1170,
+          1191
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18079.787660088,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1170
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18079.923012252,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1170,
+          1191
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18080.277484649,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1191
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "operator_association_changed",
+        "monotonic_seconds": 18081.137768213,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "previous": "TRACKED",
+        "state": "INPUT_UNKNOWN",
+        "ownership": {
+          "operator_id": "d700aae9f012487bb00a86068623f0b5",
+          "track_id": 1168,
+          "run_id": null,
+          "stream_session_id": "c681261fd8274ef6b733457711188ac5"
+        }
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18081.137768213,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1168,
+          1170,
+          1191,
+          1195
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18081.8884991,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1168,
+          1170,
+          1191,
+          1195,
+          1197
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "operator_association_changed",
+        "monotonic_seconds": 18082.020960781,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "previous": "INPUT_UNKNOWN",
+        "state": "MISSING",
+        "ownership": {
+          "operator_id": "d700aae9f012487bb00a86068623f0b5",
+          "track_id": 1168,
+          "run_id": null,
+          "stream_session_id": "c681261fd8274ef6b733457711188ac5"
+        }
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18082.020960781,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1170,
+          1191,
+          1195,
+          1197
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18083.638365157,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1191,
+          1195,
+          1197
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18083.77823003,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1170,
+          1191,
+          1195,
+          1197
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18084.026298231,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1191,
+          1195,
+          1197
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "operator_association_changed",
+        "monotonic_seconds": 18084.135826426,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "previous": "MISSING",
+        "state": "CONFIRMATION_REQUIRED",
+        "ownership": {
+          "operator_id": "d700aae9f012487bb00a86068623f0b5",
+          "track_id": 1168,
+          "run_id": null,
+          "stream_session_id": "c681261fd8274ef6b733457711188ac5"
+        }
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18084.135826426,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1191,
+          1195,
+          1197,
+          1202
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18084.89712281,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1191,
+          1195,
+          1197,
+          1204
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18084.910965658,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1191,
+          1195,
+          1197
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18085.14716516,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1191,
+          1195,
+          1197,
+          1204
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18085.666965741,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1191,
+          1195,
+          1197
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18086.243128101,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1191,
+          1197
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18086.273451723,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1191,
+          1197,
+          1205
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18086.638422062,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1191,
+          1197
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18087.24507442,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1191,
+          1197,
+          1205
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18088.659170918,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1191,
+          1205
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18092.835693254,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1191
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18092.943402124,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1191,
+          1205
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18104.712345561,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1191,
+          1205,
+          1214
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18105.589658946,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1191,
+          1205
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18105.698073515,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1191,
+          1205,
+          1215
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18107.09151846,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1191,
+          1215
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18107.19792528,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1191,
+          1205,
+          1215
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18109.22992529,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1191,
+          1205,
+          1215,
+          1217
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18109.719421704,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1191,
+          1205,
+          1215
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18110.101313605,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1191,
+          1205,
+          1215,
+          1217
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18110.220641722,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1191,
+          1205,
+          1215
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "other_person_ignored",
+        "monotonic_seconds": 18111.488366832,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "track_ids": [
+          1191,
+          1205
+        ],
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e"
+      },
+      {
+        "event": "session_end",
+        "monotonic_seconds": 18082.020960781,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "session_id": "b94a9acc939d44f38f059bb75419ff9e",
+        "reason": "long_not_observed",
+        "summary": {
+          "work_seconds": 46.251842785997724,
+          "rest_seconds": 0.2223941600022954,
+          "unknown_seconds": 0.8831925679987762,
+          "pending_seconds": 0.0
+        },
+        "intervals": [
+          {
+            "start": 18034.663531267,
+            "end": 18080.915374053,
+            "kind": "work",
+            "evidence": "observed"
+          },
+          {
+            "start": 18080.915374053,
+            "end": 18081.137768213,
+            "kind": "rest",
+            "evidence": "observed"
+          },
+          {
+            "start": 18081.137768213,
+            "end": 18082.020960781,
+            "kind": "unknown",
+            "evidence": "observed"
+          }
+        ],
+        "ownership": {
+          "operator_id": "d700aae9f012487bb00a86068623f0b5",
+          "track_id": 1168,
+          "run_id": null,
+          "stream_session_id": "c681261fd8274ef6b733457711188ac5"
+        }
+      },
+      {
+        "event": "operator_association_changed",
+        "monotonic_seconds": 18125.778505949,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "previous": "UNBOUND",
+        "state": "CANDIDATE",
+        "ownership": {
+          "operator_id": null,
+          "track_id": 1222,
+          "run_id": null,
+          "stream_session_id": null
+        }
+      },
+      {
+        "event": "start_confirmation_reset",
+        "monotonic_seconds": 18126.583978077,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "reason_code": "reason.nearby"
+      },
+      {
+        "event": "operator_association_changed",
+        "monotonic_seconds": 18126.583978077,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "previous": "CANDIDATE",
+        "state": "UNBOUND",
+        "ownership": {
+          "operator_id": null,
+          "track_id": null,
+          "run_id": null,
+          "stream_session_id": null
+        }
+      },
+      {
+        "event": "operator_association_changed",
+        "monotonic_seconds": 18129.107490401,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "previous": "UNBOUND",
+        "state": "CANDIDATE",
+        "ownership": {
+          "operator_id": null,
+          "track_id": 1222,
+          "run_id": null,
+          "stream_session_id": null
+        }
+      },
+      {
+        "event": "start_confirmation_reset",
+        "monotonic_seconds": 18129.711607233,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "reason_code": "reason.nearby"
+      },
+      {
+        "event": "operator_association_changed",
+        "monotonic_seconds": 18129.711607233,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "previous": "CANDIDATE",
+        "state": "UNBOUND",
+        "ownership": {
+          "operator_id": null,
+          "track_id": null,
+          "run_id": null,
+          "stream_session_id": null
+        }
+      },
+      {
+        "event": "operator_association_changed",
+        "monotonic_seconds": 18129.832202773,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "previous": "UNBOUND",
+        "state": "CANDIDATE",
+        "ownership": {
+          "operator_id": null,
+          "track_id": 1222,
+          "run_id": null,
+          "stream_session_id": null
+        }
+      },
+      {
+        "event": "start_confirmation_reset",
+        "monotonic_seconds": 18130.20750445,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "reason_code": "reason.nearby"
+      },
+      {
+        "event": "operator_association_changed",
+        "monotonic_seconds": 18130.20750445,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "previous": "CANDIDATE",
+        "state": "UNBOUND",
+        "ownership": {
+          "operator_id": null,
+          "track_id": null,
+          "run_id": null,
+          "stream_session_id": null
+        }
+      },
+      {
+        "event": "operator_association_changed",
+        "monotonic_seconds": 18130.330436813,
+        "config_revision": 30,
+        "detection": {
+          "person_confidence": 0.1,
+          "keypoint_confidence": 0.4
+        },
+        "previous": "UNBOUND",
+        "state": "CANDIDATE",
+        "ownership": {
+          "operator_id": null,
+          "track_id": 1222,
+          "run_id": null,
+          "stream_session_id": null
+        }
+      }
+    ],
+    "final": {
+      "state": "START_PENDING",
+      "behavior": "SEATED",
+      "reason": "正在确认操作员（轨迹 1222）",
+      "reason_code": "ownership.starting",
+      "reason_params": {
+        "track_id": 1222
+      },
+      "session_id": "b94a9acc939d44f38f059bb75419ff9e",
+      "active": false,
+      "session_start": 18034.663531267,
+      "session_end": 18082.020960781,
+      "review": false,
+      "work_seconds": 46.251842785997724,
+      "rest_seconds": 0.2223941600022954,
+      "unknown_seconds": 0.8831925679987762,
+      "pending_seconds": 0.0,
+      "start_pending_seconds": 0.7513393899971561,
+      "completed_sessions": 1,
+      "thresholds": {
+        "start_seconds": 10,
+        "short_away_seconds": 30,
+        "stop_absent_seconds": 31,
+        "missing_grace_seconds": 3,
+        "max_observation_age": 1.5,
+        "dedup_iou": 0.4,
+        "dedup_distance": 0.03,
+        "person_confidence": 0.1,
+        "keypoint_confidence": 0.4
+      },
+      "ownership": {
+        "operator_id": "d700aae9f012487bb00a86068623f0b5",
+        "track_id": 1168,
+        "run_id": null,
+        "stream_session_id": "c681261fd8274ef6b733457711188ac5",
+        "state": "ENDED",
+        "needs_confirmation": false,
+        "candidates": [
+          {
+            "track_id": 1222,
+            "bbox_xyxy": [
+              1047.7293701171875,
+              9.52932071685791,
+              2497.197998046875,
+              1425.57666015625
+            ],
+            "zone": "SEATED"
+          }
+        ],
+        "ignored_track_ids": [],
+        "away_since": null,
+        "absent_since": null,
+        "away_seconds": 0.0,
+        "absent_seconds": 0.0,
+        "end_remaining_seconds": null
+      },
+      "start_confirmation": {
+        "state": "CONFIRMING",
+        "elapsed_seconds": 0.7513393899971561,
+        "required_seconds": 10,
+        "candidate_track_id": 1222,
+        "blocker_code": null,
+        "blocker_params": {
+          "track_id": 1222
+        },
+        "last_reset": {
+          "reason_code": "reason.nearby",
+          "reason_params": {},
+          "monotonic_seconds": 18130.20750445
+        }
+      }
+    }
+  }
+}

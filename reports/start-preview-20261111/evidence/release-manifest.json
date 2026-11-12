@@ -1,0 +1,97 @@
+{
+  "files": {
+    "frontend/mock.mjs": {
+      "before": "621751a831047a4bc7b73bba14bbe04afdea28328ec3a8cd0322e1501edda126",
+      "after": "19dd48d281c50e1d329ff98324edfd684f927f5dcbf790ee6ff4b6c909e7666d"
+    },
+    "tests/test_detection.py": {
+      "before": "0418c57203611379650ab73a1dea7cdb397b0231f267c111fefe40170d5b5ce6",
+      "after": "f93f6ab06588ff48d3ac581e0fdb6d0a3f47453c61c2a4764d47635f2ca280af"
+    },
+    "tests/test_start_preview.py": {
+      "before": null,
+      "after": "f9e7f723d64351b0c75cd8587f2c2a025c752fa83b62b1dff43081609aa72819"
+    },
+    "tests/test_settings.py": {
+      "before": "ddad4a4fe8aa612b6730d154a80055ac385b4fc2cfbe67086eb241cc44585031",
+      "after": "ebad1a131bd9c0a76a83c44a7b6ba2e123fded05c5cc3c9ccafb673054d030c4"
+    },
+    "docs/start-preview-diagnostics.md": {
+      "before": null,
+      "after": "5c5c63ce0c4d984a16f4daeeefcd9baf7d8395eb63b05eb308fae1905cd44d3e"
+    },
+    "scripts/preview.py": {
+      "before": "5b4ebe05378b12adcac9b3835b4f0cf562f4f9c736b674066d8ab9285e1f70c4",
+      "after": "844235fcb514723b5f209d765441120fa5e485b88f8895a5a40896f7b72b170e"
+    },
+    "src/jetson_worktime/ownership.py": {
+      "before": "beaba10353e79eae64fbcc049d9e0e45ebc4d89812dadf52b10ddb75ab11df5e",
+      "after": "9993453197ffefa6b54b515b68506174544b334fe8b6302dd3a76e7440383323"
+    },
+    "src/jetson_worktime/overlay.py": {
+      "before": "e17c187c587d97c7e53330ea78180666a5fe1b9ceeaae4a1a2adaeeaf3570aa0",
+      "after": "3a677c77b3e1d5f317dfd1690b692b5ef61b7688f7c26e55c072eda8138d5e79"
+    },
+    "src/jetson_worktime/runtime_quality.py": {
+      "before": null,
+      "after": "ab83534e94ddeda9e41eeb894df13e0d5f88d5a02082ac6a5ec540c20c9082f3"
+    },
+    "src/jetson_worktime/behavior_service.py": {
+      "before": "22bf3f2fbbe2fc2010b04a90860554f516546f449ecb224a0935000158d2f21d",
+      "after": "a4b6454cb0c6f34897fef7545c8e44cf33982dc619047f38f0e0a7ceb56e4c93"
+    },
+    "src/jetson_worktime/behavior.py": {
+      "before": "68c9928683d1f3d1e1491d413b229a040f1a664c4ac139ecb23b3d9a856e299b",
+      "after": "48eebea65db8906f132e3779bb8bb926b3dccb269e59674d46cec9661905ff08"
+    },
+    "src/jetson_worktime/streaming.py": {
+      "before": "84ac651164daa5676018e6167aaf425d0816564fbfd571c3d57f279aa0f29b56",
+      "after": "88595d20301c6c0d7df8011411d5272bab132c98bc297f6ca61f1fc27b2830b8"
+    },
+    "frontend/test/api.test.mjs": {
+      "before": "f33315b887c46694118deb28d5021a69117439a564527485c5325d6838412458",
+      "after": "bad5d519997b025547358625a205a71e9328d1690d4e3ee24cde6ed22885e6bc"
+    },
+    "frontend/test/video-player.test.mjs": {
+      "before": "325a5e57cdef8aeeb891be1ffa2700db18bc2de3d8fac09637c4bcb6cafcfb06",
+      "after": "b2c9546953a09e8a900f37e3b653d8ed923ddfbf136ef68bc6529df139f8dc1e"
+    },
+    "frontend/contracts/openapi-v1.json": {
+      "before": "eec89a484b4e713aa2a91cdd7185f20358ef60e09a3ae9e0fb6dff1942935563",
+      "after": "ff86440084a99775cf81163bc9559782bfac153501e860b203e6f25044e0d412"
+    },
+    "frontend/public/index.html": {
+      "before": "a280453d906619992491f67ebc1101634ff2298ae1aa42d6ea566ca7d7a86a8a",
+      "after": "44b4386065493a6f88715bf03d2cb3c45f8f32db06ada6e287fc0ee4de923359"
+    },
+    "frontend/public/locales.json": {
+      "before": "20d220c761fa3cf49c98848a2dd43908a05626da8c0deb013019f898d986d088",
+      "after": "69da8244057631d5aa3ab3edef4e3f061c219a3f87024074114febd665f2a74f"
+    },
+    "frontend/public/overlay.js": {
+      "before": "feb09745aa14eb2e6e3895823648d67badee160d3aa6be6381c7282209b87ee2",
+      "after": "1d9bfe67477c53fe2e5289e063c01be5f473ea2ebe662cdc8c8f1f375ddb538f"
+    },
+    "frontend/public/video-player.js": {
+      "before": "116034dd40ca5a7c911027b74009f331b651f66de78633f6515125f1713421df",
+      "after": "c93f04a2ae4c86f6220fd50998d5401a4e0daf2e6cc14e44de5b772f8695a8c8"
+    },
+    "frontend/public/main.css": {
+      "before": "0555617059a7cdc7787dd7e154c392d8f30fb594a2227bb8e248386e6fa3363f",
+      "after": "6bcce5da33b90066380d144c545706e6899e5c2ccd7a4c682b31be137cdb6b52"
+    },
+    "frontend/public/main.js": {
+      "before": "50690889fe906c04ce18c37fb18b6294e3fb22deb174e528df4e9348b2aa40d8",
+      "after": "87e0b1e2b366a9a5a5fe6dd8f00ca05dd6c49b5be258cc86849c05c298f45c95"
+    },
+    "frontend/public/api.js": {
+      "before": "e44126682a42fefe85e47e340f35f88333d65a18a352f263c17e052560d556cb",
+      "after": "905900b46256d8340110c464f7a10dd9c6ca1910e5f4a37e21eda76a967a33ff"
+    }
+  },
+  "protected_before": {
+    "configs/behavior.yaml": "3e058513da62c7e3d18c09a22318871e79bcbd405d36290e103dfecd72b9b396",
+    "pyproject.toml": "17636ea7933daa888a799db86975d3f1706df1c766771abcde95c17229cee46f",
+    "uv.lock": "2f98ff0dec959c056dcf06264d8fe1785dd5aba30ccb4dc24b5f27d81baa92fe"
+  }
+}

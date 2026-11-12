@@ -1,0 +1,9 @@
+{
+  "source_matches_release": true,
+  "protected_files_unchanged": true,
+  "protected_hashes": {
+    "configs/behavior.yaml": "3e058513da62c7e3d18c09a22318871e79bcbd405d36290e103dfecd72b9b396",
+    "pyproject.toml": "17636ea7933daa888a799db86975d3f1706df1c766771abcde95c17229cee46f",
+    "uv.lock": "2f98ff0dec959c056dcf06264d8fe1785dd5aba30ccb4dc24b5f27d81baa92fe"
+  }
+}

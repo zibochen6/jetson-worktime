@@ -40,6 +40,13 @@ export function currentObservation(camera, envelope) {
     && envelope.observation?.frame.stream_session_id === camera?.stream_session_id);
 }
 
+// Video health is independent of a slower, larger structured-result request.
+export function previewReady(camera, envelope) {
+  const fresh=typeof camera?.algorithm_fresh==='boolean'?camera.algorithm_fresh:currentObservation(camera,envelope);
+  return Boolean(camera?.status==='online' && !camera?.algorithm_error && fresh
+    && (camera.output_fps===undefined || camera.output_fps>0));
+}
+
 // Presentation values only. The backend owns session settlement and all timers.
 export function dashboardView(camera, work, envelope) {
   const keys = ['work','rest','pending','unknown'];

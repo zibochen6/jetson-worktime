@@ -1,0 +1,5 @@
+正在后台启动工时统计系统，请稍候……
+启动成功。
+访问地址  http://192.168.2.16:8088
+进程 PID  8260
+运行日志  /home/seeed/workspace/jetson-worktime/logs/preview.log
