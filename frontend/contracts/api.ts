@@ -65,7 +65,7 @@ export interface WorkStatus extends ReasonDetails {
 export interface ApiError {schema_version:'1.0';error:MessageDetails & {code:string;message:string}}
 
 export interface VisualizationSettings {colors:Record<'station'|'seat'|'person'|'skeleton'|'keypoint'|'anchor',string>;station_fill_alpha:number;seat_fill_alpha:number}
-export interface VideoTransportStatus {webrtc_available:boolean;profiles?:Record<string,{width:number;max_fps:number;bitrate:number}>;viewers?:number;preview:{width:number;max_fps:number;bitrate:number};fallback:{width:number;max_fps:number;jpeg_quality:number};error:string|null;epoch:number}
+export interface VideoTransportStatus {streams?:('zh-CN'|'en'|'raw')[];webrtc_available:boolean;profiles?:Record<string,{width:number;max_fps:number;bitrate:number}>;viewers?:number;preview:{width:number;max_fps:number;bitrate:number};fallback:{width:number;max_fps:number;jpeg_quality:number};error:string|null;epoch:number}
 export interface DisplaySettings {boxes:boolean;regions:boolean;keypoints:boolean;station?:boolean;seat?:boolean}
 export interface TimingSettings {start_seconds:number;short_away_seconds:number;stop_absent_seconds:number;missing_grace_seconds:number;max_observation_age:number}
 export interface DetectionSettings {person_confidence:number;keypoint_confidence:number}

@@ -17,8 +17,22 @@ import yaml
 from .runtime_quality import RuntimeQuality
 
 LOCALES = ('zh-CN', 'en')
+VIDEO_STREAMS = (*LOCALES, 'raw')
 PREVIEW = dict(width=640, max_fps=10, bitrate=600000)
 PROFILES = {'remote':PREVIEW,'local':dict(width=1920,max_fps=12,bitrate=4000000)}
+
+
+def preview_frame(image, persons, config, fresh, regions_match, stream):
+    """Input is already privacy protected; collection must never draw overlays."""
+    if stream not in VIDEO_STREAMS:
+        raise ValueError('Invalid video stream')
+    if stream == 'raw':
+        return image
+    from .overlay import draw_overlay
+    marked = image.copy()
+    if regions_match:
+        draw_overlay(marked, persons, config, fresh=fresh, locale=stream)
+    return marked
 
 
 # Independent validation instances must not bind the production media ports.
@@ -99,7 +113,7 @@ class VideoTransport:
     def status(self):
         with self.condition:
             available = self.process is not None and self.process.poll() is None
-            return dict(webrtc_available=available, preview=PREVIEW.copy(), profiles=deepcopy(PROFILES), viewers=len(self.sessions)+len(self.sockets)+len(self.pending),
+            return dict(webrtc_available=available, preview=PREVIEW.copy(), profiles=deepcopy(PROFILES), streams=list(VIDEO_STREAMS), viewers=len(self.sessions)+len(self.sockets)+len(self.pending),
                         fallback=dict(width=640,max_fps=5,jpeg_quality=45),
                         error=self.error, epoch=self.epoch, runtime_quality=self.quality.snapshot())
 
@@ -137,6 +151,8 @@ class VideoTransport:
             self.socket_profiles.pop(connection,None)
 
     def create(self, locale, offer, profile='remote'):
+        if locale not in VIDEO_STREAMS:
+            raise ValueError('Invalid video stream')
         if profile not in PROFILES:
             raise ValueError('Invalid video profile')
         key=(locale,profile)
@@ -224,7 +240,7 @@ class VideoTransport:
                       webrtcIPsFromInterfaces=False,webrtcAdditionalHosts=list(dict.fromkeys(addresses)),
                       webrtcICEServers2=[],api=True,apiAddress=f'127.0.0.1:{API_PORT}',
                       udpMaxPayloadSize=1180,writeQueueSize=64,
-                      paths={'worktime-'+locale+'-'+profile:dict(source='publisher') for locale in LOCALES for profile in PROFILES})
+                      paths={'worktime-'+locale+'-'+profile:dict(source='publisher') for locale in VIDEO_STREAMS for profile in PROFILES})
         directory = self.root/'logs'
         directory.mkdir(exist_ok=True)
         path = directory/'mediamtx.runtime.yml'
@@ -235,7 +251,6 @@ class VideoTransport:
 
     def run(self):
         import cv2
-        from .overlay import draw_overlay
         last_server_attempt = 0
         published = {}
         last_publish = dict.fromkeys(PROFILES,0)
@@ -299,15 +314,11 @@ class VideoTransport:
                                 if epoch == self.epoch:
                                     self.jpegs[(locale,profile)] = (epoch,received,jpeg.tobytes(),config['revision'],config['privacy']['enabled'],meta,config['max_observation_age'])
                                     self.condition.notify_all()
-                    if make_jpeg:
-                        cache_jpeg('raw',small)
-                    for locale in LOCALES:
+                    for locale in VIDEO_STREAMS:
                         key=(locale,profile)
                         if key not in profile_demand and not make_jpeg:
                             continue
-                        marked = small.copy()
-                        if regions_match:
-                            draw_overlay(marked,persons,config,fresh=fresh,locale=locale)
+                        marked = preview_frame(small, persons, config, fresh, regions_match, locale)
                         if key in profile_demand:
                             if key not in self.publishers:
                                 self.publishers[key] = H264Publisher(locale,target_width,target_height,profile)

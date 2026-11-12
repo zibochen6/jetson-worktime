@@ -1,0 +1,254 @@
+
+> jetson-worktime-frontend-handoff@1.0.0 test
+> node --test test/*.test.mjs
+
+TAP version 13
+# Subtest: contain mapping includes letterbox offsets
+ok 1 - contain mapping includes letterbox offsets
+  ---
+  duration_ms: 0.554167
+  type: 'test'
+  ...
+# Subtest: stale and repeated results never become new current overlays
+ok 2 - stale and repeated results never become new current overlays
+  ---
+  duration_ms: 0.368875
+  type: 'test'
+  ...
+# Subtest: all states available without a camera; timer formatting does not recalculate totals
+ok 3 - all states available without a camera; timer formatting does not recalculate totals
+  ---
+  duration_ms: 0.430417
+  type: 'test'
+  ...
+# Subtest: dashboard maps session totals, real ratios and incomplete data without invented values
+ok 4 - dashboard maps session totals, real ratios and incomplete data without invented values
+  ---
+  duration_ms: 0.206666
+  type: 'test'
+  ...
+# Subtest: health metrics discard unavailable, stale and differently versioned observations
+ok 5 - health metrics discard unavailable, stale and differently versioned observations
+  ---
+  duration_ms: 0.190167
+  type: 'test'
+  ...
+# Subtest: system telemetry preserves zero and rejects expired, invalid or missing measurements
+ok 6 - system telemetry preserves zero and rejects expired, invalid or missing measurements
+  ---
+  duration_ms: 0.12425
+  type: 'test'
+  ...
+# Subtest: preview survives a slow structured-result request but stops on stale algorithm input
+ok 7 - preview survives a slow structured-result request but stops on stale algorithm input
+  ---
+  duration_ms: 0.111583
+  type: 'test'
+  ...
+# Subtest: captured real responses agree with OpenAPI schemas
+ok 8 - captured real responses agree with OpenAPI schemas
+  ---
+  duration_ms: 3.839375
+  type: 'test'
+  ...
+# Subtest: every mock scenario agrees with the same production contract
+ok 9 - every mock scenario agrees with the same production contract
+  ---
+  duration_ms: 4.4585
+  type: 'test'
+  ...
+# Subtest: all translation entries have both languages and matching placeholders
+ok 10 - all translation entries have both languages and matching placeholders
+  ---
+  duration_ms: 4.51025
+  type: 'test'
+  ...
+# Subtest: pipeline maps normal states, provisional absence and completed sessions
+ok 11 - pipeline maps normal states, provisional absence and completed sessions
+  ---
+  duration_ms: 0.88125
+  type: 'test'
+  ...
+# Subtest: shared overlay tokens default to quiet geometry and sparse corners
+ok 12 - shared overlay tokens default to quiet geometry and sparse corners
+  ---
+  duration_ms: 0.668792
+  type: 'test'
+  ...
+# Subtest: labels remain inside the image and omit crowded placements
+ok 13 - labels remain inside the image and omit crowded placements
+  ---
+  duration_ms: 0.267459
+  type: 'test'
+  ...
+# Subtest: frame canvas uses current layers, a subtle fill and short labels
+ok 14 - frame canvas uses current layers, a subtle fill and short labels
+  ---
+  duration_ms: 0.792
+  type: 'test'
+  ...
+# Subtest: stale canvas hides people and privacy suppresses facial landmarks
+ok 15 - stale canvas hides people and privacy suppresses facial landmarks
+  ---
+  duration_ms: 0.541958
+  type: 'test'
+  ...
+# Subtest: live observations expire across version, camera and freshness changes
+ok 16 - live observations expire across version, camera and freshness changes
+  ---
+  duration_ms: 0.104958
+  type: 'test'
+  ...
+# Subtest: pose canvas respects the effective keypoint threshold and legacy fallback
+ok 17 - pose canvas respects the effective keypoint threshold and legacy fallback
+  ---
+  duration_ms: 0.163417
+  type: 'test'
+  ...
+# Subtest: independent mock server serves UI, errors and disconnect/recovery without Jetson
+ok 18 - independent mock server serves UI, errors and disconnect/recovery without Jetson
+  ---
+  duration_ms: 74.812417
+  type: 'test'
+  ...
+# Subtest: ROI point mapping respects letterbox, scaling and boundaries
+ok 19 - ROI point mapping respects letterbox, scaling and boundaries
+  ---
+  duration_ms: 0.580416
+  type: 'test'
+  ...
+# Subtest: ROI geometry rejects crossing, degenerate and concave containment errors
+ok 20 - ROI geometry rejects crossing, degenerate and concave containment errors
+  ---
+  duration_ms: 0.700333
+  type: 'test'
+  ...
+# Subtest: settings mock shares versions, validates writes and marks media privacy
+ok 21 - settings mock shares versions, validates writes and marks media privacy
+  ---
+  duration_ms: 68.5345
+  type: 'test'
+  ...
+# Subtest: home presents an inline settings dialog using the shared editor
+ok 22 - home presents an inline settings dialog using the shared editor
+  ---
+  duration_ms: 2.407333
+  type: 'test'
+  ...
+# Subtest: camera source controls and mock enforce test-before-save and shared revisions
+ok 23 - camera source controls and mock enforce test-before-save and shared revisions
+  ---
+  duration_ms: 42.909709
+  type: 'test'
+  ...
+# Subtest: detection settings share versions, validate ranges and reset mock sessions
+ok 24 - detection settings share versions, validate ranges and reset mock sessions
+  ---
+  duration_ms: 45.474625
+  type: 'test'
+  ...
+# Subtest: training split and parameters preserve explicit learning rate and model defaults
+ok 25 - training split and parameters preserve explicit learning rate and model defaults
+  ---
+  duration_ms: 0.651875
+  type: 'test'
+  ...
+# Subtest: training does not show complete before artifacts saved
+ok 26 - training does not show complete before artifacts saved
+  ---
+  duration_ms: 0.11225
+  type: 'test'
+  ...
+# Subtest: annotation boxes clamp corners to full image coordinates
+ok 27 - annotation boxes clamp corners to full image coordinates
+  ---
+  duration_ms: 0.057292
+  type: 'test'
+  ...
+# Subtest: settings exposes all studio entries and device media whitelist includes resources
+ok 28 - settings exposes all studio entries and device media whitelist includes resources
+  ---
+  duration_ms: 2.527083
+  type: 'test'
+  ...
+# Subtest: independent split handles preserve total and at least one percent per set
+ok 29 - independent split handles preserve total and at least one percent per set
+  ---
+  duration_ms: 0.201875
+  type: 'test'
+  ...
+# Subtest: validation and test metrics remain distinct and actual learning rate is labelled
+ok 30 - validation and test metrics remain distinct and actual learning rate is labelled
+  ---
+  duration_ms: 0.289708
+  type: 'test'
+  ...
+# Subtest: capture serializes concurrent requests and finish drains the last photo without restarting
+ok 31 - capture serializes concurrent requests and finish drains the last photo without restarting
+  ---
+  duration_ms: 0.262625
+  type: 'test'
+  ...
+# Subtest: continuous capture waits for each save and a failed photo stops the sequence
+ok 32 - continuous capture waits for each save and a failed photo stops the sequence
+  ---
+  duration_ms: 0.297
+  type: 'test'
+  ...
+# Subtest: duplicate camera images do not increase the newly saved count
+ok 33 - duplicate camera images do not increase the newly saved count
+  ---
+  duration_ms: 0.259375
+  type: 'test'
+  ...
+# Subtest: capture requires a fresh business camera and blocks training, stale or failed observations
+ok 34 - capture requires a fresh business camera and blocks training, stale or failed observations
+  ---
+  duration_ms: 0.278417
+  type: 'test'
+  ...
+# Subtest: fallback is bounded to one connection and stop clears both media elements
+ok 35 - fallback is bounded to one connection and stop clears both media elements
+  ---
+  duration_ms: 0.635625
+  type: 'test'
+  ...
+# Subtest: stale connection callbacks cannot replace a newer language stream
+ok 36 - stale connection callbacks cannot replace a newer language stream
+  ---
+  duration_ms: 0.137167
+  type: 'test'
+  ...
+# Subtest: localhost and private LAN use HD while Tailscale uses fluent video
+ok 37 - localhost and private LAN use HD while Tailscale uses fluent video
+  ---
+  duration_ms: 0.136209
+  type: 'test'
+  ...
+# Subtest: display diagnostics measure rendered frames and discard old callbacks on stop
+ok 38 - display diagnostics measure rendered frames and discard old callbacks on stop
+  ---
+  duration_ms: 0.779833
+  type: 'test'
+  ...
+# Subtest: collection preview uses overlay-free fallback and HD LAN and compressed Tailscale profiles
+ok 39 - collection preview uses overlay-free fallback and HD LAN and compressed Tailscale profiles
+  ---
+  duration_ms: 0.292917
+  type: 'test'
+  ...
+# Subtest: raw WebRTC negotiates the dedicated stream and applies bounded receiver buffering
+ok 40 - raw WebRTC negotiates the dedicated stream and applies bounded receiver buffering
+  ---
+  duration_ms: 0.54625
+  type: 'test'
+  ...
+1..40
+# tests 40
+# suites 0
+# pass 40
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 206.584625

@@ -2974,7 +2974,7 @@
     },
     "/api/v1/video/whep/{locale}": {
       "post": {
-        "summary": "Create a protected WebRTC viewing session",
+        "summary": "Create a privacy-protected annotated or overlay-free WebRTC session",
         "parameters": [
           {
             "in": "path",
@@ -2984,9 +2984,11 @@
               "type": "string",
               "enum": [
                 "zh-CN",
-                "en"
+                "en",
+                "raw"
               ]
-            }
+            },
+            "description": "raw is the shared overlay-free capture preview; device privacy policy still applies."
           },
           {
             "in": "query",
@@ -3024,6 +3026,25 @@
               "ETag": {
                 "schema": {
                   "type": "string"
+                }
+              },
+              "X-Video-Stream": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "zh-CN",
+                    "en",
+                    "raw"
+                  ]
+                }
+              },
+              "X-Preview-Overlay": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "true",
+                    "false"
+                  ]
                 }
               }
             },

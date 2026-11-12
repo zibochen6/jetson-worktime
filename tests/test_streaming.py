@@ -105,3 +105,38 @@ class StreamingTests(unittest.TestCase):
         self.assertEqual(len(sent),1)
         self.assertIn(b'fresh',sent[0])
         self.assertNotIn(b'stale',sent[0])
+
+    def test_capture_preview_skips_every_detection_layer_without_modifying_privacy(self):
+        import numpy as np
+        from unittest.mock import patch
+        from jetson_worktime.streaming import preview_frame
+        from jetson_worktime.media import protect_frame
+        image=np.random.default_rng(3).integers(0,255,(200,200,3),dtype=np.uint8)
+        person=dict(bbox_xyxy=[50,10,150,190],keypoints=[])
+        config=dict(privacy={'enabled':True})
+        protected=protect_frame(image,[person],config)
+        self.assertFalse(np.array_equal(image,protected))
+        with patch('jetson_worktime.overlay.draw_overlay') as overlay:
+            result=preview_frame(protected,[person],config,True,True,'raw')
+            overlay.assert_not_called()
+        self.assertTrue(np.array_equal(result,protected))
+        with self.assertRaises(ValueError):preview_frame(protected,[],config,True,True,'untrusted')
+
+    def test_raw_stream_uses_the_same_bounded_latest_frame_and_invalidation(self):
+        value=transport()
+        value.jpegs[('raw','remote')]=(0,time.monotonic_ns(),b'protected-unmarked')
+        value.submit('protected',[],{'revision':9},True,True,time.monotonic_ns())
+        value.invalidate()
+        self.assertIsNone(value.latest)
+        self.assertEqual(value.jpegs,{})
+
+    def test_annotated_preview_draws_on_a_copy_and_raw_is_in_media_paths(self):
+        import numpy as np
+        from unittest.mock import patch
+        from jetson_worktime.streaming import preview_frame,VIDEO_STREAMS
+        self.assertIn('raw',VIDEO_STREAMS)
+        image=np.zeros((20,20,3),np.uint8)
+        def draw(frame,*args,**kwargs):frame[0,0]=255
+        with patch('jetson_worktime.overlay.draw_overlay',side_effect=draw):
+            marked=preview_frame(image,[],{},True,True,'en')
+        self.assertTrue(np.all(image==0));self.assertGreater(marked.sum(),0)

@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 const base=process.argv[2] || 'http://192.168.2.16:8088';
-const assets=['index.html','main.css','main.js','api.js','locales.json','settings.css','settings.js','i18n.js','overlay.js','overlay-style.json','roi-editor.js','studio.js','studio.css','annotation.js'];
+const assets=['index.html','main.css','main.js','video-player.js','api.js','locales.json','settings.css','settings.js','i18n.js','overlay.js','overlay-style.json','roi-editor.js','studio.js','studio.css','annotation.js'];
 for(const name of assets){
  const path=name==='index.html'?'/':'/'+name;
  const response=await fetch(base+path,{cache:'no-store',signal:AbortSignal.timeout(8000)});

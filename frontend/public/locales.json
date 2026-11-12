@@ -2430,5 +2430,77 @@
   "studio.metricScope.test": {
     "zh-CN": "独立测试集",
     "en": "Test"
+  },
+  "studio.captureFlowHelp": {
+    "zh-CN": "先打开相机预览，拍照或连续采集；完成采集后再统一标注。",
+    "en": "Open the live preview, take photos or capture continuously, then annotate the collected images."
+  },
+  "studio.captureStep": {
+    "zh-CN": "01 / 采集",
+    "en": "01 / Capture"
+  },
+  "studio.annotationStep": {
+    "zh-CN": "02 / 标注",
+    "en": "02 / Annotate"
+  },
+  "studio.livePreview": {
+    "zh-CN": "实时画面",
+    "en": "Live preview"
+  },
+  "studio.previewHelp": {
+    "zh-CN": "无检测标注的相机画面，保留隐私处理。本机和局域网高清，Tailscale预览压缩；拍照始终保存完整原分辨率。",
+    "en": "Camera view without detection overlays; configured privacy protection remains. Localhost and LAN use HD; Tailscale uses a compressed preview. Photos always keep their full resolution."
+  },
+  "studio.openCamera": {
+    "zh-CN": "打开摄像头",
+    "en": "Open camera"
+  },
+  "studio.closeCamera": {
+    "zh-CN": "关闭预览",
+    "en": "Close preview"
+  },
+  "studio.takePhoto": {
+    "zh-CN": "拍照",
+    "en": "Take photo"
+  },
+  "studio.continuous": {
+    "zh-CN": "开始连续采集",
+    "en": "Start continuous capture"
+  },
+  "studio.finishCapture": {
+    "zh-CN": "完成采集，进入标注",
+    "en": "Finish capture & annotate"
+  },
+  "studio.captureSummary": {
+    "zh-CN": "本次新增 {saved} 张 · 项目共 {total} 张",
+    "en": "{saved} added this session · {total} images in project"
+  },
+  "studio.previewOff": {
+    "zh-CN": "摄像头预览未打开",
+    "en": "Camera preview is closed"
+  },
+  "studio.previewUnavailable": {
+    "zh-CN": "暂时无法获取画面，正在等待相机恢复",
+    "en": "Waiting for the camera to recover"
+  },
+  "studio.recentCaptures": {
+    "zh-CN": "最近采集的图片",
+    "en": "Recent captures"
+  },
+  "studio.capturedImage": {
+    "zh-CN": "已保存的采集图片",
+    "en": "Saved capture"
+  },
+  "studio.collectMore": {
+    "zh-CN": "继续采集",
+    "en": "Capture more"
+  },
+  "studio.annotationReady": {
+    "zh-CN": "采集已完成，现在可以统一标注图片。",
+    "en": "Capture complete. You can now annotate the images."
+  },
+  "studio.newProject": {
+    "zh-CN": "新建训练项目",
+    "en": "New training project"
   }
 }

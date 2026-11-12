@@ -43,6 +43,7 @@ let revision = null;
 let streamSession = null;
 let cameraOnline = false;
 let outputReady = false;
+let capturePreviewActive = false;
 let actionPending = false;
 let roiConfigured = null;
 let lastStatus = null;
@@ -263,7 +264,7 @@ function resetStream() {
   streamSession = null;
 }
 function connect() {
-  if (!paused && !document.hidden && outputReady && !started) {
+  if (!paused && !capturePreviewActive && !document.hidden && outputReady && !started) {
     streamSession = lastStatus?.camera.stream_session_id ?? null;
     started = true;
     player.start(getLanguage(),lastStatus?.camera.video?.webrtc_available === true);
@@ -329,7 +330,15 @@ settingsDialog.addEventListener('click', event => {
   const rect = settingsDialog.getBoundingClientRect();
   if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) settingsDialog.close();
 });
-settingsDialog.addEventListener('close', () => settingsInvoker.focus());
+settingsDialog.addEventListener('close', () => {
+  settingsFrame.contentWindow?.dispatchEvent(new Event('worktime-settings-hidden'));
+  capturePreviewActive=false;connect();settingsInvoker.focus();
+});
+window.addEventListener('message', event => {
+  if(event.origin!==location.origin||event.source!==settingsFrame.contentWindow||event.data?.type!=='worktime-capture-preview')return;
+  capturePreviewActive=event.data.active===true&&settingsDialog.open;
+  if(capturePreviewActive)resetStream();else connect();
+});
 settingsFrame.addEventListener('load', () => {
   focusSettingsSection();
   // Keyboard events in the embedded settings document do not bubble to the homepage.

@@ -1,0 +1,58 @@
+[
+  {
+    "width": 1920,
+    "height": 1080,
+    "overflow": false,
+    "finishVisible": true,
+    "button": [
+      830.2734375,
+      873.0703125
+    ],
+    "dialog": [
+      16,
+      1064
+    ]
+  },
+  {
+    "width": 1366,
+    "height": 768,
+    "overflow": false,
+    "finishVisible": true,
+    "button": [
+      692.203125,
+      735
+    ],
+    "dialog": [
+      16,
+      752
+    ]
+  },
+  {
+    "width": 1024,
+    "height": 600,
+    "overflow": false,
+    "finishVisible": true,
+    "button": [
+      524.203125,
+      567
+    ],
+    "dialog": [
+      16,
+      584
+    ]
+  },
+  {
+    "width": 768,
+    "height": 1024,
+    "overflow": false,
+    "finishVisible": true,
+    "button": [
+      835.703125,
+      878.5
+    ],
+    "dialog": [
+      8,
+      1016
+    ]
+  }
+]

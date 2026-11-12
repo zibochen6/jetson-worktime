@@ -1,0 +1,29 @@
+{
+  "dataset_id": "c62ad8f6ee184bfa8f29235907703019",
+  "images": [
+    {
+      "id": "7f26351bb5614c95b0004efa1e8a53fd",
+      "width": 2560,
+      "height": 1440,
+      "privacy_applied": false,
+      "config_revision": 35,
+      "frame_sequence": 26229
+    },
+    {
+      "id": "3c042da836ee448c8834b578f66de870",
+      "width": 2560,
+      "height": 1440,
+      "privacy_applied": false,
+      "config_revision": 35,
+      "frame_sequence": 26185
+    },
+    {
+      "id": "7208cb0db50542bda1e633f8da3d568d",
+      "width": 2560,
+      "height": 1440,
+      "privacy_applied": false,
+      "config_revision": 35,
+      "frame_sequence": 26145
+    }
+  ]
+}

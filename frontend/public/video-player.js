@@ -4,11 +4,19 @@ export function videoProfile(hostname) {
   return hostname==='localhost'||/^127\./.test(hostname)||hostname==='[::1]'||/^10\./.test(hostname)||/^192\.168\./.test(hostname)||/^172\.(1[6-9]|2[0-9]|3[01])\./.test(hostname)?'local':'remote';
 }
 
+export function captureVideoProfile(hostname) {
+  const host=hostname.toLowerCase().replace(/^\[|\]$/g,'');
+  const parts=host.split('.').map(Number);
+  const tailnet=parts.length===4&&parts.every(n=>Number.isInteger(n)&&n>=0&&n<=255)&&parts[0]===100&&parts[1]>=64&&parts[1]<=127;
+  return tailnet||host==='ts.net'||host.endsWith('.ts.net')?'remote':'local';
+}
+
 export class VideoPlayer {
-  constructor(video, fallback, changed) {
+  constructor(video, fallback, changed, options = {}) {
     this.video = video;
     this.fallback = fallback;
     this.changed = changed;
+    this.raw = options.raw === true;
     this.generation = 0;
     this.mode = 'idle';
     this.metrics = null;
@@ -51,7 +59,12 @@ export class VideoPlayer {
     if (!available || !globalThis.RTCPeerConnection) return this.useFallback(generation);
     this.abort = new AbortController();
     const pc = this.pc = new RTCPeerConnection({iceServers:[]});
-    pc.addTransceiver('video',{direction:'recvonly'});
+    const receiver=pc.addTransceiver('video',{direction:'recvonly'}).receiver;
+    // Optional browser hints, in milliseconds (standard) / seconds (legacy).
+    try {
+      if ('jitterBufferTarget' in receiver) receiver.jitterBufferTarget=100;
+      else if ('playoutDelayHint' in receiver) receiver.playoutDelayHint=.1;
+    } catch { /* Unsupported hints must not prevent playback. */ }
     pc.ontrack = event => {
       if (generation !== this.generation) return;
       this.video.srcObject = event.streams[0] ?? new MediaStream([event.track]);
@@ -74,7 +87,8 @@ export class VideoPlayer {
         });
       });
       if (generation !== this.generation) return;
-      const response = await fetch('/api/v1/video/whep/'+locale+'?profile='+this.profile,{
+      const stream=this.raw?'raw':locale;
+      const response = await fetch('/api/v1/video/whep/'+stream+'?profile='+this.profile,{
         method:'POST',headers:{'Content-Type':'application/sdp'},body:pc.localDescription.sdp,signal:this.abort.signal
       });
       if (!response.ok) throw new Error('WHEP unavailable');
@@ -114,6 +128,7 @@ export class VideoPlayer {
               rtt_ms:pair?.currentRoundTripTime==null?null:pair.currentRoundTripTime*1000,
               buffer_ms:emitted>0?((inbound.jitterBufferDelay??0)-(previous.jitterBufferDelay??0))*1000/emitted:null
             };
+
           }
           previous=inbound;
           if (now-lastFrame>5000) return this.useFallback(generation);
@@ -143,7 +158,7 @@ export class VideoPlayer {
       this.changed(false);
       this.retry=setTimeout(()=>{this.stop();this.changed(false,true);},1000);
     };
-    this.fallback.src='/stream.mjpg?lang='+locale+'&profile='+this.profile+'&t='+Date.now();
+    this.fallback.src=(this.raw?'/api/v1/video.mjpg?':'/stream.mjpg?lang='+locale+'&')+'profile='+this.profile+'&t='+Date.now();
     this.changed(false);
     this.retry=setTimeout(() => {this.stop();this.changed(false,true);},30000);
   }

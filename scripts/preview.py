@@ -22,7 +22,7 @@ from jetson_worktime.settings import SettingsConflict
 from jetson_worktime.studio_store import StudioError
 from jetson_worktime.system_metrics import SystemMetrics
 from jetson_worktime.video import VideoReader
-from jetson_worktime.streaming import VideoTransport, PROFILES
+from jetson_worktime.streaming import VideoTransport, PROFILES, VIDEO_STREAMS
 from jetson_worktime.camera_sources import CameraSources, normalize_source, usb_devices
 
 os.chdir(ROOT)
@@ -192,6 +192,7 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header('Content-Type', 'multipart/x-mixed-replace; boundary=frame')
         self.send_header('Content-Language', locale)
         self.send_header('Cache-Control', 'no-store')
+        self.send_header('X-Preview-Overlay', str(not raw).lower())
         self.end_headers()
         self.connection.settimeout(1)
         self.connection.setsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF, 16384)
@@ -243,14 +244,15 @@ class Handler(BaseHTTPRequestHandler):
                 data = self.rfile.read(length)
                 if len(data) != length:
                     raise ValueError('Incomplete SDP')
-            if parts[4] == 'whep' and method == 'POST' and parts[5] in LANGUAGES:
+            if parts[4] == 'whep' and method == 'POST' and parts[5] in VIDEO_STREAMS:
                 profiles=parse_qs(urlsplit(self.path).query).get('profile',['remote'])
                 if len(profiles)!=1 or profiles[0] not in PROFILES:
                     raise ValueError('Invalid video profile')
                 token, answer, etag = transport.create(parts[5], data, profiles[0])
                 try:
                     self.send_bytes(answer, 'application/sdp', 201, {
-                        'Location':'/api/v1/video/sessions/'+token, 'ETag':etag})
+                        'Location':'/api/v1/video/sessions/'+token, 'ETag':etag,
+                        'X-Video-Stream':parts[5], 'X-Preview-Overlay':str(parts[5]!='raw').lower()})
                 except OSError:
                     transport.session_request(token, 'DELETE')
             elif parts[4] == 'sessions' and re.fullmatch('[a-f0-9]{32}', parts[5]):
