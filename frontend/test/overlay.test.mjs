@@ -7,6 +7,7 @@ import {fixtures} from '../mock.mjs';
 function canvasRecorder() {
   const calls=[];
   const context={
+    createLinearGradient(){return {addColorStop(){}};},
     measureText:text=>({width:text.length*8}),
     drawImage(...args){calls.push(['drawImage',...args]);},
     save(){},restore(){},beginPath(){},closePath(){},setLineDash(){},
@@ -97,4 +98,11 @@ test('pose canvas respects the effective keypoint threshold and legacy fallback'
   result=canvasRecorder();
   drawResult(result.canvas,{naturalWidth:1280,naturalHeight:720},observation);
   assert.equal(result.calls.filter(c=>c[0]==='arc').length,legacyPoints);
+});
+
+test('station uses a gradient without a perimeter stroke',()=>{
+ const observation=fixtures('working').envelope.observation;observation.display={boxes:false,station:true,seat:false,keypoints:false};
+ observation.materials={enabled:false};const {canvas,calls}=canvasRecorder();drawResult(canvas,{naturalWidth:1280,naturalHeight:720},observation);
+ assert.equal(calls.filter(c=>c[0]==='stroke').length,1); // compact label accent only
+ assert.ok(calls.some(c=>c[0]==='fill'&&typeof c[1]==='object'));
 });

@@ -69,7 +69,11 @@ class Studio:
             ident=config['models']['material']
             if not ident: raise StudioError('modelMissing')
             model=self.model(ident,'material')
-            if str(config['materials']['class_id']) not in model['classes']:
+            material=config['materials']
+            binding=material.get('binding')
+            if binding and binding!={'model_id':ident,'sha256':model['sha256']}: raise StudioError('classMissing')
+            selected={c for rule in material['rules'].values() for ids in rule.values() for c in ids}
+            if any(str(c) not in model['classes'] for c in selected) or any(k not in model['classes'] for k in [*material['class_styles'],*material.get('confidence_by_class',{})]):
                 raise StudioError('classMissing')
 
     def inspect_model(self, path, role):

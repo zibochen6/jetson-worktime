@@ -1,10 +1,13 @@
+import {createProductionPanel} from './production.js';
+import {renderAssemblyStatus,renderZoneCounts,renderCompletedAlert,liveMaterials} from './assembly.js';
 import {applyVisualization} from './overlay.js';
 import {VideoPlayer} from './video-player.js';
-import {getJSON, workAction, duration, dashboardView, displayMode, systemMetricsView, currentObservation, previewReady, matchingImage, drawResult} from './api.js';
+import {getJSON, workAction, operationToken, duration, dashboardView, displayMode, systemMetricsView, currentObservation, PreviewContinuity, matchingImage, drawResult} from './api.js';
 import {tr, text, getLanguage, errorDetails} from './i18n.js';
 import {pipelineState} from './pipeline.js';
 
 const $ = id => document.getElementById(id);
+const renderProduction = createProductionPanel();
 function setValue(id,value) { if ($(id).textContent !== value) $(id).textContent = value; }
 function fitVideoFrame() {
   if (document.fullscreenElement) return;
@@ -34,15 +37,19 @@ function fitVideoFrame() {
   }
   card.style.height = (width/aspect+chromeHeight)+'px';
 }
-new ResizeObserver(() => requestAnimationFrame(fitVideoFrame)).observe(document.querySelector('.dashboard'));
+const frameResize=new ResizeObserver(() => requestAnimationFrame(fitVideoFrame));
+frameResize.observe(document.querySelector('.dashboard'));
+
 document.addEventListener('fullscreenchange', () => requestAnimationFrame(fitVideoFrame));
 let paused = false;
 let started = false;
 let frameReady = false;
 let revision = null;
-let streamSession = null;
 let cameraOnline = false;
 let outputReady = false;
+let videoAvailable = false;
+let lastCamera = null;
+const previewContinuity = new PreviewContinuity();
 let capturePreviewActive = false;
 let actionPending = false;
 let roiConfigured = null;
@@ -193,14 +200,9 @@ function focusSettingsSection() {
 function renderDashboard() {
   const view = dashboardView(lastStatus?.camera,lastStatus?.work,lastStatus?.envelope);
   for(const key of ['work','rest','pending','unknown']) {
-    const ratio=view.ratios[key];
-    text(key+'Ratio', 'v4.percent', {value:ratio===null?'—':Math.round(ratio)});
-    if(ratio===null) { $(key+'Ratio').textContent='—'; delete $(key+'Ratio').dataset.i18n; }
-    if(key!=='unknown') $(key+'Bar').style.transform='scaleX('+((ratio??0)/100)+')';
     const value=view.seconds[key]===null?'—':duration(view.seconds[key]);
     setValue('stats'+key[0].toUpperCase()+key.slice(1),value);
-    if(key==='work')setValue('workTotal',value);
-    setValue({work:'workTime',rest:'restTime',pending:'pendingTime',unknown:'unknownTime'}[key],value);
+    if(key==='work')setValue('workTime',value);
   }
   for(const id of ['sessionScope','statsScope'])text(id,view.scope);
   for(const [id,value,message] of [['healthFps',view.outputFps,'v4.fpsValue'],['healthProcessing',view.processingMs,'v4.msValue'],['healthAge',view.ageMs,'v4.msValue']]) {
@@ -208,6 +210,16 @@ function renderDashboard() {
     else text(id,message,{value:Number(value.toFixed(1))});
   }
   const camera=lastStatus?.camera;
+  const encoder=camera?.video?.encoder_fps?.[getLanguage()+'_'+(player.profile||'local')]??0;
+  for(const [id,value] of [['captureFps',camera?.capture_fps],['encoderFps',encoder],['playbackFps',player.metrics?.fps]]) {
+    const presented=player.displayQuality().presented_fps;
+    $(id).textContent=Number.isFinite(value)?value.toFixed(1)+' FPS':'—';
+    if(id==='playbackFps')$(id).textContent+=' / '+(Number.isFinite(presented)?presented.toFixed(1)+' FPS':'—');
+  }
+  const material=lastStatus?.work?.materials;
+  $('materialQuality').textContent=tr('quality.'+(material?.observation_state||'unavailable'))+
+    (material?.available?' · '+(material.actual_sample_hz??0)+' Hz · '+Math.round(material.age_ms??0)+' ms':'')+
+    (material?.degradation_reason==='budget'?' · '+tr('quality.budget'):'');
   if(camera?.status==='online')text('inputInfo','v4.inputInfo',{width:camera.width,height:camera.height,fps:camera.source_fps??'—'});
   else { $('inputInfo').textContent='—';delete $('inputInfo').dataset.i18n; }
   const state=pipelineState(camera||{},lastStatus?.work||{});
@@ -255,23 +267,21 @@ const player = new VideoPlayer($('feed'),$('feedFallback'),(ready,retry=false) =
   frameReady=ready;
   if (retry) started=false;
   if (ready) requestAnimationFrame(fitVideoFrame);
-  $('empty').hidden=!paused && outputReady && ready;
+  $('empty').hidden=!paused && videoAvailable && ready;
 });
 function resetStream() {
   player.stop();
   started = false;
   frameReady = false;
-  streamSession = null;
 }
 function connect() {
   if (!paused && !capturePreviewActive && !document.hidden && outputReady && !started) {
-    streamSession = lastStatus?.camera.stream_session_id ?? null;
     started = true;
-    player.start(getLanguage(),lastStatus?.camera.video?.webrtc_available === true);
+    player.start(getLanguage(),lastCamera?.video?.webrtc_available === true);
   }
 }
 document.addEventListener('visibilitychange', () => {
-  resetStream();
+  player.visibilityChanged(document.hidden);
   if (!document.hidden) connect();
 });
 window.addEventListener('pagehide', () => resetStream());
@@ -367,6 +377,30 @@ for (const button of document.querySelectorAll('[data-action]')) {
     finally { actionPending = false; }
   };
 }
+let operationPending = false;
+let resetToken = null;
+let operationNoticeTimer;
+function operationMessage(key, params={}) { clearTimeout(operationNoticeTimer);$('operationResult').hidden=false; text('operationResult', key, params);operationNoticeTimer=setTimeout(()=>{$('operationResult').hidden=true;},8000); }
+$('detectionToggle').onchange = async () => {
+  const enabled=$('detectionToggle').checked;
+  operationPending=true;
+  $('detectionToggle').disabled=true;
+  try {
+    await getJSON('/api/v1/settings',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({expected_revision:lastStatus.camera.config_revision,operation:{detection_enabled:enabled}})});
+    operationMessage('operation.saved');
+  } catch(error) {const details=errorDetails(error);operationMessage(details.key,details.params);}
+  finally {operationPending=false;await update();}
+};
+$('resetDisplay').onclick=()=>{resetToken=operationToken();$('resetResult').textContent='';delete $('resetResult').dataset.i18n;$('resetDialog').showModal();};
+$('cancelReset').onclick=()=>$('resetDialog').close();
+$('resetDialog').addEventListener('click',event=>{if(event.target===$('resetDialog')){const r=event.target.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)event.target.close();}});
+$('confirmReset').onclick=async()=>{
+  if(operationPending)return;
+  operationPending=true;$('confirmReset').disabled=true;
+  try {await workAction('reset_display',{expected_revision:lastStatus.camera.config_revision,token:resetToken});$('resetDialog').close();operationMessage('operation.resetDone');}
+  catch(error){const details=errorDetails(error);text('resetResult',details.key,details.params);}
+  finally{operationPending=false;$('confirmReset').disabled=false;await update();}
+};
 $('scenario').onchange = async () => {
   try {
     await getJSON('/mock/scenario?name=' + $('scenario').value);
@@ -400,23 +434,30 @@ function renderPipeline(camera, work) {
 function render() {
   renderDashboard();
   textPause();
+  $('empty').hidden = !paused && videoAvailable && frameReady;
   if (!lastStatus) {
+    $('detectionToggle').disabled=$('resetDisplay').disabled=true;
     text('operatorIdentity','ownership.unbound');
     $('ownershipProgress').hidden=true;
-    text('emptyTitle', 'camera.deviceLost');
-    text('emptyHint', 'camera.retryHint');
-    text('connection', 'camera.deviceOffline');
-    text('privacy', 'privacy.pending');
-    text('streamInfo', 'camera.waitDevice');
-    text('workState', 'camera.deviceOffline');
+    text('emptyTitle', paused?'video.paused':'camera.preparing');
+    text('emptyHint', paused?'video.background':'camera.recoveryHint');
+    text('connection', cameraOnline?'camera.connected':'camera.preparing');
+    $('connection').classList.toggle('online',cameraOnline);
+    text('privacy', lastCamera?(lastCamera.privacy_applied?'privacy.on':'privacy.off'):'privacy.pending');
+    if(videoAvailable){$('streamInfo').textContent=player.summary();delete $('streamInfo').dataset.i18n;}
+    else text('streamInfo', 'camera.waitDevice');
     text('reason', 'camera.waitDevice');
     text('sessionTimes', 'session.syncPending');
     $('workState').className = 'state offline';
     renderPipeline({status:'offline'}, {});
-    text('workState', 'camera.deviceOffline');
+    text('workState', 'session.syncPending');
     return;
   }
   const {camera, work} = lastStatus;
+  const detecting=work.detection_enabled!==false;
+  if(!operationPending)$('detectionToggle').checked=detecting;
+  $('detectionToggle').disabled=operationPending || work.operating_mode==='training';
+  $('resetDisplay').disabled=operationPending || work.operating_mode==='training';
   const owner=work.ownership;
   if(owner?.operator_id)text('operatorIdentity','ownership.operator',{
     operator:owner.operator_id.slice(0,8),track_id:owner.track_id??'—'});
@@ -430,13 +471,12 @@ function render() {
   text('privacy', camera.privacy_applied ? 'privacy.on' : 'privacy.off');
   if (cameraOnline) { $('streamInfo').textContent=player.summary(); delete $('streamInfo').dataset.i18n; }
   else text('streamInfo', 'camera.waiting');
-  text('deviceInfo', 'config.version', {revision:camera.config_revision ?? 0});
   if (paused) {
     $('empty').hidden = false;
     text('emptyTitle', 'video.paused');
     text('emptyHint', 'video.background');
   } else {
-    $('empty').hidden = outputReady && frameReady;
+    $('empty').hidden = videoAvailable && frameReady;
     text('emptyTitle', work.operating_mode==='training'?'studio.trainingActive':camera.algorithm_error ? 'camera.algorithmRecovering' : cameraOnline ? 'camera.preparing' : 'camera.deviceLost');
     text('emptyHint', work.operating_mode==='training'?'studio.reason.training':'camera.recoveryHint');
   }
@@ -450,7 +490,8 @@ function render() {
   if (confirmation?.state === 'CONFIRMING') text('startProgress','startup.progress',{elapsed:Math.floor(confirmation.elapsed_seconds),target:confirmation.required_seconds});
   else if (confirmation?.blocker_code) text('startProgress','startup.blocked',{reason:tr(confirmation.blocker_code,confirmation.blocker_params||{})});
   if (!work.active && confirmation?.last_reset) text('startReset','startup.reset',{reason:tr(confirmation.last_reset.reason_code,confirmation.last_reset.reason_params||{})});
-  if (camera.camera_changed || work.camera_changed || camera.regions_match === false) text('reason', 'camera.moved');
+  if(!detecting)text('reason','operation.preview');
+  else if (camera.camera_changed || work.camera_changed || camera.regions_match === false) text('reason', 'camera.moved');
   else if (camera.algorithm_error) text('reason', 'camera.algorithmHint');
   else if (!cameraOnline) text('reason', 'camera.retrying');
   else text('reason', work.reason_code || 'reason.unknown', work.reason_params || {});
@@ -462,14 +503,33 @@ function render() {
   } else text('sessionTimes', 'session.autoStart', {seconds:work.thresholds.start_seconds});
   text('timingHelp', 'timing.help', work.thresholds);
 }
-async function update() {
+function clearWorkStatus() {
+  lastStatus = null;
+  render();
+  $('workTime').textContent='—';
+  renderProduction(null,null);
+  renderZoneCounts($('assemblyZoneCounts'),null,'pending');renderZoneCounts($('completedZoneCounts'),null,'completed');renderCompletedAlert($('completedAlertCard'),null);
+  for (const button of document.querySelectorAll('[data-action]')) button.disabled = true;
+  $('snapshot').disabled = true;
+  $('confirmReturn').disabled=true;
+}
+async function pollStatus() {
   try {
-    const [camera, work, envelope] = await Promise.all([getJSON('/api/v1/camera'), getJSON('/api/v1/work/status'), getJSON('/api/v1/observations/latest',{signal:AbortSignal.timeout(4000)}).catch(() => null)]);
-    cameraOnline = camera.status === 'online';
-    outputReady = previewReady(camera, envelope);
-    if (streamSession !== null && streamSession !== camera.stream_session_id) resetStream();
+    const [cameraResult,workResult,envelopeResult] = await Promise.allSettled([
+      getJSON('/api/v1/camera'),getJSON('/api/v1/work/status'),getJSON('/api/v1/observations/latest')]);
+    const camera=cameraResult.status==='fulfilled'?cameraResult.value:null;
+    const work=workResult.status==='fulfilled'?workResult.value:null;
+    const envelope=envelopeResult.status==='fulfilled'?envelopeResult.value:null;
+    cameraOnline = camera?.status === 'online';
+    const now=performance.now();
+    const preview=previewContinuity.update(camera,envelope,now,player.isFresh(now));
+    outputReady=preview.ready;
+    videoAvailable=preview.retain;
+    if(camera)lastCamera=camera;
+    if(preview.reset && (started || frameReady))resetStream();
+    connect();
+    if(!camera || !work){clearWorkStatus();return;}
     if (revision !== camera.config_revision) {
-      resetStream();
       try {
         const settings = await getJSON('/api/v1/settings');
         if (settings.revision === camera.config_revision) {
@@ -480,39 +540,39 @@ async function update() {
       } catch { roiConfigured = null; }
     }
     const material=work.materials;
-    const materialPanel=$('materialDashboard');
+    const visibleMaterial=liveMaterials(camera,work);
+    renderProduction(work,visibleMaterial);
+    renderZoneCounts($('assemblyZoneCounts'),visibleMaterial,'pending',work.detection_enabled);
+    renderZoneCounts($('completedZoneCounts'),visibleMaterial,'completed',work.detection_enabled);
+    renderCompletedAlert($('completedAlertCard'),visibleMaterial,work.detection_enabled);
+    const materialPanel=$('materialPanel');
     if(materialPanel){
       materialPanel.hidden=!material?.enabled;
       if(material?.enabled){
-        materialPanel.replaceChildren();
-        for(const key of ['pending','completed','cumulative']){const item=document.createElement('div');const title=document.createElement('span');title.textContent=tr('studio.'+key);const value=document.createElement('strong');value.textContent=key==='cumulative'?material[key]??'—':material.available?material[key]??'—':'—';item.append(title,value);materialPanel.append(item);}
-        if(!material.available||material.reviews?.length){const note=document.createElement('span');note.className='material-note';note.textContent=!material.available?tr('studio.unavailable'):tr('studio.reviewCount',{count:material.reviews.length});materialPanel.append(note);}
+        renderAssemblyStatus($('materialDashboard'),{...material,detection_enabled:work.detection_enabled});
+        text('assemblySummary','operation.summary',{current:material.available?material.completed:'—',total:material.cumulative??0});
       }
     }
     lastStatus = {camera, work, envelope};
-    if (!outputReady) resetStream();
-    connect();
     render();
     $('snapshot').disabled = paused || !outputReady;
-    document.querySelector('[data-action="start"]').disabled = actionPending || !outputReady || work.active || work.behavior !== 'SEATED';
+    document.querySelector('[data-action="start"]').disabled = actionPending || !outputReady || work.active || work.behavior !== 'SEATED' || work.detection_enabled===false;
     document.querySelector('[data-action="end"]').disabled = actionPending || !work.active;
     document.querySelector('[data-action="review"]').disabled = actionPending || !work.session_id;
     document.querySelector('[data-action="confirm_camera"]').disabled = actionPending || !outputReady;
     $('confirmReturn').disabled=actionPending || !outputReady || !work.active || !work.ownership?.needs_confirmation;
   } catch {
-    cameraOnline = false;
-    outputReady = false;
-    lastStatus = null;
-    resetStream();
-    $('empty').hidden = false;
-    $('connection').classList.remove('online');
-    render();
-    for (const id of ['workTime','restTime','pendingTime','unknownTime']) $(id).textContent = '—';
-    for (const button of document.querySelectorAll('[data-action]')) button.disabled = true;
-    $('snapshot').disabled = true;
-    $('confirmReturn').disabled=true;
+    clearWorkStatus();
   }
-  setTimeout(update, 1000);
+}
+let updatePromise=null,updateTimer;
+function update() {
+  clearTimeout(updateTimer);
+  if(!updatePromise)updatePromise=pollStatus().finally(()=>{
+    updatePromise=null;
+    updateTimer=setTimeout(update,1000);
+  });
+  return updatePromise;
 }
 window.addEventListener('languagechange', () => {
   resetStream();

@@ -11,7 +11,8 @@
               "end",
               "review",
               "confirm_camera",
-              "confirm_return"
+              "confirm_return",
+              "reset_display"
             ]
           },
           "session_id": {
@@ -30,6 +31,15 @@
           "track_id": {
             "type": "integer",
             "minimum": 0
+          },
+          "expected_revision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "token": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 128
           }
         },
         "required": [
@@ -51,6 +61,21 @@
                 "stream_session_id",
                 "config_revision",
                 "track_id"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "action": {
+                  "const": "reset_display"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "expected_revision",
+                "token"
               ]
             }
           }
@@ -263,13 +288,47 @@
               },
               "epoch": {
                 "type": "integer"
+              },
+              "encoder_fps": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "number"
+                },
+                "description": "按语言_清晰度统计的编码提交频率；无观看者时无对应流。浏览器实际播放由接收端统计。"
               }
             }
           },
           "operating_mode": {
+            "type": "string",
             "enum": [
               "business",
+              "preview",
               "training"
+            ]
+          },
+          "detection_enabled": {
+            "type": "boolean"
+          },
+          "preview_fresh": {
+            "type": "boolean"
+          },
+          "capture_fps": {
+            "type": "number",
+            "description": "实际送入最新帧队列的采集频率。"
+          },
+          "jpeg_output_fps": {
+            "type": "number",
+            "description": "对应检测帧 JPEG 发布频率，沿用 output_fps 兼容字段。"
+          },
+          "live_frame_age_ms": {
+            "description": "可播放画面年龄，与业务观测年龄分离。",
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
             ]
           }
         },
@@ -627,6 +686,9 @@
           },
           "materials": {
             "$ref": "#/components/schemas/MaterialSettings"
+          },
+          "operation": {
+            "$ref": "#/components/schemas/OperationSettings"
           }
         }
       },
@@ -963,6 +1025,27 @@
           },
           "materials": {
             "$ref": "#/components/schemas/MaterialSettings"
+          },
+          "material_observation": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/MaterialStatus"
+              }
+            ]
+          },
+          "detection_enabled": {
+            "type": "boolean"
+          },
+          "operating_mode": {
+            "type": "string",
+            "enum": [
+              "business",
+              "preview",
+              "training"
+            ]
           }
         },
         "required": [
@@ -1031,6 +1114,27 @@
           "max_observation_age_ms": {
             "type": "number",
             "minimum": 100
+          },
+          "material_observation": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/MaterialStatus"
+              }
+            ]
+          },
+          "detection_enabled": {
+            "type": "boolean"
+          },
+          "operating_mode": {
+            "type": "string",
+            "enum": [
+              "business",
+              "preview",
+              "training"
+            ]
           }
         },
         "required": [
@@ -1380,6 +1484,9 @@
           },
           "materials": {
             "$ref": "#/components/schemas/MaterialSettings"
+          },
+          "operation": {
+            "$ref": "#/components/schemas/OperationSettings"
           }
         }
       },
@@ -1610,7 +1717,8 @@
               "WORKING",
               "AWAY_PENDING",
               "REST",
-              "OBSERVATION_UNKNOWN"
+              "OBSERVATION_UNKNOWN",
+              "DETECTION_DISABLED"
             ]
           },
           "behavior": {
@@ -1805,8 +1913,10 @@
             "$ref": "#/components/schemas/Ownership"
           },
           "operating_mode": {
+            "type": "string",
             "enum": [
               "business",
+              "preview",
               "training"
             ]
           },
@@ -1821,6 +1931,35 @@
               {
                 "type": "null"
               }
+            ]
+          },
+          "detection_enabled": {
+            "type": "boolean"
+          },
+          "display_reset": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "token": {
+                "type": "string"
+              },
+              "wall_time_ms": {
+                "type": "number"
+              }
+            }
+          },
+          "activity": {
+            "$ref": "#/components/schemas/ActivityEstimate"
+          },
+          "inference_backend": {
+            "type": "object"
+          },
+          "evidence_error": {
+            "type": [
+              "string",
+              "null"
             ]
           }
         },
@@ -2017,7 +2156,8 @@
           "sample_hz": {
             "type": "number",
             "minimum": 0.2,
-            "maximum": 10
+            "maximum": 10,
+            "description": "Legacy compatibility value for the count observation window and expiry. Does not limit continuous product inference; not shown as a rate control in the UI."
           },
           "regions": {
             "type": "object",
@@ -2087,6 +2227,165 @@
                 "minimum": 0,
                 "maximum": 1
               }
+            }
+          },
+          "rules": {
+            "type": "object",
+            "required": [
+              "pending",
+              "completed"
+            ],
+            "properties": {
+              "pending": {
+                "type": "object",
+                "required": [
+                  "count",
+                  "alert"
+                ],
+                "properties": {
+                  "count": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 999
+                    },
+                    "uniqueItems": true
+                  },
+                  "alert": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 999
+                    },
+                    "uniqueItems": true
+                  }
+                },
+                "additionalProperties": false
+              },
+              "completed": {
+                "type": "object",
+                "required": [
+                  "count",
+                  "alert"
+                ],
+                "properties": {
+                  "count": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 999
+                    },
+                    "uniqueItems": true
+                  },
+                  "alert": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 999
+                    },
+                    "uniqueItems": true
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          },
+          "names": {
+            "type": "object",
+            "properties": {
+              "pending": {
+                "type": "string",
+                "maxLength": 60
+              },
+              "completed": {
+                "type": "string",
+                "maxLength": 60
+              }
+            }
+          },
+          "masks": {
+            "type": "object",
+            "properties": {
+              "pending": {
+                "type": "boolean"
+              },
+              "completed": {
+                "type": "boolean"
+              }
+            }
+          },
+          "class_styles": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "required": [
+                "name",
+                "color"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "maxLength": 100
+                },
+                "color": {
+                  "type": "string",
+                  "pattern": "^#[0-9a-fA-F]{6}$"
+                }
+              }
+            }
+          },
+          "binding": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "object",
+                "required": [
+                  "model_id",
+                  "sha256"
+                ],
+                "properties": {
+                  "model_id": {
+                    "type": "string"
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  }
+                }
+              }
+            ]
+          },
+          "show_confidence": {
+            "type": "boolean",
+            "default": true,
+            "description": "Display scores only; does not change filtering or session settlement."
+          },
+          "inference_region": {
+            "type": "string",
+            "enum": [
+              "full",
+              "workbench"
+            ]
+          },
+          "production_policy": {
+            "type": "string",
+            "enum": [
+              "legacy",
+              "verified"
+            ]
+          },
+          "confidence_by_class": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "number",
+              "minimum": 0.01,
+              "maximum": 1
             }
           }
         }
@@ -2351,6 +2650,42 @@
                 "type": "null"
               }
             ]
+          },
+          "review_reason": {
+            "type": "string"
+          },
+          "class_id": {
+            "type": "integer"
+          },
+          "region": {
+            "type": "string"
+          },
+          "evidence_frame_url": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "resolved": {
+            "type": "boolean"
+          },
+          "production_basis": {
+            "type": "string"
+          },
+          "production_delta": {
+            "type": "integer"
+          },
+          "evidence_geometry": {
+            "type": [
+              "object",
+              "null"
+            ]
+          },
+          "already_counted": {
+            "type": "boolean"
+          },
+          "production_counted": {
+            "type": "boolean"
           }
         }
       },
@@ -2382,7 +2717,8 @@
               {
                 "type": "null"
               }
-            ]
+            ],
+            "description": "Current stable object total over pending-zone count classes; null when unavailable. A box and a board count as two objects, not one set."
           },
           "completed": {
             "anyOf": [
@@ -2392,7 +2728,8 @@
               {
                 "type": "null"
               }
-            ]
+            ],
+            "description": "Current stable qualified total over completed-zone count classes. Alert-only classes are excluded; this is not cumulative production."
           },
           "cumulative": {
             "type": "integer"
@@ -2422,6 +2759,232 @@
                 "type": "null"
               }
             ]
+          },
+          "initial": {
+            "type": "integer"
+          },
+          "added": {
+            "type": "integer"
+          },
+          "by_class": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "integer"
+                  }
+                }
+              }
+            ]
+          },
+          "alerts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MaterialAlert"
+            },
+            "description": "Current active stable alerts. Home only shows a red card for completed-zone alerts while available; historical alerts are queried separately."
+          },
+          "region_names": {
+            "type": "object",
+            "properties": {
+              "pending": {
+                "type": "string",
+                "maxLength": 60
+              },
+              "completed": {
+                "type": "string",
+                "maxLength": 60
+              }
+            }
+          },
+          "class_styles": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "required": [
+                "name",
+                "color"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "maxLength": 100
+                },
+                "color": {
+                  "type": "string",
+                  "pattern": "^#[0-9a-fA-F]{6}$"
+                }
+              }
+            }
+          },
+          "class_names": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "detections": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "observation_state": {
+            "type": "string",
+            "enum": [
+              "confirming",
+              "valid",
+              "unavailable"
+            ]
+          },
+          "actual_sample_hz": {
+            "type": "number",
+            "minimum": 0,
+            "description": "实际有效物料观察频率，非相机或浏览器帧率。"
+          },
+          "degradation_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "production_total": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "production_basis": {
+            "type": "string",
+            "enum": [
+              "legacy",
+              "completion_events_v1"
+            ]
+          }
+        }
+      },
+      "MaterialAlert": {
+        "type": "object",
+        "required": [
+          "id",
+          "active",
+          "timestamp",
+          "region",
+          "class_id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "timestamp": {
+            "type": "number"
+          },
+          "region": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "completed"
+            ]
+          },
+          "class_id": {
+            "type": "integer"
+          },
+          "resolved_at": {
+            "type": "number"
+          },
+          "resolution": {
+            "type": "string"
+          },
+          "session_id": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          }
+        }
+      },
+      "OperationSettings": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "detection_enabled"
+        ],
+        "properties": {
+          "detection_enabled": {
+            "type": "boolean",
+            "default": true
+          }
+        }
+      },
+      "ActivityEstimate": {
+        "type": "object",
+        "properties": {
+          "basis": {
+            "type": "string",
+            "enum": [
+              "operation_estimate_v1"
+            ]
+          },
+          "experimental": {
+            "type": "boolean"
+          },
+          "session_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "available": {
+            "type": "boolean"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "active",
+              "idle",
+              "absent",
+              "unknown"
+            ]
+          },
+          "reason": {
+            "type": "string"
+          },
+          "active_estimated_seconds": {
+            "type": "number",
+            "minimum": 0
+          },
+          "idle_seconds": {
+            "type": "number",
+            "minimum": 0
+          },
+          "absent_seconds": {
+            "type": "number",
+            "minimum": 0
+          },
+          "unknown_seconds": {
+            "type": "number",
+            "minimum": 0
+          },
+          "observed_seconds": {
+            "type": "number",
+            "minimum": 0
           }
         }
       }
@@ -2556,7 +3119,19 @@
               }
             }
           }
-        }
+        },
+        "parameters": [
+          {
+            "name": "client_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{32}$"
+            },
+            "description": "可选取消令牌；DELETE /api/v1/video/sessions/{client_id} 显式关闭对应MJPEG连接。"
+          }
+        ]
       }
     },
     "/api/v1/observations/frame.jpg": {
@@ -2692,6 +3267,9 @@
                 }
               }
             }
+          },
+          "500": {
+            "description": "STORAGE_ERROR"
           }
         }
       }
@@ -2795,6 +3373,16 @@
               ],
               "default": "zh-CN"
             }
+          },
+          {
+            "name": "client_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{32}$"
+            },
+            "description": "可选取消令牌；DELETE /api/v1/video/sessions/{client_id} 显式关闭对应MJPEG连接。"
           }
         ],
         "responses": {
@@ -3124,7 +3712,8 @@
           "409": {
             "description": "Already expired"
           }
-        }
+        },
+        "description": "释放WebRTC会话或以client_id标识的MJPEG回退连接。MJPEG取消支持幂等及先取消后到达的请求。"
       }
     },
     "/api/v1/models": {
@@ -4087,6 +4676,80 @@
           },
           "409": {
             "description": "Version conflict or referenced class"
+          }
+        }
+      }
+    },
+    "/api/v1/materials/alerts": {
+      "get": {
+        "summary": "Assembly alert history (latest 200); supports active and session_id filters",
+        "operationId": "assembly_alerts",
+        "parameters": [
+          {
+            "name": "active",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "session_id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Alert history",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "alerts": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/MaterialAlert"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/materials/evidence/{event_id}.jpg": {
+      "get": {
+        "summary": "Exact-frame material event evidence under current privacy policy",
+        "parameters": [
+          {
+            "name": "event_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Stored JPEG evidence",
+            "content": {
+              "image/jpeg": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Missing event or unavailable under privacy policy"
           }
         }
       }

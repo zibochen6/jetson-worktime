@@ -15,6 +15,9 @@ from urllib.parse import parse_qs, urlsplit
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT/'src'))
 import yaml
+import cv2
+# Avoid several eight-thread image operations contending with GPU preprocessing.
+cv2.setNumThreads(4)
 from jetson_worktime.api import work_status
 from jetson_worktime.behavior_service import BehaviorService
 from jetson_worktime.localization import LANGUAGES, LocalizedError
@@ -91,7 +94,7 @@ def capture():
                 if cameras.reader:
                     cameras.reader.close()
                     cameras.reader = None
-        behavior.stop.wait(2 if failed else max(0, 1/12 - (time.monotonic()-started)))
+        behavior.stop.wait(2 if failed else max(0, 1/20 - (time.monotonic()-started)))
     with cameras.lock:
         if cameras.reader:
             cameras.reader.close()
@@ -132,9 +135,14 @@ class Handler(BaseHTTPRequestHandler):
         with behavior.lock:
             times = behavior.publish_times
             output_fps = (len(times)-1)/(times[-1]-times[0]) if len(times) > 1 and time.monotonic()-times[-1] < 5 else 0
+            live = behavior.live_ref.get('receive_monotonic_ns')
+            live_age = max(0,(time.monotonic_ns()-live)/1e6) if live is not None else None
             observed = behavior.frame_ref.get('receive_monotonic_ns')
             age = max(0,(time.monotonic_ns()-observed)/1e6) if observed is not None else None
-            info.update(algorithm_observation_age_ms=age,
+            info.update(algorithm_observation_age_ms=age, live_frame_age_ms=live_age,
+                        jpeg_output_fps=round(output_fps,2),capture_fps=behavior.quality.rate("receive"),
+                        detection_enabled=behavior.config['operation']['detection_enabled'],
+                        preview_fresh=bool(behavior.connected and behavior.operating_mode!='training' and live_age is not None and live_age <= behavior.config['max_observation_age']*1000),
                         operating_mode=behavior.operating_mode,
                         algorithm_fresh=bool(behavior.operating_mode=='business' and behavior.connected and not behavior.error and age is not None
                                              and age <= behavior.config['max_observation_age']*1000))
@@ -149,7 +157,7 @@ class Handler(BaseHTTPRequestHandler):
                     source_type=active_source['type'], device_name=active_source.get('device', 'RTSP'),
                     connection_error=cameras.last_error,
                     decoder='software' if active_source.get('format') in ('yuyv', 'mjpeg') else 'nvv4l2decoder',
-                    preview_max_fps=12, preview_has_project_overlay=False, **info)
+                    preview_max_fps=20, preview_has_project_overlay=False, **info)
 
     @staticmethod
     def media_headers(media):
@@ -183,7 +191,10 @@ class Handler(BaseHTTPRequestHandler):
         profile=profile[0]
         key = ('raw' if raw else locale,profile)
         try:
-            epoch = transport.add_socket(self.connection,profile)
+            tokens=parse_qs(urlsplit(self.path).query,keep_blank_values=True).get('client_id',[])
+            if len(tokens)>1 or tokens and not re.fullmatch('[a-f0-9]{32}',tokens[0]):
+                self.error(400,'BAD_REQUEST','Invalid media session');return
+            epoch = transport.add_socket(self.connection,profile,stream=key[0],token=tokens[0] if tokens else None)
         except ValueError as error:
             self.error(429, 'VIDEO_LIMIT', error)
             return
@@ -201,7 +212,7 @@ class Handler(BaseHTTPRequestHandler):
                 with transport.condition:
                     ready = transport.condition.wait_for(
                         lambda: transport.epoch != epoch or transport.stop.is_set() or
-                        transport.jpegs.get(key) is not previous, timeout=5)
+                        (transport.jpegs.get(key) is not None and transport.jpegs.get(key) is not previous), timeout=5)
                     if not ready or transport.epoch != epoch or transport.stop.is_set():
                         break
                     packet = transport.jpegs.get(key)
@@ -256,6 +267,10 @@ class Handler(BaseHTTPRequestHandler):
                 except OSError:
                     transport.session_request(token, 'DELETE')
             elif parts[4] == 'sessions' and re.fullmatch('[a-f0-9]{32}', parts[5]):
+                if method == 'DELETE' and parts[5] not in transport.sessions:
+                    transport.cancel_fallback(parts[5])
+                    self.send_bytes(b'', 'application/octet-stream', 204)
+                    return
                 if method == 'GET':
                     with transport.condition:
                         session = transport.sessions.get(parts[5])
@@ -277,9 +292,6 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_PATCH(self):
         self.whep('PATCH')
-
-    def do_DELETE(self):
-        self.whep('DELETE')
 
     def do_GET(self):
         if studio_http.handle(self,'GET'): return
@@ -307,6 +319,9 @@ class Handler(BaseHTTPRequestHandler):
                   '/main.js': ('main.js', 'text/javascript; charset=utf-8'),
                   '/annotation.js': ('annotation.js','text/javascript; charset=utf-8'),
                   '/studio.js': ('studio.js','text/javascript; charset=utf-8'),
+                  '/production.js': ('production.js','text/javascript; charset=utf-8'),
+                  '/optimization.css': ('optimization.css','text/css; charset=utf-8'),
+                  '/assembly.js': ('assembly.js','text/javascript; charset=utf-8'),
                   '/studio.css': ('studio.css','text/css; charset=utf-8'),
                   '/main.css': ('main.css', 'text/css; charset=utf-8')}
         if path == '/':
@@ -421,6 +436,9 @@ class Handler(BaseHTTPRequestHandler):
         self.json(result)
 
     def do_DELETE(self):
+        if urlsplit(self.path).path.startswith('/api/v1/video/sessions/'):
+            self.whep('DELETE')
+            return
         studio_http.handle(self,'DELETE') or self.error(404,'NOT_FOUND','Unknown endpoint')
 
     def do_POST(self):
@@ -443,13 +461,16 @@ class Handler(BaseHTTPRequestHandler):
             return
         try:
             data = self.read_json(1024)
-            if data.get('action') not in ('start', 'end', 'review', 'confirm_camera', 'confirm_return'):
+            if data.get('action') not in ('start', 'end', 'review', 'confirm_camera', 'confirm_return', 'reset_display'):
                 raise ValueError('Unsupported action')
         except (ValueError, TypeError, UnicodeError) as exc:
             self.error(400, 'BAD_REQUEST', exc)
             return
         try:
             result = behavior.action(data['action'], data)
+        except OSError:
+            self.error(500, 'STORAGE_ERROR', 'Settings could not be saved')
+            return
         except (ValueError, TypeError) as exc:
             self.error(409, 'ACTION_UNAVAILABLE', exc)
             return

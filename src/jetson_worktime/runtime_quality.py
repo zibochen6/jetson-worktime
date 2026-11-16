@@ -30,6 +30,13 @@ class RuntimeQuality:
         if previous is not None and now_ns > previous:
             self.sample(name + '_interval_ms', (now_ns-previous)/1e6)
 
+    def rate(self,name):
+        with self.lock:
+            intervals=self.samples.get(name+'_interval_ms',[])
+            if not intervals or time.monotonic_ns()-self.last.get(name,0)>5e9: return 0.
+            recent=list(intervals)[-60:]
+            return round(1000*len(recent)/sum(recent),2) if sum(recent)>0 else 0.
+
     def snapshot(self):
         with self.lock:
             result = {}

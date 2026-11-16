@@ -464,8 +464,8 @@
     "en": "Time is accumulated for presence-based work sessions. “Session ended” marks the end of that timing session."
   },
   "help.station": {
-    "zh-CN": "灰蓝色细虚线标示工位范围，用于区分工位附近与未被观察到。",
-    "en": "The fine blue-gray dashed outline marks the station area used to distinguish nearby presence from absence."
+    "zh-CN": "柔和渐变蒙版标示工位范围，边缘淡出，不显示外围虚线。",
+    "en": "A soft gradient marks the station area, with feathered edges and no dashed outline."
   },
   "help.step1": {
     "zh-CN": "进入设置，获取当前相机画面。",
@@ -728,12 +728,12 @@
     "en": "Waiting for presence"
   },
   "pipeline.working": {
-    "zh-CN": "作业中",
-    "en": "Working"
+    "zh-CN": "在岗",
+    "en": "Present"
   },
   "pipeline.workingHint": {
-    "zh-CN": "正在累计工作时间",
-    "en": "Accumulating work time"
+    "zh-CN": "正在累计在岗时间",
+    "en": "Accumulating presence time"
   },
   "privacy.descriptionOff": {
     "zh-CN": "关闭后，设备输出可包含可识别的人像。",
@@ -1016,8 +1016,8 @@
     "en": "Started {time}"
   },
   "session.state": {
-    "zh-CN": "当前状态",
-    "en": "Current state"
+    "zh-CN": "会话状态",
+    "en": "Session state"
   },
   "session.syncPending": {
     "zh-CN": "计时状态待同步",
@@ -1196,8 +1196,8 @@
     "en": "Observation unknown"
   },
   "state.working": {
-    "zh-CN": "工作中",
-    "en": "Working"
+    "zh-CN": "在岗计时",
+    "en": "Presence recorded"
   },
   "system.cpuHint": {
     "zh-CN": "设备全部CPU核心的总体使用率，约每2秒刷新",
@@ -1292,8 +1292,8 @@
     "en": "Detection and timing rules"
   },
   "v4.countedTime": {
-    "zh-CN": "累计工时",
-    "en": "COUNTED WORK TIME"
+    "zh-CN": "在岗时间",
+    "en": "Presence time"
   },
   "v4.cpu": {
     "zh-CN": "CPU",
@@ -1432,8 +1432,8 @@
     "en": "Device uptime"
   },
   "v4.work": {
-    "zh-CN": "工作",
-    "en": "Work"
+    "zh-CN": "在岗",
+    "en": "Present"
   },
   "v4.workspace": {
     "zh-CN": "工位智能监控",
@@ -1556,8 +1556,8 @@
     "en": "Show presence zone"
   },
   "display.stationHelp": {
-    "zh-CN": "工位范围蒙版、边界及名称",
-    "en": "Station overlay, boundary and label"
+    "zh-CN": "工位范围渐变蒙版及名称",
+    "en": "Station gradient mask and label"
   },
   "display.seatHelp": {
     "zh-CN": "在位判断区蒙版、边界及名称",
@@ -1612,8 +1612,8 @@
     "en": "AI workspace"
   },
   "studio.materials": {
-    "zh-CN": "物料计数",
-    "en": "Material counting"
+    "zh-CN": "装配计数",
+    "en": "Assembly counting"
   },
   "studio.materialsBrief": {
     "zh-CN": "划定区域 · 计数与核对",
@@ -1640,27 +1640,27 @@
     "en": "Close"
   },
   "studio.regions": {
-    "zh-CN": "划定物料区域",
-    "en": "Material zones"
+    "zh-CN": "划定装配区域",
+    "en": "Define assembly zones"
   },
   "studio.regionsHelp": {
-    "zh-CN": "两个区域不能重叠。按产品框中心判断归属，独立于人员在位区。重新取图后支持矩形、多边形和顶点编辑。",
-    "en": "Zones must not overlap. Product box centres determine membership, independently of human presence zones. Capture a reference to draw rectangles or polygons and edit vertices."
+    "zh-CN": "圈定待装配区和成品区，两区不可重叠。框中心点决定归属；每区独立选择统计与异常标签。",
+    "en": "Draw non-overlapping materials and finished zones. Box centers determine membership; assign count and alert classes per zone."
   },
   "studio.captureFrame": {
     "zh-CN": "获取参考画面",
     "en": "Capture reference"
   },
   "studio.pending": {
-    "zh-CN": "待完成区",
-    "en": "Pending zone"
+    "zh-CN": "待装配区",
+    "en": "Materials zone"
   },
   "studio.completed": {
-    "zh-CN": "完成区",
-    "en": "Completed zone"
+    "zh-CN": "成品区",
+    "en": "Finished zone"
   },
   "studio.cumulative": {
-    "zh-CN": "会话累计",
+    "zh-CN": "本会话累计",
     "en": "Session total"
   },
   "studio.rectangle": {
@@ -1688,16 +1688,16 @@
     "en": "Clear zone"
   },
   "studio.countSettings": {
-    "zh-CN": "计数规则",
-    "en": "Counting rules"
+    "zh-CN": "装配计数规则",
+    "en": "Assembly counting rules"
   },
   "studio.enable": {
-    "zh-CN": "启用物料计数",
-    "en": "Enable material counting"
+    "zh-CN": "启用装配计数",
+    "en": "Enable assembly counting"
   },
   "studio.countRule": {
-    "zh-CN": "新会话将完成区已有产品计入累计。成品取走不扣减；身份不明确的回流先核对。保存规则会结算当前会话。",
-    "en": "Existing completed products count toward each new session. Removing products does not reduce the total. Ambiguous returns require review. Saving rules ends the active session."
+    "zh-CN": "按区域分别统计选中标签。成品稳定进入后累计，取走不扣减；初始成品计入本会话。异常标签只提醒，不计合格数量。",
+    "en": "Count selected classes per zone. Stable finished items increase the session total, including initial inventory. Removal does not subtract. Alert classes never count as accepted items."
   },
   "studio.save": {
     "zh-CN": "保存并应用",
@@ -2096,12 +2096,12 @@
     "en": "Detection rate (Hz)"
   },
   "studio.show_pending": {
-    "zh-CN": "显示待完成区",
-    "en": "Show pending zone"
+    "zh-CN": "显示待装配区",
+    "en": "Show materials zone"
   },
   "studio.show_completed": {
-    "zh-CN": "显示完成区",
-    "en": "Show completed zone"
+    "zh-CN": "显示成品区",
+    "en": "Show finished zone"
   },
   "studio.color": {
     "zh-CN": "颜色",
@@ -2116,8 +2116,8 @@
     "en": "Local training: business detection paused"
   },
   "studio.unavailable": {
-    "zh-CN": "物料检测待确认／不可用",
-    "en": "Material detection unconfirmed / unavailable"
+    "zh-CN": "装配检测待确认／不可用",
+    "en": "Assembly detection unconfirmed / unavailable"
   },
   "studio.reviewCount": {
     "zh-CN": "{count} 项待核对",
@@ -2554,5 +2554,381 @@
   "studio.newBox": {
     "zh-CN": "新建框 W",
     "en": "New box W"
+  },
+  "studio.initial": {
+    "zh-CN": "初始成品",
+    "en": "Initial inventory"
+  },
+  "studio.added": {
+    "zh-CN": "新增完成",
+    "en": "New completions"
+  },
+  "studio.assemblyFlow": {
+    "zh-CN": "选择模型 → 划定两区 → 为标签选择统计或提醒 → 保存。切换模型后须重新分配标签。",
+    "en": "Select model → draw two zones → assign count or alert roles → save. Reassign classes after changing models."
+  },
+  "studio.configureTagsInAssembly": {
+    "zh-CN": "标签规则请在装配计数中配置",
+    "en": "Configure class rules in Assembly counting"
+  },
+  "studio.showMask": {
+    "zh-CN": "显示透明蒙版",
+    "en": "Show translucent fill"
+  },
+  "studio.regionName": {
+    "zh-CN": "区域名称",
+    "en": "Zone name"
+  },
+  "studio.classDisplayName": {
+    "zh-CN": "类别显示名称",
+    "en": "Class display name"
+  },
+  "studio.remapTags": {
+    "zh-CN": "请为新模型重新选择区域标签并保存；当前装配计数已关闭。",
+    "en": "Reassign zone classes for this model and save. Assembly counting is disabled."
+  },
+  "studio.role.ignore": {
+    "zh-CN": "不参与",
+    "en": "Ignore"
+  },
+  "studio.role.count": {
+    "zh-CN": "统计数量",
+    "en": "Count"
+  },
+  "studio.role.alert": {
+    "zh-CN": "异常提醒",
+    "en": "Alert"
+  },
+  "studio.abnormal": {
+    "zh-CN": "异常",
+    "en": "Alert"
+  },
+  "studio.zoneAlert": {
+    "zh-CN": "{region}：发现 {name}，不计完成量",
+    "en": "{region}: {name} detected; excluded from completions"
+  },
+  "studio.deductItem": {
+    "zh-CN": "扣减该件",
+    "en": "Deduct item"
+  },
+  "studio.keepTotal": {
+    "zh-CN": "保留累计",
+    "en": "Keep total"
+  },
+  "studio.reviewReason.return": {
+    "zh-CN": "回流身份待核对",
+    "en": "Possible returned item"
+  },
+  "studio.reviewReason.counted_became_abnormal": {
+    "zh-CN": "已计数成品变为异常",
+    "en": "Counted item became abnormal"
+  },
+  "studio.reviewReason.label_conflict": {
+    "zh-CN": "同一目标标签冲突",
+    "en": "Conflicting labels on one object"
+  },
+  "studio.alertHistory": {
+    "zh-CN": "告警记录",
+    "en": "Alert history"
+  },
+  "studio.noAlerts": {
+    "zh-CN": "暂无告警记录",
+    "en": "No alert records"
+  },
+  "studio.activeAlert": {
+    "zh-CN": "提醒中",
+    "en": "Active"
+  },
+  "studio.resolvedAlert": {
+    "zh-CN": "已解除",
+    "en": "Resolved"
+  },
+  "studio.noCountSession": {
+    "zh-CN": "当前无活动工时会话，仅显示区域数量。",
+    "en": "No active work session. Only current zone quantities are counted."
+  },
+  "operation.detect": {
+    "zh-CN": "检测",
+    "en": "Detection"
+  },
+  "operation.preview": {
+    "zh-CN": "纯预览 · 检测已关闭",
+    "en": "Live preview · Detection off"
+  },
+  "operation.reset": {
+    "zh-CN": "清零时间",
+    "en": "Reset timers"
+  },
+  "operation.resetHelp": {
+    "zh-CN": "结算当前会话并清零当前显示，历史工时和产量记录保留。随后重新确认开工；检测关闭时保持关闭。",
+    "en": "Save and end the current session, then reset the displayed timers. History and production records are retained. A new start must be confirmed; detection stays off if disabled."
+  },
+  "operation.confirmReset": {
+    "zh-CN": "确认清零",
+    "en": "Confirm reset"
+  },
+  "operation.resetDone": {
+    "zh-CN": "时间已清零，历史记录已保留",
+    "en": "Timers reset. History retained."
+  },
+  "operation.saved": {
+    "zh-CN": "检测状态已更新",
+    "en": "Detection setting updated"
+  },
+  "operation.notDetected": {
+    "zh-CN": "未检测",
+    "en": "Not detecting"
+  },
+  "operation.materials": {
+    "zh-CN": "装配统计",
+    "en": "Assembly counts"
+  },
+  "operation.production": {
+    "zh-CN": "会话产量",
+    "en": "Session production"
+  },
+  "operation.summary": {
+    "zh-CN": "当前成品 {current} · 累计 {total}",
+    "en": "Finished now {current} · Total {total}"
+  },
+  "studio.showConfidence": {
+    "zh-CN": "显示物料置信度",
+    "en": "Show material confidence"
+  },
+  "error.STORAGE_ERROR": {
+    "zh-CN": "保存失败，请检查设备存储后重试",
+    "en": "Save failed. Check device storage and retry."
+  },
+  "operation.assemblyZone": {
+    "zh-CN": "装配区当前物料",
+    "en": "Assembly-area material"
+  },
+  "operation.completedZone": {
+    "zh-CN": "成品区当前库存",
+    "en": "Completed-area inventory"
+  },
+  "operation.connectionDetails": {
+    "zh-CN": "连接详情",
+    "en": "Connection details"
+  },
+  "operation.countDisabled": {
+    "zh-CN": "未启用计数",
+    "en": "Counting disabled"
+  },
+  "operation.zoneAlerts": {
+    "zh-CN": "{count} 个异常",
+    "en": "{count} alert(s)"
+  },
+  "operation.unqualified": {
+    "zh-CN": "未达标打包件",
+    "en": "Incomplete packages"
+  },
+  "operation.diagnostics": {
+    "zh-CN": "检测详情",
+    "en": "Detection details"
+  },
+  "studio.stabilityHelp": {
+    "zh-CN": "每个实际处理的新帧连续检测物料，实际检测速度取决于设备负载。数量和类别通过多帧投票确认；短时误识别和漏检在缓冲期内保留已确认数量。",
+    "en": "Products are detected on every processed new frame; actual speed depends on device load. Counts and classes use multi-frame voting, retaining confirmed counts through brief misclassifications and misses."
+  },
+  "quality.capture": {
+    "zh-CN": "实际采集",
+    "en": "Capture"
+  },
+  "quality.encoder": {
+    "zh-CN": "编码发送",
+    "en": "Encoder output"
+  },
+  "quality.playback": {
+    "zh-CN": "浏览器解码 / 呈现",
+    "en": "Browser decode / presentation"
+  },
+  "quality.material": {
+    "zh-CN": "物料观察",
+    "en": "Material observations"
+  },
+  "quality.confirming": {
+    "zh-CN": "确认中",
+    "en": "Confirming"
+  },
+  "quality.valid": {
+    "zh-CN": "有效",
+    "en": "Valid"
+  },
+  "quality.unavailable": {
+    "zh-CN": "不可用",
+    "en": "Unavailable"
+  },
+  "quality.budget": {
+    "zh-CN": "处理预算不足，物料降频",
+    "en": "Material sampling reduced: processing budget"
+  },
+  "quality.help": {
+    "zh-CN": "采集、编码发送与浏览器播放分别测量；无观看连接时编码发送为0。",
+    "en": "Capture, encoder output and browser playback are measured separately. Encoder output is zero without viewers."
+  },
+  "quality.jpeg": {
+    "zh-CN": "检测帧图像发布",
+    "en": "Detection JPEG output"
+  },
+  "production.title": {
+    "zh-CN": "本次完成",
+    "en": "Completed this session"
+  },
+  "production.unit": {
+    "zh-CN": "件",
+    "en": "units"
+  },
+  "production.rule": {
+    "zh-CN": "按完成事件累计，开始时的库存不计入",
+    "en": "Completion events only; starting inventory excluded"
+  },
+  "production.current": {
+    "zh-CN": "持续观测中",
+    "en": "Observing"
+  },
+  "production.paused": {
+    "zh-CN": "观测暂停 · 保留已确认记录",
+    "en": "Observation paused · confirmed total retained"
+  },
+  "production.reviewCount": {
+    "zh-CN": "{value} 项待复核",
+    "en": "{value} to review"
+  },
+  "production.reviewHint": {
+    "zh-CN": "点击事件查看证据",
+    "en": "Select an event to review"
+  },
+  "production.activityTitle": {
+    "zh-CN": "操作时长估算",
+    "en": "Estimated operation time"
+  },
+  "production.experimental": {
+    "zh-CN": "场景验证版",
+    "en": "Scenario demo"
+  },
+  "production.activityRule": {
+    "zh-CN": "依据手部与物料交互；遮挡或证据不足记为未知",
+    "en": "Based on hand–material interaction; occlusion and insufficient evidence are unknown"
+  },
+  "production.unknown": {
+    "zh-CN": "未知 {value}",
+    "en": "Unknown {value}"
+  },
+  "production.activity.active": {
+    "zh-CN": "操作中",
+    "en": "Handling material"
+  },
+  "production.activity.idle": {
+    "zh-CN": "暂停操作",
+    "en": "Not handling"
+  },
+  "production.activity.absent": {
+    "zh-CN": "操作员不在画面",
+    "en": "Operator not visible"
+  },
+  "production.activity.unknown": {
+    "zh-CN": "证据不足",
+    "en": "Insufficient evidence"
+  },
+  "production.events": {
+    "zh-CN": "事件回看",
+    "en": "Event evidence"
+  },
+  "production.eventHint": {
+    "zh-CN": "待复核优先 · 最近事件",
+    "en": "Reviews first · recent events"
+  },
+  "production.empty": {
+    "zh-CN": "会话开始后，完成事件与待复核画面会显示在这里。",
+    "en": "Completion events and review evidence appear here after a session starts."
+  },
+  "production.event.completed": {
+    "zh-CN": "完成 +1",
+    "en": "Completed +1"
+  },
+  "production.event.initial": {
+    "zh-CN": "初始库存",
+    "en": "Starting inventory"
+  },
+  "production.event.review": {
+    "zh-CN": "待复核",
+    "en": "Needs review"
+  },
+  "production.review": {
+    "zh-CN": "复核此事件",
+    "en": "Review event"
+  },
+  "production.resolved": {
+    "zh-CN": "已复核",
+    "en": "Reviewed"
+  },
+  "production.frame": {
+    "zh-CN": "画面序号 {value}",
+    "en": "Frame {value}"
+  },
+  "production.evidenceAlt": {
+    "zh-CN": "事件发生时的检测画面",
+    "en": "Detection frame at event time"
+  },
+  "production.noEvidence": {
+    "zh-CN": "此事件暂时没有可用的证据画面。",
+    "en": "No evidence image is currently available for this event."
+  },
+  "production.reason.initial": {
+    "zh-CN": "会话开始时已有的成品，仅记录库存。",
+    "en": "Finished items present at session start; inventory only."
+  },
+  "production.reason.completed": {
+    "zh-CN": "已观察到装配区记录与稳定进入成品区的过程。",
+    "en": "Observed in the assembly area and then stable in the completed area."
+  },
+  "production.reason.completion_unverified": {
+    "zh-CN": "物品进入成品区，但缺少完整过程证据。请核对是否为本次新完成。",
+    "en": "Item appeared in the completed area without a verified path. Check whether it is newly completed."
+  },
+  "production.reason.return": {
+    "zh-CN": "疑似已记录物品再次出现，请核对是否为新完成。",
+    "en": "A previously recorded item may have returned. Check whether it is newly completed."
+  },
+  "production.reason.counted_became_abnormal": {
+    "zh-CN": "已计数物品的分类发生变化，请核对是否需要扣除。",
+    "en": "The classification of a counted item changed. Check whether it should be removed."
+  },
+  "production.reason.label_conflict": {
+    "zh-CN": "物品分类冲突，尚未确认完成。",
+    "en": "Conflicting object classifications; completion is unconfirmed."
+  },
+  "production.resolve.1": {
+    "zh-CN": "确认新完成 +1",
+    "en": "Confirm newly completed +1"
+  },
+  "production.resolve.0": {
+    "zh-CN": "维持数量，完成复核",
+    "en": "Keep count and resolve"
+  },
+  "production.resolve.-1": {
+    "zh-CN": "扣除误计 -1",
+    "en": "Remove incorrect count −1"
+  },
+  "production.reason.identity_ambiguous": {
+    "zh-CN": "相邻物品身份难以区分，请核对是否产生新的完成件。",
+    "en": "Nearby items could not be distinguished. Check whether a newly completed item was added."
+  },
+  "production.more": {
+    "zh-CN": "查看全部 {value} 个事件",
+    "en": "View all {value} events"
+  },
+  "production.fewer": {
+    "zh-CN": "收起事件",
+    "en": "Show fewer"
+  },
+  "production.evidenceWarning": {
+    "zh-CN": "证据画面暂不可用，请稍后复核。",
+    "en": "Evidence images are unavailable. Please review later."
+  },
+  "studio.classThreshold": {
+    "zh-CN": "类别识别门槛（不低于整体门槛）",
+    "en": "Class confidence threshold (at least the global threshold)"
   }
 }

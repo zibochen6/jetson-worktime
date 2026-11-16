@@ -131,8 +131,8 @@ class CountingTests(unittest.TestCase):
     def test_continuously_tracked_pending_product_still_counts_after_collection(self):
         self.observe(0,1);self.observe(1,1);self.observe(4,0)
         def sample(t,box):self.counter.observe([dict(class_id=0,confidence=.9,bbox_xyxy=box)],t,self.config,'s',session_started=0)
-        sample(5,[50,20,90,60]);sample(6,[50,20,90,60]);sample(6.5,[70,20,110,60]);sample(7,[90,20,130,60]);sample(8,[90,20,130,60])
-        result=self.counter.snapshot(8,self.config,True,'s')
+        sample(5,[50,20,90,60]);sample(6,[50,20,90,60]);sample(6.5,[70,20,110,60]);sample(7,[90,20,130,60]);sample(8,[90,20,130,60]);sample(8.5,[90,20,130,60])
+        result=self.counter.snapshot(8.5,self.config,True,'s')
         self.assertEqual(result['cumulative'],2);self.assertFalse(result['reviews'])
 
     def test_no_session_and_stale_are_not_zero(self):

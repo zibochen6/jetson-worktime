@@ -80,7 +80,9 @@ class VisualizationTests(unittest.TestCase):
         config['visualization']['colors']['station']='#0000ff'
         frame=np.full((200,200,3),80,np.uint8)
         image=draw_overlay(frame.copy(),[],config,fresh=False)
-        self.assertEqual(image[150,150].tolist(),[255,0,0])
+        self.assertGreater(int(image[150,150,0]),int(image[80,150,0]))
+        self.assertLess(int(image[150,150,1]),80)
+        self.assertLess(int(image[150,150,0]),255)
         config['display'].update(station=False,seat=True)
         config['visualization']['seat_fill_alpha']=1
         config['visualization']['colors']['seat']='#ff0000'
@@ -90,3 +92,17 @@ class VisualizationTests(unittest.TestCase):
         saved,_,changed=self.store.commit(dict(expected_revision=0,display=dict(boxes=True,keypoints=False,regions=False)))
         self.assertFalse(changed)
         self.assertFalse(saved['display']['station'] or saved['display']['seat'])
+
+
+class StationGradientTests(unittest.TestCase):
+    def test_gradient_feathers_inside_and_has_no_perimeter(self):
+        from jetson_worktime.overlay import draw_overlay
+        config=deepcopy(CONFIG);config['regions']['station']=[[20,20],[180,20],[180,180],[20,180]]
+        config['display']={'boxes':False,'station':True,'seat':False,'keypoints':False}
+        config['visualization']=deepcopy(DEFAULT_VISUALIZATION)
+        config['visualization']['colors']['station']='#0000ff';config['visualization']['station_fill_alpha']=.4
+        image=np.full((200,200,3),80,np.uint8);out=draw_overlay(image.copy(),[],config)
+        self.assertTrue(np.array_equal(out[150,10],image[150,10]))
+        self.assertGreater(int(out[150,100,0]),int(out[80,100,0]))
+        self.assertLess(int(out[150,20,0]),int(out[150,100,0]))
+        self.assertLess(int(out[150,20,0]),120)  # no fully colored outline

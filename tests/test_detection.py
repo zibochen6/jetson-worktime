@@ -153,7 +153,7 @@ class DetectionTests(unittest.TestCase):
         track = MagicMock(return_value=[SimpleNamespace()])
         model = SimpleNamespace(predict=lambda *a,**k:None,predictor=SimpleNamespace(trackers=[tracker]),track=track,
             model=SimpleNamespace(predict=lambda *a,**k:None,parameters=lambda:iter([SimpleNamespace(device=SimpleNamespace(type='cuda'))])))
-        fake_torch=SimpleNamespace(cuda=SimpleNamespace(synchronize=lambda:None,empty_cache=lambda:None))
+        fake_torch=SimpleNamespace(set_num_threads=lambda n:None,cuda=SimpleNamespace(synchronize=lambda:None,empty_cache=lambda:None))
         fake_yolo=SimpleNamespace(YOLO=lambda *args:model)
         first=threading.Event()
         errors=[]

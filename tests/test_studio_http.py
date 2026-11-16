@@ -27,7 +27,7 @@ class StudioHTTPTests(unittest.TestCase):
         (self.root/'configs/behavior.yaml').write_text(yaml.safe_dump(config))
         self.service=BehaviorService(self.root,start_workers=False)
         tree=ast.parse((ROOT/'scripts/preview.py').read_text());node=next(n for n in tree.body if isinstance(n,ast.ClassDef) and n.name=='Handler')
-        namespace=dict(BaseHTTPRequestHandler=BaseHTTPRequestHandler,studio_http=StudioHTTP(self.service.studio),
+        namespace=dict(BaseHTTPRequestHandler=BaseHTTPRequestHandler,studio_http=StudioHTTP(self.service.studio),behavior=self.service,
             StudioError=StudioError,LocalizedError=LocalizedError,json=json,urlsplit=urlsplit,parse_qs=parse_qs)
         exec(compile(ast.Module(body=[node],type_ignores=[]),'production_http','exec'),namespace)
         self.server=ThreadingHTTPServer(('127.0.0.1',0),namespace['Handler']);self.thread=threading.Thread(target=self.server.serve_forever,daemon=True);self.thread.start()
@@ -67,6 +67,32 @@ class StudioHTTPTests(unittest.TestCase):
         self.assertEqual(self.api(path,{'boxes':[],'annotated':True},'PUT')[0],409)
     def test_capture_without_valid_matching_frame_fails_closed(self):
         ds=self.project();self.assertEqual(self.api('datasets/'+ds['id']+'/captures',{'group_id':'g'})[0],409)
+    def test_event_evidence_is_persisted_and_obeys_current_privacy_policy(self):
+        from types import SimpleNamespace
+        self.service.transport=SimpleNamespace(condition=threading.Condition(),output_sockets=set(),close=lambda:None)
+        store=self.service.studio.store
+        event=store.event('evidence-session','review','item',0,config_revision=0,frame_sequence=17,
+                          stream_session_id='stream',review_reason='completion_unverified')
+        frame=np.full((100,100,3),93,np.uint8)
+        self.service.evidence_writer.submit([event],frame,self.service.config)
+        self.service.evidence_writer.queue.join()
+        status,history=self.api('materials/sessions/evidence-session')
+        self.assertEqual(status,200);self.assertEqual(history['events'][0]['frame_sequence'],17)
+        path=history['events'][0]['evidence_frame_url'];self.assertTrue(path)
+        url=self.base.split('/api/v1/')[0]+path
+        with urlopen(url,timeout=5) as response:
+            self.assertEqual(response.status,200)
+            decoded=cv2.imdecode(np.frombuffer(response.read(),np.uint8),cv2.IMREAD_COLOR)
+            self.assertLess(abs(float(decoded.mean())-93),2)
+        self.service.config,_,_=self.service.store.commit({'expected_revision':0,'privacy':{'enabled':True}})
+        self.assertIsNone(self.api('materials/sessions/evidence-session')[1]['events'][0]['evidence_frame_url'])
+        with self.assertRaises(HTTPError) as result:urlopen(url,timeout=5)
+        self.assertEqual(result.exception.code,404)
+        self.assertEqual(self.api('materials/evidence/not-an-event.jpg')[0],404)
+        self.service.config,_,_=self.service.store.commit({'expected_revision':1,'privacy':{'enabled':False}})
+        with urlopen(url,timeout=5) as response:
+            self.assertEqual(response.status,200)
+            self.assertEqual(response.headers['X-Evidence-Config-Revision'],'0')
     def test_training_requires_healthy_supervisor(self):
         status,value=self.api('training/jobs',{'token':'valid-token','expected_revision':0})
         self.assertEqual(status,503);self.assertEqual(value['error']['message_key'],'studio.error.agentOffline')

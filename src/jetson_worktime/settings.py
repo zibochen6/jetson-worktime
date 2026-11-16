@@ -139,6 +139,10 @@ def normalize(config):
         raise ValueError('Invalid model selection')
     config['materials'] = validate_materials(config['materials'],config['image_size'])
     config.setdefault('revision', 0)
+    config.setdefault('operation', {'detection_enabled': True})
+    if (not isinstance(config['operation'], dict) or set(config['operation']) != {'detection_enabled'}
+            or type(config['operation']['detection_enabled']) is not bool):
+        raise LocalizedError('error.unknownField')
     config.setdefault('privacy', {'enabled': True})
     config.setdefault('display', DISPLAY_DEFAULTS.copy())
     config.setdefault('roi_configured', False)
@@ -190,7 +194,7 @@ class SettingsStore:
                 fcntl.flock(guard, fcntl.LOCK_UN)
 
     def commit(self, request):
-        allowed = {'expected_revision', 'privacy', 'display', 'timing', 'regions', 'image_size', 'reference_frame', 'camera_source', 'detection', 'visualization', 'models', 'materials'}
+        allowed = {'expected_revision', 'privacy', 'display', 'timing', 'regions', 'image_size', 'reference_frame', 'camera_source', 'detection', 'visualization', 'models', 'materials', 'operation'}
         if not isinstance(request, dict) or set(request)-allowed:
             raise LocalizedError('error.unknownField')
         if type(request.get('expected_revision')) is not int:
@@ -202,7 +206,7 @@ class SettingsStore:
                 if request['expected_revision'] != old['revision']:
                     raise SettingsConflict('error.SETTINGS_CONFLICT')
                 new = deepcopy(old)
-                for key in ('privacy', 'display', 'regions', 'image_size', 'visualization', 'models', 'materials'):
+                for key in ('privacy', 'display', 'regions', 'image_size', 'visualization', 'models', 'materials', 'operation'):
                     if key in request:
                         new[key] = deepcopy(request[key])
                 if 'detection' in request:
@@ -247,7 +251,7 @@ class SettingsStore:
                             os.unlink(temporary)
                 detection_changed = source_changed or any(old[k] != new[k] for k in ('regions', 'image_size', *TIMING_KEYS, *DETECTION_DEFAULTS, 'models')) or ('regions' in request and changed)
                 from .materials import material_behavior_changed
-                detection_changed = detection_changed or material_behavior_changed(old['materials'],new['materials'])
+                detection_changed = detection_changed or material_behavior_changed(old['materials'],new['materials']) or old['operation'] != new['operation']
                 return new, changed, detection_changed
             finally:
                 fcntl.flock(guard, fcntl.LOCK_UN)
@@ -255,6 +259,7 @@ class SettingsStore:
     @staticmethod
     def public(config):
         return dict(schema_version='1.0', revision=config['revision'],
+                    operation=deepcopy(config['operation']),
                     privacy=deepcopy(config['privacy']), display=deepcopy(config['display']),
                     visualization=visualization_settings(config), visualization_defaults=deepcopy(DEFAULT_VISUALIZATION),
                     image_size=config['image_size'][:], regions=deepcopy(config['regions']),

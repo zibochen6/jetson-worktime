@@ -3,6 +3,47 @@ import assert from 'node:assert/strict';
 import {containRect,shouldRender,duration,systemMetricsView} from '../public/api.js';
 import {systemMetricsFixture} from '../mock.mjs';
 import {fixtures} from '../mock.mjs';
+import {PreviewContinuity} from '../public/api.js';
+
+test('business transitions and cosmetic revisions retain the same video',()=>{
+ const continuity=new PreviewContinuity();
+ const camera={status:'online',preview_fresh:true,privacy_applied:false,config_revision:1,stream_session_id:'camera',video:{epoch:7}};
+ assert.deepEqual(continuity.update(camera,null,0),{ready:true,retain:true,reset:false});
+ for(const state of ['START_PENDING','WORKING','REST','AWAY_PENDING','DONE']) {
+  assert.equal(continuity.update({...camera,config_revision:2,work_state:state},null,1000).reset,false);
+ }
+ assert.equal(continuity.update({...camera,video:{epoch:8}},null,2000).reset,true);
+ assert.equal(continuity.update({...camera,stream_session_id:'new-camera'},null,3000).reset,true);
+});
+
+test('brief frame/telemetry gaps retain media, sustained gaps expire without marking stale data ready',()=>{
+ const continuity=new PreviewContinuity();
+ const camera={status:'online',preview_fresh:true,privacy_applied:false,stream_session_id:'camera',video:{epoch:1}};
+ continuity.update(camera,null,0);
+ assert.deepEqual(continuity.update({...camera,preview_fresh:false},null,1500),{ready:false,retain:true,reset:false});
+ assert.deepEqual(continuity.update(null,null,4000),{ready:false,retain:true,reset:false});
+ assert.deepEqual(continuity.update(null,null,5000),{ready:false,retain:false,reset:true});
+ assert.deepEqual(continuity.update(camera,null,6000),{ready:true,retain:true,reset:false});
+});
+
+test('privacy failure, training and real disconnection invalidate immediately',()=>{
+ const camera={status:'online',preview_fresh:true,privacy_applied:false,stream_session_id:'camera',video:{epoch:1}};
+ for(const change of [{privacy_applied:true,algorithm_error:'privacy unavailable'}, {operating_mode:'training'}, {status:'offline'}]){
+  const continuity=new PreviewContinuity();continuity.update(camera,null,0);
+  const result=continuity.update({...camera,...change},null,1);
+  assert.equal(result.retain,false);assert.equal(result.reset,true);
+ }
+});
+
+test('real decoded video survives extended status failures, never a changed source or privacy failure',()=>{
+ const camera={status:'online',preview_fresh:true,privacy_applied:false,stream_session_id:'camera',video:{epoch:1}};
+ const continuity=new PreviewContinuity();continuity.update(camera,null,0);
+ assert.deepEqual(continuity.update(null,null,30000,true),{ready:false,retain:true,reset:false});
+ assert.equal(continuity.update({...camera,preview_fresh:false},null,35000,true).retain,true);
+ assert.equal(continuity.update({...camera,preview_fresh:false,video:{epoch:2}},null,40000,true).retain,false);
+ assert.equal(continuity.update({...camera,privacy_applied:true,algorithm_error:'privacy failed'},null,45000,true).retain,false);
+ assert.equal(continuity.update(null,null,46000,false).retain,false);
+});
 test('contain mapping includes letterbox offsets',()=>{
   assert.deepEqual(containRect(2560,1440,1000,1000),{scale:1000/2560,x:0,y:218.75,width:1000,height:562.5});
 });

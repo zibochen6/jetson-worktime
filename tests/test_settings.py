@@ -156,7 +156,7 @@ class SettingsTests(unittest.TestCase):
                 result = SimpleNamespace(boxes=SimpleNamespace(conf=SimpleNamespace(cpu=lambda:SimpleNamespace(tolist=lambda:[]))))
                 model = SimpleNamespace(predict=lambda *a,**k:None,predictor=None, track=lambda *a,**k:[result],
                     model=SimpleNamespace(parameters=lambda:iter([SimpleNamespace(device=SimpleNamespace(type='cuda'))])))
-                fake_torch = SimpleNamespace(cuda=SimpleNamespace(synchronize=lambda:None,empty_cache=lambda:None))
+                fake_torch = SimpleNamespace(set_num_threads=lambda n:None,cuda=SimpleNamespace(synchronize=lambda:None,empty_cache=lambda:None))
                 fake_yolo = SimpleNamespace(YOLO=lambda *a:model)
                 def encode(*args, **kwargs):
                     return {'zh-CN':b'zh','en':b'en'}

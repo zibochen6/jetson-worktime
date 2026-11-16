@@ -14,3 +14,9 @@ vendor/mediamtx/
 logs/
 
 data/
+
+.DS_Store
+
+._*
+
+configs/*.lock

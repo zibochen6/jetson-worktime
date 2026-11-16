@@ -77,6 +77,18 @@ def _sprite(text, color, metrics, max_width):
     return dict(pixels=sprite[..., :3].astype(np.float32)*alpha, inverse=1-alpha, width=width, height=height)
 
 
+def station_gradient(mask,color,opacity,width):
+    """Cached bounded alpha field; no stroke and no blur outside the configured ROI."""
+    height=mask.shape[0]
+    stops=STYLE['station_gradient']['stops']
+    vertical=np.interp(np.linspace(0,1,height),[p[0] for p in stops],[p[1] for p in stops]).astype(np.float32)
+    distance=cv2.distanceTransform(cv2.copyMakeBorder(mask,1,1,1,1,cv2.BORDER_CONSTANT,value=0),cv2.DIST_L2,3)[1:-1,1:-1]
+    feather=max(1,STYLE['station_gradient']['feather_px']*width/STYLE['reference_width'])
+    alpha=np.ascontiguousarray(np.minimum(1,distance/feather)*vertical[:,None]*opacity,dtype=np.float32)
+    tint=np.empty((*mask.shape,3),np.uint8);tint[:]=color
+    return tint,alpha,np.ascontiguousarray(1-alpha)
+
+
 def _build(width, height, config, locale):
     metrics = dimensions(width)
     scale_x, scale_y = width/config['image_size'][0], height/config['image_size'][1]
@@ -84,19 +96,23 @@ def _build(width, height, config, locale):
     visualization = visualization_settings(config)
     colors = dict(COLORS, **{name:tuple(bytes.fromhex(value[1:])[::-1]) for name,value in visualization['colors'].items()})
     fills = []
+    gradient = None
     for name in TITLES:
         mask = np.zeros((height, width), np.uint8)
         cv2.fillPoly(mask, [np.asarray(polygons[name], np.int32)], 255)
         x,y,w,h = cv2.boundingRect(mask)
         alpha = visualization[name+'_fill_alpha']
         lut = np.rint(np.arange(256)[:,None]*(1-alpha)+np.asarray(colors[name])[None,:]*alpha).astype(np.uint8)
-        fills.append((x,y,w,h,mask[y:y+h,x:x+w],lut.reshape(256,1,3)))
+        cropped=mask[y:y+h,x:x+w]
+        fills.append((x,y,w,h,cropped,lut.reshape(256,1,3)))
+        if name=='station' and w and h:
+            gradient=(x,y,w,h,*station_gradient(cropped,colors[name],alpha,width))
     keys = [(TITLES['station'], colors['station']), (TITLES['seat'], colors['seat']),
             ('overlay.person', colors['person']), ('overlay.inside', colors['anchor']),
             ('overlay.operator', colors['person']), ('overlay.otherPerson', colors['station']),
             ('overlay.outside', colors['anchor']), ('overlay.regionPending', colors['station'])]
     return dict(metrics=metrics, scale_x=scale_x, scale_y=scale_y, polygons=polygons,
-                station_segments=_dash_segments(polygons['station'], metrics['dash_length'], metrics['dash_gap']),
+                station_gradient=gradient,
                 fills=fills, colors=colors,
                 sprites={key: _sprite(translate(key, locale=locale), color, metrics, max(1, width-2*metrics['margin'])) for key, color in keys})
 
@@ -148,6 +164,8 @@ def place_labels(labels, sprites, width, height, metrics):
 
 def draw_overlay(frame, persons, config, fresh=True, locale='zh-CN'):
     """Draw enabled layers in place after privacy protection, using this frame's detections."""
+    if not config.get('operation', {}).get('detection_enabled', True):
+        return
     height, width = frame.shape[:2]
     layer = _layer(width, height, config, locale)
     metrics = layer['metrics']
@@ -160,13 +178,16 @@ def draw_overlay(frame, persons, config, fresh=True, locale='zh-CN'):
         if not display.get(name,display.get('regions',True)):
             continue
         x,y,w,h,mask,lut = layer['fills'][list(TITLES).index(name)]
-        if w and h:
-            patch = frame[y:y+h,x:x+w]
-            cv2.copyTo(cv2.LUT(patch,lut),mask,patch)
-        if name == 'station':
-            for a,b in layer['station_segments']:
-                cv2.line(frame,a,b,colors[name],metrics['line_width'],cv2.LINE_AA)
+        if name=='station':
+            gradient=layer['station_gradient']
+            if gradient is not None:
+                x,y,w,h,tint,alpha,inverse=gradient
+                patch=frame[y:y+h,x:x+w]
+                cv2.blendLinear(patch,tint,inverse,alpha,dst=patch)
         else:
+            if w and h:
+                patch=frame[y:y+h,x:x+w]
+                cv2.copyTo(cv2.LUT(patch,lut),mask,patch)
             cv2.polylines(frame,[np.asarray(layer['polygons'][name],np.int32)],True,
                           colors[name],metrics['line_width'],cv2.LINE_AA)
         x,y = min(layer['polygons'][name],key=lambda p:(p[1],p[0]))
@@ -210,6 +231,8 @@ def draw_overlay(frame, persons, config, fresh=True, locale='zh-CN'):
                 key = ('overlay.regionPending' if not config.get('regions_confirmed', True) else
                        'overlay.inside' if point_in_polygon(anchor, config['regions']['seat']) else 'overlay.outside')
                 anchor_labels.append((point[0]+metrics['anchor_radius']+metrics['label_gap'], point[1]+metrics['label_gap'], key))
+    for x,y,key,sprite in draw_material_objects(frame,config,locale):
+        region_labels.append((x,y,key));sprites[key]=sprite
     for x, y, w, h, key in place_labels(person_labels+anchor_labels+region_labels, sprites, width, height, metrics):
         sprite = sprites[key]
         patch = frame[y:y+h, x:x+w]
@@ -245,11 +268,13 @@ def _material_masks(width,height,size,serialized):
         mask=np.zeros((h,w),np.uint8);cv2.fillPoly(mask,[points-[x,y]],255)
         color=tuple(bytes.fromhex(value['colors'][name][1:])[::-1]);alpha=value['opacity'][name]
         lut=np.asarray([[(1-alpha)*i+alpha*c for c in color] for i in range(256)],np.uint8).reshape(256,1,3)
-        masks.append((name,points,x,y,w,h,mask,lut,color))
+        metrics=dimensions(width)
+        segments=[np.asarray(segment,np.int32) for segment in _dash_segments(points.tolist(),metrics['dash_length'],metrics['dash_gap'])]
+        masks.append((name,points,x,y,w,h,mask,lut,color,segments))
     return masks
 
 
-@lru_cache(maxsize=32)
+@lru_cache(maxsize=256)
 def _material_sprite(text,color,width):
     return _sprite(text,color,dimensions(width),max(1,width-2*dimensions(width)['margin']))
 
@@ -259,13 +284,39 @@ def draw_material_regions(frame,config,locale='zh-CN'):
     if not value or not value['enabled'] or not value['configured'] or not config.get('materials_confirmed',True): return []
     height,width=frame.shape[:2]
     serialized=json.dumps({k:value[k] for k in ('regions','colors','opacity')},sort_keys=True)
+    warning_regions={a['region'] for a in config.get('_material_status',{}).get('alerts',[])}
     labels=[]
-    for name,points,x,y,w,h,mask,lut,color in _material_masks(width,height,tuple(config['image_size']),serialized):
+    for name,points,x,y,w,h,mask,lut,color,segments in _material_masks(width,height,tuple(config['image_size']),serialized):
         if not value['display'][name]: continue
-        patch=frame[y:y+h,x:x+w];cv2.copyTo(cv2.LUT(patch,lut),mask,patch)
-        cv2.polylines(frame,[points],True,color,max(1,round(width/1280)),cv2.LINE_AA)
-        point=min(points.tolist(),key=lambda p:(p[1],p[0]))
-        label=translate('studio.'+name,locale=locale)
+        if value.get('masks',{}).get(name,True):
+            patch=frame[y:y+h,x:x+w];cv2.copyTo(cv2.LUT(patch,lut),mask,patch)
+        if name in warning_regions: color=(100,100,255)
+        vertices=points.tolist()
+        cv2.polylines(frame,segments,False,color,max(1,round(width/1280)),cv2.LINE_AA)
+        bottom=sorted(vertices,key=lambda p:p[1],reverse=True)[:2]
+        point=[round(sum(p[0] for p in bottom)/2),round(sum(p[1] for p in bottom)/2)]
+        label=value.get('names',{}).get(name) or translate('studio.'+name,locale=locale)
         sprite=_material_sprite(label,color,width)
-        labels.append((point[0]+4,point[1]+4,'material.'+name,sprite))
+        labels.append((point[0]-sprite['width']//2,point[1]-sprite['height']-4,'material.'+name,sprite))
+    return labels
+
+
+def draw_material_objects(frame,config,locale='zh-CN'):
+    status=config.get('_material_status') or {}
+    if not status.get('available') or not config.get('materials_confirmed',True): return []
+    value=config['materials'];height,width=frame.shape[:2];metrics=dimensions(width)
+    size=config['image_size'];labels=[]
+    palette=['#c084fc','#34d399','#22c55e','#f472b6','#67e8f9']
+    for index,det in enumerate(status.get('detections',[])):
+        cid=det['class_id'];style=value.get('class_styles',{}).get(str(cid),{})
+        color=tuple(bytes.fromhex(('#ff6464' if det['role']=='alert' else style.get('color',palette[cid%len(palette)]))[1:])[::-1])
+        x1,y1,x2,y2=det['bbox_xyxy'];box=(round(x1*width/size[0]),round(y1*height/size[1]),round(x2*width/size[0]),round(y2*height/size[1]))
+        for origin,horizontal,vertical in corner_segments(box,metrics):
+            cv2.line(frame,origin,horizontal,color,metrics['corner_width'],cv2.LINE_AA)
+            cv2.line(frame,origin,vertical,color,metrics['corner_width'],cv2.LINE_AA)
+        name=style.get('name') or status.get('class_names',{}).get(str(cid),status.get('class_names',{}).get(cid,str(cid)))
+        label=name + (f" {det['confidence']:.2f}" if config['materials'].get('show_confidence', True) else '')
+        if det['role']=='alert': label+=' · '+translate('studio.abnormal',locale=locale)
+        sprite=_material_sprite(label,color,width)
+        labels.append((box[0],box[1]-sprite['height']-2,'material.object.'+str(index),sprite))
     return labels

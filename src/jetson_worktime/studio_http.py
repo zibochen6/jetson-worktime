@@ -88,7 +88,7 @@ class StudioHTTP:
                 with behavior.lock:
                     packet=behavior.full_frame
                     if (not packet or packet[3]!=behavior.config['revision'] or not behavior.connected
-                        or behavior.operating_mode!='business' or time.monotonic()-packet[2]/1e9>behavior.config['max_observation_age']):
+                        or behavior.operating_mode not in ('business','preview') or time.monotonic()-packet[2]/1e9>behavior.config['max_observation_age']):
                         raise StudioError('frameUnavailable',409)
                     image,meta,received,revision=packet
                 with behavior.store.output_policy() as config:
@@ -144,10 +144,27 @@ class StudioHTTP:
                 response={'jpeg':base64.b64encode(jpeg).decode(),'detections':len(result.boxes),'config_revision':revision,'privacy_applied':privacy,'frame':meta}
                 h.send_media(json.dumps(response).encode(),headers={'X-Config-Revision':revision,'X-Privacy-Applied':str(privacy).lower()},content_type='application/json; charset=utf-8')
                 return None
+        if p==['materials','alerts'] and method=='GET':
+            alerts=self.store.list('material_alert')
+            if q.get('session_id'): alerts=[a for a in alerts if a.get('session_id')==q['session_id'][0]]
+            if q.get('active') and q['active'][0] in ('true','false'): alerts=[a for a in alerts if a['active']==(q['active'][0]=='true')]
+            return dict(alerts=alerts[:200])
         if p==['materials','status'] and method=='GET': return behavior.snapshot()['materials']
+        if len(p)==3 and p[:2]==['materials','evidence'] and method=='GET':
+            if not re.fullmatch('[0-9a-f]{64}\\.jpg',p[2]):raise StudioError('notFound',404)
+            saved=self.store.get('material_evidence',p[2][:-4])
+            with behavior.lock,behavior.store.output_policy() as policy:
+                if policy['privacy']['enabled'] and not saved['privacy_applied']:raise StudioError('notFound',404)
+                h.send_media((self.store.data/'evidence'/p[2]).read_bytes(),headers={
+                    'X-Privacy-Applied':str(saved['privacy_applied']).lower(),
+                    'X-Config-Revision':policy['revision'],
+                    'X-Evidence-Config-Revision':saved['config_revision'],
+                    'X-Frame-Sequence':saved.get('frame_sequence','')},content_type='image/jpeg')
+            return None
         if len(p)>=3 and p[:2]==['materials','sessions']:
             if len(p)==3 and method=='GET':
-                events=self.store.events(p[2])
+                from .evidence import event_history
+                events=event_history(self.store,p[2],behavior.config['privacy']['enabled'])
                 if not events: raise StudioError('notFound',404)
                 return dict(session_id=p[2],events=events,cumulative=sum(e['delta'] for e in events))
             if p[3:]==['adjustments'] and method=='POST':

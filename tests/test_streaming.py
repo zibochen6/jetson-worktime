@@ -7,6 +7,8 @@ import time
 from types import SimpleNamespace
 import unittest
 from unittest.mock import MagicMock
+import numpy as np
+from jetson_worktime.runtime_quality import RuntimeQuality
 from jetson_worktime.streaming import VideoTransport
 
 
@@ -24,6 +26,56 @@ def transport():
 
 
 class StreamingTests(unittest.TestCase):
+    def test_short_stall_retains_peer_without_publishing_stale_frames_and_long_stall_expires(self):
+        value=transport();value.root=Path('.')
+        value.process=SimpleNamespace(poll=lambda:None,terminate=lambda:None,wait=lambda timeout:None)
+        value.quality=RuntimeQuality();value.error=None
+        value.delete_remote=MagicMock()
+        key=('en','local');sent=[];arrived=threading.Event()
+        publisher=SimpleNamespace(write=lambda image,received,*args:(sent.append(received),arrived.set()),close=MagicMock())
+        value.publishers={key:publisher}
+        value.sessions={'viewer':dict(epoch=0,locale='en',profile='local',created=time.monotonic(),path='/viewer')}
+        config=dict(max_observation_age=1.5,revision=0,privacy={'enabled':False})
+        frame=np.zeros((20,20,3),np.uint8)
+        value.submit(frame,[],config,True,True,time.monotonic_ns())
+        worker=threading.Thread(target=value.run);worker.start()
+        def eventually(predicate):
+            deadline=time.monotonic()+1
+            while not predicate() and time.monotonic()<deadline:threading.Event().wait(.005)
+            self.assertTrue(predicate(),value.error)
+        try:
+            self.assertTrue(arrived.wait(1),value.error);arrived.clear()
+            # Force a stale input, then wait for the worker to discard cached JPEGs.
+            with value.condition:
+                value.jpegs[key]='old';value.submit(frame,[],config,True,True,time.monotonic_ns()-2000000000)
+            eventually(lambda:not value.jpegs)
+            self.assertEqual(len(sent),1);self.assertIn('viewer',value.sessions)
+            self.assertIs(value.publishers[key],publisher);publisher.close.assert_not_called()
+            value.submit(frame,[],config,True,True,time.monotonic_ns())
+            self.assertTrue(arrived.wait(1),value.error)
+            self.assertEqual(len(sent),2);self.assertIn('viewer',value.sessions)
+            self.assertIs(value.publishers[key],publisher)
+            value.submit(frame,[],config,True,True,time.monotonic_ns()-7000000000)
+            eventually(lambda:'viewer' not in value.sessions and not value.publishers)
+            value.delete_remote.assert_called_once_with('/viewer');publisher.close.assert_called_once()
+        finally:
+            value.stop.set();worker.join(2)
+
+    def test_video_delete_dispatch_is_not_shadowed_by_studio_delete(self):
+        from urllib.parse import urlsplit
+        root=Path(__file__).resolve().parents[1]
+        handler=next(n for n in ast.parse((root/'scripts/preview.py').read_text()).body if isinstance(n,ast.ClassDef) and n.name=='Handler')
+        methods=[n for n in handler.body if isinstance(n,ast.FunctionDef) and n.name=='do_DELETE']
+        self.assertEqual(len(methods),1,'duplicate HTTP handlers silently replace each other')
+        studio=SimpleNamespace(handle=MagicMock(return_value=True))
+        namespace=dict(urlsplit=urlsplit,studio_http=studio)
+        exec(compile(ast.Module(body=methods,type_ignores=[]),'preview.py','exec'),namespace)
+        instance=SimpleNamespace(path='/api/v1/video/sessions/'+'a'*32,whep=MagicMock(),error=MagicMock())
+        namespace['do_DELETE'](instance)
+        instance.whep.assert_called_once_with('DELETE');studio.handle.assert_not_called()
+        instance.path='/api/v1/datasets/example';namespace['do_DELETE'](instance)
+        studio.handle.assert_called_once_with(instance,'DELETE');instance.error.assert_not_called()
+
     def test_latest_frame_replaces_previous_without_a_queue(self):
         value=transport()
         value.submit('old',[],{},True,True,1)
@@ -60,6 +112,23 @@ class StreamingTests(unittest.TestCase):
         with self.assertRaises(ValueError):value.add_socket(MagicMock())
         value.invalidate()
         with self.assertRaises(ValueError):value.session_request('0','PATCH',b'data')
+
+    def test_fallback_records_only_the_requested_stream_and_releases_it(self):
+        value=transport();connection=MagicMock()
+        value.add_socket(connection,'local',stream='raw')
+        self.assertEqual(value.socket_streams[connection],('raw','local'))
+        value.remove_socket(connection)
+        self.assertEqual(value.socket_streams,{})
+
+    def test_fallback_cancellation_interrupts_the_real_socket_and_rejects_late_get(self):
+        value=transport();sender,receiver=socket.socketpair();self.addCleanup(sender.close);self.addCleanup(receiver.close)
+        token='a'*32;value.add_socket(sender,'local',token=token)
+        value.cancel_fallback(token)
+        self.assertNotIn(sender,value.sockets);self.assertEqual(receiver.recv(1),b'')
+        value.cancel_fallback(token)
+        with self.assertRaises(ValueError):value.add_socket(sender,'local',token=token)
+        value.cancel_fallback('b'*32)
+        with self.assertRaises(ValueError):value.add_socket(sender,'local',token='b'*32)
 
     def test_stream_network_write_does_not_hold_media_lock(self):
         root=Path(__file__).resolve().parents[1]
@@ -105,6 +174,34 @@ class StreamingTests(unittest.TestCase):
         self.assertEqual(len(sent),1)
         self.assertIn(b'fresh',sent[0])
         self.assertNotIn(b'stale',sent[0])
+
+    def test_mjpeg_keeps_socket_when_expired_cache_is_cleared_then_resumes(self):
+        from urllib.parse import parse_qs,urlsplit
+        root=Path(__file__).resolve().parents[1]
+        handler=next(n for n in ast.parse((root/'scripts/preview.py').read_text()).body if isinstance(n,ast.ClassDef) and n.name=='Handler')
+        method=next(n for n in handler.body if isinstance(n,ast.FunctionDef) and n.name=='stream')
+        value=transport();key=('en','remote');value.jpegs[key]=(0,time.monotonic_ns(),b'first')
+        stop=threading.Event();first=threading.Event();sent=[]
+        namespace=dict(behavior=SimpleNamespace(transport=value,stop=stop),time=time,socket=socket,parse_qs=parse_qs,urlsplit=urlsplit)
+        exec(compile(ast.Module(body=[method],type_ignores=[]),'preview.py','exec'),namespace)
+        def write(data):
+            sent.append(data)
+            if len(sent)==1:
+                with value.condition:value.jpegs.clear();value.condition.notify_all()
+                first.set()
+            else:stop.set()
+        instance=SimpleNamespace(path='/stream.mjpg',connection=MagicMock(),send_response=MagicMock(),send_header=MagicMock(),end_headers=MagicMock(),wfile=SimpleNamespace(write=write,flush=lambda:None))
+        thread=threading.Thread(target=lambda:namespace['stream'](instance,locale='en'),daemon=True);thread.start()
+        try:
+            self.assertTrue(first.wait(1));self.assertTrue(thread.is_alive())
+            with value.condition:
+                value.jpegs[key]=(0,time.monotonic_ns(),b'resumed');value.condition.notify_all()
+            thread.join(1);self.assertFalse(thread.is_alive());self.assertEqual(len(sent),2)
+            self.assertIn(b'resumed',sent[1])
+        finally:
+            stop.set()
+            with value.condition:value.stop.set();value.condition.notify_all()
+            thread.join(1)
 
     def test_capture_preview_skips_every_detection_layer_without_modifying_privacy(self):
         import numpy as np

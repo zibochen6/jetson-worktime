@@ -12,7 +12,7 @@ SCHEMA_VERSION = '1.0'
 def wire(value):
     """Keep nanoseconds lossless for JavaScript without changing legacy records."""
     if isinstance(value, dict):
-        return {k: (str(v) if k.endswith('_ns') and v is not None else wire(v)) for k, v in value.items()}
+        return {k: (str(v) if isinstance(k, str) and k.endswith('_ns') and v is not None else wire(v)) for k, v in value.items()}
     if isinstance(value, (list, tuple)):
         return [wire(v) for v in value]
     return value
@@ -64,5 +64,7 @@ def make_observation(run_id, meta, pts, received, started, completed, width, hei
         persons=[{**p, 'upper_body_anchor': p.get('upper_body_anchor')} for p in persons],
         regions=config['regions'], roi_provisional=not config.get('roi_configured', False), camera_changed=camera_changed,
         config_revision=config.get('revision', 0), privacy_applied=config.get('privacy', {}).get('enabled', True),
-        models=config.get('models'), model_weights=config.get('model_weights'), materials=config.get('materials'), display=config.get('display', DISPLAY_DEFAULTS), visualization=visualization_settings(config), detection=detection_settings(config),
+        detection_enabled=config.get('operation', {}).get('detection_enabled', True),
+        operating_mode='business' if config.get('operation', {}).get('detection_enabled', True) else 'preview',
+        models=config.get('models'), model_weights=config.get('model_weights'), materials=config.get('materials'), material_observation=config.get('_material_status'), display=config.get('display', DISPLAY_DEFAULTS), visualization=visualization_settings(config), detection=detection_settings(config),
         matching_frame_url='/api/v1/observations/frame.jpg?'+urlencode({'observation_id': key})))

@@ -19,7 +19,8 @@ from .runtime_quality import RuntimeQuality
 LOCALES = ('zh-CN', 'en')
 VIDEO_STREAMS = (*LOCALES, 'raw')
 PREVIEW = dict(width=640, max_fps=10, bitrate=600000)
-PROFILES = {'remote':PREVIEW,'local':dict(width=1920,max_fps=12,bitrate=4000000)}
+PROFILES = {'remote':PREVIEW,'local':dict(width=1920,max_fps=20,bitrate=4000000)}
+FRAME_RECOVERY_SECONDS = 5
 
 
 def preview_frame(image, persons, config, fresh, regions_match, stream):
@@ -49,11 +50,13 @@ class H264Publisher:
         self.origin = None
         options = PROFILES[profile]
         self.frame_duration = round(1e9/options['max_fps'])
+        encoded_width=min(options['width'],width)//2*2
+        encoded_height=max(2,round(height*encoded_width/width/2)*2)
         self.pipeline = Gst.parse_launch(
             'appsrc name=frames is-live=true format=time block=false max-buffers=1 leaky-type=downstream '
             '! queue max-size-buffers=1 max-size-bytes=0 max-size-time=0 leaky=downstream '
-            '! videoconvert ! video/x-raw,format=I420 ! nvvidconv '
-            '! video/x-raw(memory:NVMM),format=NV12 '
+            '! videoconvert ! video/x-raw,format=BGRx ! nvvidconv '
+            f'! video/x-raw(memory:NVMM),format=NV12,width={encoded_width},height={encoded_height} '
             f"! nvv4l2h264enc bitrate={options['bitrate']} control-rate=1 maxperf-enable=true "
             f"iframeinterval={options['max_fps']} idrinterval={options['max_fps']} insert-sps-pps=true num-B-Frames=0 "
             '! video/x-h264,profile=baseline ! h264parse '
@@ -96,6 +99,9 @@ class VideoTransport:
         self.jpegs = {}
         self.sockets = set()
         self.socket_profiles = {}
+        self.socket_streams = {}
+        self.fallback_sessions = {}
+        self.cancelled_fallbacks = {}
         self.output_sockets = set()
         self.sessions = {}
         self.pending = {}
@@ -115,7 +121,7 @@ class VideoTransport:
             available = self.process is not None and self.process.poll() is None
             return dict(webrtc_available=available, preview=PREVIEW.copy(), profiles=deepcopy(PROFILES), streams=list(VIDEO_STREAMS), viewers=len(self.sessions)+len(self.sockets)+len(self.pending),
                         fallback=dict(width=640,max_fps=5,jpeg_quality=45),
-                        error=self.error, epoch=self.epoch, runtime_quality=self.quality.snapshot())
+                        error=self.error, epoch=self.epoch, encoder_fps={locale+'_'+profile:self.quality.rate('video_send_'+locale+'_'+profile) for locale,profile in list(self.publishers)}, runtime_quality=self.quality.snapshot())
 
     def submit(self, image, persons, config, fresh, regions_match, received, meta=None):
         with self.condition:
@@ -127,6 +133,9 @@ class VideoTransport:
             self.epoch += 1
             self.latest = None
             self.jpegs.clear()
+            for publisher in getattr(self, 'publishers', {}).values():
+                if hasattr(publisher, 'cancel'):
+                    publisher.cancel()
             # shutdown cancels blocked writes without waiting for network acknowledgements.
             for connection in self.sockets | getattr(self, 'output_sockets', set()):
                 try:
@@ -135,20 +144,47 @@ class VideoTransport:
                     pass
             self.condition.notify_all()
 
-    def add_socket(self, connection, profile='remote'):
+    def add_socket(self, connection, profile='remote', stream='zh-CN', token=None):
         with self.condition:
+            if not hasattr(self,'fallback_sessions'): self.fallback_sessions={}
+            if not hasattr(self,'cancelled_fallbacks'): self.cancelled_fallbacks={}
+            now=time.monotonic()
+            self.cancelled_fallbacks={k:t for k,t in self.cancelled_fallbacks.items() if now-t<60}
+            if token and (token in self.cancelled_fallbacks or token in self.fallback_sessions or token in self.sessions):
+                raise ValueError('Video session closed or already in use')
             if len(self.sockets)+len(self.sessions)+len(self.pending) >= 3:
                 raise ValueError('Video viewer limit reached')
             self.sockets.add(connection)
             if not hasattr(self,'socket_profiles'):
                 self.socket_profiles={}
             self.socket_profiles[connection]=profile
+            if not hasattr(self,'socket_streams'): self.socket_streams={}
+            self.socket_streams[connection]=(stream,profile)
+            if token: self.fallback_sessions[token]=connection
             return self.epoch
 
     def remove_socket(self, connection):
         with self.condition:
             self.sockets.discard(connection)
             self.socket_profiles.pop(connection,None)
+            getattr(self,'socket_streams',{}).pop(connection,None)
+            for token,client in list(getattr(self,'fallback_sessions',{}).items()):
+                if client is connection: self.fallback_sessions.pop(token,None)
+
+    def cancel_fallback(self, token):
+        """Close the actual HTTP stream, including cancellation-before-registration."""
+        with self.condition:
+            if not hasattr(self,'cancelled_fallbacks'): self.cancelled_fallbacks={}
+            now=time.monotonic()
+            self.cancelled_fallbacks={k:t for k,t in self.cancelled_fallbacks.items() if now-t<60}
+            self.cancelled_fallbacks[token]=now
+            while len(self.cancelled_fallbacks)>1024: self.cancelled_fallbacks.pop(next(iter(self.cancelled_fallbacks)))
+            connection=getattr(self,'fallback_sessions',{}).get(token)
+            if connection is not None:
+                try: connection.shutdown(socket.SHUT_RDWR)
+                except OSError: pass
+                self.remove_socket(connection)
+            self.condition.notify_all()
 
     def create(self, locale, offer, profile='remote'):
         if locale not in VIDEO_STREAMS:
@@ -239,7 +275,7 @@ class VideoTransport:
                       webrtcLocalUDPAddress=f':{ICE_PORT}',webrtcLocalTCPAddress=f':{ICE_PORT}',
                       webrtcIPsFromInterfaces=False,webrtcAdditionalHosts=list(dict.fromkeys(addresses)),
                       webrtcICEServers2=[],api=True,apiAddress=f'127.0.0.1:{API_PORT}',
-                      udpMaxPayloadSize=1180,writeQueueSize=64,
+                      udpMaxPayloadSize=1180,writeQueueSize=512,
                       paths={'worktime-'+locale+'-'+profile:dict(source='publisher') for locale in VIDEO_STREAMS for profile in PROFILES})
         directory = self.root/'logs'
         directory.mkdir(exist_ok=True)
@@ -251,14 +287,18 @@ class VideoTransport:
 
     def run(self):
         import cv2
+        from .encoder_process import ProcessPublisher
         last_server_attempt = 0
         published = {}
-        last_publish = dict.fromkeys(PROFILES,0)
+        next_publish = dict.fromkeys(PROFILES,0)
         last_jpeg = dict.fromkeys(PROFILES,0)
         active_epoch = self.epoch
         while not self.stop.is_set():
             try:
                 now = time.monotonic()
+                for publisher in list(self.publishers.values()):
+                    if hasattr(publisher, 'poll_updates'):
+                        publisher.poll_updates()
                 if (self.process is None or self.process.poll() is not None) and now-last_server_attempt >= 3:
                     last_server_attempt = now
                     try:
@@ -269,14 +309,16 @@ class VideoTransport:
                     epoch = self.epoch
                     packet = self.latest
                     stale = not packet or now-packet[-1]/1e9 >= packet[3]['max_observation_age']
-                    obsolete = [key for key,value in self.sessions.items() if value['epoch'] != epoch or stale or now-value['created'] > 30]
+                    expired = stale and (not packet or now-packet[-1]/1e9 >= packet[3]['max_observation_age']+FRAME_RECOVERY_SECONDS)
+                    obsolete = [key for key,value in self.sessions.items() if value['epoch'] != epoch or expired or now-value['created'] > 30]
                     removed = [self.sessions.pop(key) for key in obsolete]
                     demanded = {(value['locale'],value['profile']) for value in self.sessions.values()}
                     demanded.update(key for key,version in self.pending.values() if version == epoch)
-                    jpeg_profiles = set(self.socket_profiles.values())
+                    jpeg_demand = set(getattr(self,'socket_streams',{}).values())
+                    jpeg_profiles = {profile for _,profile in jpeg_demand}
                 for session in removed:
                     self.delete_remote(session['path'])
-                if active_epoch != epoch or stale:
+                if active_epoch != epoch or expired:
                     for publisher in self.publishers.values():
                         publisher.close()
                     with self.condition:
@@ -288,6 +330,10 @@ class VideoTransport:
                     if locale not in demanded:
                         self.publishers.pop(locale).close()
                 if stale:
+                    # Do not send/cache expired pixels. Keep the encoder and peer
+                    # briefly so a short scheduling gap resumes without negotiation.
+                    with self.condition:
+                        self.jpegs.clear()
                     self.stop.wait(.01)
                     continue
                 _,image,persons,config,fresh,regions_match,meta,received = packet
@@ -295,19 +341,26 @@ class VideoTransport:
                 for profile,options in PROFILES.items():
                     jpeg_needed = profile in jpeg_profiles
                     profile_demand = {key for key in demanded if key[1] == profile}
+                    profile_jpeg = {key for key in jpeg_demand if key[1] == profile}
                     if not profile_demand and not jpeg_needed:
                         continue
-                    if published.get(profile) is packet or now-last_publish[profile] < 1/options['max_fps']:
+                    if published.get(profile) is packet or now < next_publish[profile]:
                         continue
                     published[profile] = packet
-                    last_publish[profile] = now
+                    interval = 1/options['max_fps']
+                    # Keep the cadence anchored across scheduling jitter. Resetting
+                    # to now every time accumulates delays and drops camera frames.
+                    deadline = next_publish[profile]
+                    next_publish[profile] = (deadline + (int((now-deadline)/interval)+1)*interval
+                                             if deadline else now+interval)
                     target_width = min(options['width'],width)//2*2
                     target_height = max(2,round(height*target_width/width/2)*2)
-                    small = cv2.resize(image,(target_width,target_height),interpolation=cv2.INTER_AREA)
                     jpeg_interval = .1 if profile == 'local' else .2
                     make_jpeg = jpeg_needed and now-last_jpeg[profile] >= jpeg_interval
                     quality = 82 if profile == 'local' else 45
                     def cache_jpeg(locale,marked):
+                        if marked.shape[1]>target_width:
+                            marked=cv2.resize(marked,(target_width,target_height),interpolation=cv2.INTER_AREA)
                         ok,jpeg = cv2.imencode('.jpg',marked,[cv2.IMWRITE_JPEG_QUALITY,quality])
                         if ok:
                             with self.condition:
@@ -316,20 +369,19 @@ class VideoTransport:
                                     self.condition.notify_all()
                     for locale in VIDEO_STREAMS:
                         key=(locale,profile)
-                        if key not in profile_demand and not make_jpeg:
+                        wanted_jpeg=make_jpeg and key in profile_jpeg
+                        if key not in profile_demand and not wanted_jpeg:
                             continue
-                        marked = preview_frame(small, persons, config, fresh, regions_match, locale)
                         if key in profile_demand:
                             if key not in self.publishers:
-                                self.publishers[key] = H264Publisher(locale,target_width,target_height,profile)
+                                self.publishers[key] = ProcessPublisher(locale,width,height,profile,self.quality,self.root)
                             with self.condition:
                                 if epoch != self.epoch:
                                     break
-                                encoded_started = time.monotonic_ns()
-                                self.publishers[key].write(marked, received)
-                                self.quality.sample('encoder_submit_ms', (time.monotonic_ns()-encoded_started)/1e6)
-                                self.quality.mark('video_send_'+locale+'_'+profile)
-                        if make_jpeg:
+                                self.publishers[key].write(image,received,persons,config,fresh,regions_match)
+                        if wanted_jpeg:
+                            small = image if image.shape[:2] == (target_height,target_width) else cv2.resize(image,(target_width,target_height),interpolation=cv2.INTER_LINEAR)
+                            marked = preview_frame(small,persons,config,fresh,regions_match,locale)
                             cache_jpeg(locale,marked)
                     if make_jpeg:
                         last_jpeg[profile] = now

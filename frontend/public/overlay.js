@@ -18,6 +18,32 @@ export function applyVisualization(value=visualizationDefaults()) {
 }
 applyVisualization();
 
+export function stationFill(ctx,points,color,opacity) {
+  const ys=points.map(p=>p[1]),top=Math.min(...ys),bottom=Math.max(...ys);
+  const gradient=ctx.createLinearGradient(0,top,0,Math.max(top+1,bottom));
+  const rgb=[1,3,5].map(i=>parseInt(color.slice(i,i+2),16));
+  for(const [position,strength] of overlayStyle.station_gradient.stops)gradient.addColorStop(position,`rgba(${rgb.join(',')},${opacity*strength})`);
+  return gradient;
+}
+const stationMasks=new Map();
+function paintStationMask(ctx,points,color,opacity,width,height) {
+  if(!browser){ctx.fillStyle=stationFill(ctx,points,color,opacity);ctx.fill();return;}
+  const key=JSON.stringify([points,color,opacity,width,height]);
+  if(!stationMasks.has(key)){
+    const mask=document.createElement('canvas');mask.width=width;mask.height=height;
+    const c=mask.getContext('2d');c.beginPath();points.forEach(([x,y],i)=>i?c.lineTo(x,y):c.moveTo(x,y));c.closePath();c.fillStyle='#fff';c.fill();
+    const image=c.getImageData(0,0,width,height),data=image.data,distance=new Float32Array(width*height),diagonal=Math.SQRT2;
+    for(let i=0;i<distance.length;i++)distance[i]=data[i*4+3]===0?0:Math.min(i%width+1,width-i%width,Math.floor(i/width)+1,height-Math.floor(i/width));
+    for(let y=0;y<height;y++)for(let x=0;x<width;x++){const i=y*width+x;if(x)distance[i]=Math.min(distance[i],distance[i-1]+1);if(y)distance[i]=Math.min(distance[i],distance[i-width]+1,x?distance[i-width-1]+diagonal:Infinity,x+1<width?distance[i-width+1]+diagonal:Infinity);}
+    for(let y=height-1;y>=0;y--)for(let x=width-1;x>=0;x--){const i=y*width+x;if(x+1<width)distance[i]=Math.min(distance[i],distance[i+1]+1);if(y+1<height)distance[i]=Math.min(distance[i],distance[i+width]+1,x?distance[i+width-1]+diagonal:Infinity,x+1<width?distance[i+width+1]+diagonal:Infinity);}
+    c.clearRect(0,0,width,height);c.beginPath();points.forEach(([x,y],i)=>i?c.lineTo(x,y):c.moveTo(x,y));c.closePath();c.fillStyle=stationFill(c,points,color,opacity);c.fill();
+    const tint=c.getImageData(0,0,width,height),feather=Math.max(1,overlayStyle.station_gradient.feather_px*width/overlayStyle.reference_width);
+    for(let i=0;i<distance.length;i++)tint.data[i*4+3]*=Math.min(1,distance[i]/feather);
+    c.putImageData(tint,0,0);stationMasks.set(key,mask);if(stationMasks.size>4)stationMasks.delete(stationMasks.keys().next().value);
+  }
+  ctx.drawImage(stationMasks.get(key),0,0);
+}
+
 export function overlayDimensions(width) {
   const scale = Math.max(.65, Math.min(1.6, width/overlayStyle.reference_width));
   const keys = ['line_width','corner_width','point_radius','anchor_radius','label_padding_x',
@@ -70,7 +96,7 @@ export function drawDetectionOverlay(canvas, image, observation, {fresh=true, re
   canvas.height = image.naturalHeight;
   const ctx = canvas.getContext('2d');
   ctx.drawImage(image,0,0);
-  if (!regionsMatch) return;
+  if (!regionsMatch || observation.detection_enabled === false) return;
   const metrics = overlayDimensions(canvas.width);
   const visualization=observation.visualization??visualizationDefaults();
   const colors={...overlayStyle.colors,...visualization.colors};
@@ -84,8 +110,8 @@ export function drawDetectionOverlay(canvas, image, observation, {fresh=true, re
   ctx.lineJoin = 'round';
   ctx.lineCap = 'round';
   const labelHeight = metrics.font_size+2+2*metrics.label_padding_y;
-  function label(x,y,key,color) {
-    let value = tr(key), original = value;
+  function label(x,y,key,color,custom=null) {
+    let value = custom??tr(key), original = value;
     const maxWidth = canvas.width-2*metrics.margin-2*metrics.label_padding_x;
     while (value && ctx.measureText(value).width>maxWidth) {
       original=original.slice(0,-1);
@@ -101,17 +127,11 @@ export function drawDetectionOverlay(canvas, image, observation, {fresh=true, re
       ctx.beginPath();
       points.map(xy).forEach(([x,y],i) => i?ctx.lineTo(x,y):ctx.moveTo(x,y));
       ctx.closePath();
-      {
-        ctx.globalAlpha=visualization[name+'_fill_alpha'];
-        ctx.fillStyle=colors[name];
-        ctx.fill();
-        ctx.globalAlpha=1;
+      if(name==='station')paintStationMask(ctx,points.map(xy),colors[name],visualization.station_fill_alpha,canvas.width,canvas.height);
+      else {
+        ctx.globalAlpha=visualization.seat_fill_alpha;ctx.fillStyle=colors[name];ctx.fill();ctx.globalAlpha=1;
+        ctx.setLineDash([]);ctx.lineWidth=metrics.line_width;ctx.strokeStyle=colors[name];ctx.stroke();
       }
-      ctx.setLineDash(name==='station'?[metrics.dash_length,metrics.dash_gap]:[]);
-      ctx.lineWidth=metrics.line_width;
-      ctx.strokeStyle=colors[name];
-      ctx.stroke();
-      ctx.setLineDash([]);
       const origin=points.map(xy).sort((a,b)=>a[1]-b[1]||a[0]-b[0])[0];
       regions.push(label(origin[0]+metrics.label_gap,origin[1]+metrics.label_gap,'overlay.'+name,colors[name]));
     }
@@ -121,9 +141,20 @@ export function drawDetectionOverlay(canvas, image, observation, {fresh=true, re
     for(const name of ['pending','completed']){
       const points=materials.regions[name];if(!materials.display[name]||!points?.length)continue;
       ctx.beginPath();points.map(xy).forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.closePath();
-      ctx.fillStyle=materials.colors[name];ctx.globalAlpha=materials.opacity[name];ctx.fill();ctx.globalAlpha=1;
-      ctx.strokeStyle=materials.colors[name];ctx.lineWidth=metrics.line_width;ctx.stroke();
-      const origin=points.map(xy).sort((a,b)=>a[1]-b[1]||a[0]-b[0])[0];regions.push(label(origin[0]+metrics.label_gap,origin[1]+metrics.label_gap,'studio.'+name,materials.colors[name]));
+      if(materials.masks?.[name]!==false){ctx.fillStyle=materials.colors[name];ctx.globalAlpha=materials.opacity[name];ctx.fill();ctx.globalAlpha=1;}
+      ctx.setLineDash([metrics.dash_length,metrics.dash_gap]);ctx.strokeStyle=(observation.material_observation?.alerts||[]).some(a=>a.region===name)?'#ff6464':materials.colors[name];ctx.lineWidth=metrics.line_width;ctx.stroke();
+      const bottom=points.map(xy).sort((a,b)=>b[1]-a[1]).slice(0,2);const origin=[(bottom[0][0]+bottom[1][0])/2,(bottom[0][1]+bottom[1][1])/2];const tag=label(origin[0],origin[1]-labelHeight-metrics.label_gap,'studio.'+name,materials.colors[name],materials.names?.[name]||null);tag.x-=tag.width/2;regions.push(tag);
+    }
+  }
+  ctx.setLineDash([]);
+  const materialStatus=observation.material_observation;
+  if(fresh&&materialStatus?.available&&!observation.camera_changed){
+    for(const d of materialStatus.detections||[]){
+      const style=materials?.class_styles?.[d.class_id]||{},color=d.role==='alert'?'#ff6464':style.color||'#c084fc';
+      const [x1,y1]=xy(d.bbox_xyxy.slice(0,2)),[x2,y2]=xy(d.bbox_xyxy.slice(2));ctx.strokeStyle=color;ctx.lineWidth=metrics.corner_width;
+      for(const [origin,horizontal,vertical] of cornerSegments([x1,y1,x2,y2],metrics)){ctx.beginPath();ctx.moveTo(...horizontal);ctx.lineTo(...origin);ctx.lineTo(...vertical);ctx.stroke();}
+      const title=materialDetectionLabel(d,materials,materialStatus);
+      people.push(label(x1,y1-labelHeight-metrics.label_gap,'studio.abnormal',color,title));
     }
   }
   for (const person of fresh && observation.inference?.accepted!==false?observation.persons:[]) {
@@ -176,4 +207,11 @@ export function drawDetectionOverlay(canvas, image, observation, {fresh=true, re
     ctx.fillText(item.text,item.x+metrics.label_padding_x,item.y+item.height/2);
   }
   ctx.restore();
+}
+
+export function materialDetectionLabel(d,materials,status={}) {
+  const style=materials.class_styles?.[d.class_id]||{};
+  return (style.name||status.class_names?.[d.class_id]||String(d.class_id))
+    +(materials.show_confidence!==false?' '+d.confidence.toFixed(2):'')
+    +(d.role==='alert'?' · '+tr('studio.abnormal'):'');
 }

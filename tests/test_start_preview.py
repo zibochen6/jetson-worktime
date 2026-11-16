@@ -114,11 +114,11 @@ class StartPreviewTests(unittest.TestCase):
         value.latest = None
         value.sessions = {'viewer':dict(epoch=0,locale='en',profile='local',created=time.monotonic(),path='/viewer')}
         value.pending, value.socket_profiles, value.jpegs = {}, {}, {}
-        value.process = SimpleNamespace(poll=lambda:None)
+        value.process = SimpleNamespace(poll=lambda:None,terminate=lambda:None,wait=lambda timeout:None)
         value.quality = RuntimeQuality()
         value.delete_remote = lambda path:None
         sent, first = [], threading.Event()
-        def write(image, received):
+        def write(image, received, *metadata):
             sent.append((received,time.monotonic()))
             first.set()
             if len(sent)==2: value.stop.set()
@@ -138,7 +138,7 @@ class StartPreviewTests(unittest.TestCase):
                 value.stop.set()
                 thread.join(timeout=1)
         self.assertEqual([n for n,t in sent],[received,received+1])
-        self.assertGreaterEqual(sent[1][1]-sent[0][1],1/12-.005)
+        self.assertGreaterEqual(sent[1][1]-sent[0][1],1/20-.005)
 
 
 if __name__ == '__main__':

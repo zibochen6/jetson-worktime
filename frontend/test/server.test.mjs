@@ -19,7 +19,9 @@ test('independent mock server serves UI, errors and disconnect/recovery without 
  assert.equal((await get('/settings?embedded=1')).status,200);
  assert.match(html,/<dialog id="helpDialog"/);
  assert.match(html, /id="modeToggle"/);
- assert.match(html, /id="timelinePanel"/);
+ assert.doesNotMatch(html, /id="timelinePanel"/);
+ assert.match(html, /id="assemblyZoneCard"/);
+ assert.match(html, /id="completedZoneCard"/);
  assert.match(html, /src="data:image\/webp;base64,/);
  assert.match(html, /id="healthFps"/);
  const ids=[...html.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]);

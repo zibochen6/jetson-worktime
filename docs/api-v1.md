@@ -127,7 +127,7 @@ POST /api/v1/work/actions 的确认请求为以下结构。
 
 旧记录缺少轨迹证据时标记 UNVERIFIED，不将其作为人员区分验收证据。回放应提供采集时对应的配置文件。真实多人交叉准确率仍需要带标注的现场片段验证。
 
-WebRTC WHEP 与 MJPEG 地址支持 `profile=remote|local`。remote 默认 640×360/10 FPS/600 Kbps，local 最大 1920×1080/12 FPS/4 Mbps。浏览器按地址自动选择，localhost、回环地址和 RFC1918 局域网地址使用 local，Tailscale 地址使用 remote。高清流在原始脱敏帧上降采样，保留输入细节。
+WebRTC WHEP 与 MJPEG 地址支持 `profile=remote|local`。remote 默认 640×360/10 FPS/600 Kbps，local 最大 1920×1080/20 FPS/4 Mbps。浏览器按地址自动选择，localhost、回环地址和 RFC1918 局域网地址使用 local，Tailscale 地址使用 remote。高清流在原始脱敏帧上降采样，保留输入细节。
 
 显示设置新增 station 和 seat，独立控制工位范围和在位判断区的蒙版、边界与标签。仍接受旧三字段显示配置，regions 的值同时应用于这两个开关。新配置保留 regions 兼容字段，其值为 station 或 seat 开启。
 
@@ -151,6 +151,63 @@ Studio requests use `/api/v1/models`, `/api/v1/datasets`, `/api/v1/training/jobs
 
 Paths above are relative to `/api/v1`. Training state is one of `queued/preparing/running/validating/saving/stopping/completed/paused/interrupted/failed/cancelled`. A successful job registers an inactive material model. It never auto-activates a model or resets production camera settings.
 
-Capture preview uses `POST /api/v1/video/whep/raw?profile=remote|local`, or the overlay-free `/api/v1/video.mjpg` fallback. `raw` removes all detection layers but keeps device privacy protection. Responses identify `X-Video-Stream: raw` and `X-Preview-Overlay: false`. Shared capture streams do not depend on interface language. Capture preview uses HD (up to 1920px / 12FPS / 4Mbps) on localhost and LAN. Only Tailscale IPv4 addresses in 100.64.0.0/10 and *.ts.net hostnames use 640px / 10FPS / 600Kbps. LAN is not automatically downgraded. Saved dataset photos retain full resolution. Optional browser jitter-buffer hints target 100ms, subject to browser and network conditions.
+Capture preview uses `POST /api/v1/video/whep/raw?profile=remote|local`, or the overlay-free `/api/v1/video.mjpg` fallback. `raw` removes all detection layers but keeps device privacy protection. Responses identify `X-Video-Stream: raw` and `X-Preview-Overlay: false`. Shared capture streams do not depend on interface language. Capture preview uses HD (up to 1920px / 20FPS / 4Mbps) on localhost and LAN. Only Tailscale IPv4 addresses in 100.64.0.0/10 and *.ts.net hostnames use 640px / 10FPS / 600Kbps. LAN is not automatically downgraded. Saved dataset photos retain full resolution. Optional browser jitter-buffer hints target 100ms, subject to browser and network conditions.
 
 Project classes: PUT /api/v1/datasets/{dataset_id}/classes accepts expected_revision, action(add/rename/delete), class_id and name. Box arrays add a fifth integer project class ID. Legacy four-coordinate boxes remain class 0. New snapshots freeze names and map stable project IDs to dense YOLO IDs. Old snapshots are not rewritten. Downloads expose queued/running/validating/completed/failed/interrupted with bytes and optional total.
+
+## Assembly counting rules
+
+`materials.rules.pending` and `.completed` each contain `count` and `alert` class ID lists. Lists are mutually exclusive per zone and validated against the selected model. `binding` contains model ID and SHA-256; switching models requires reassignment before enabling. Legacy `class_id` config migrates to both count lists. `names`, `masks`, `class_styles` are display settings and do not settle a session.
+
+Material status adds `by_class`, `initial`, `added`, `alerts`, `class_names`, and `class_styles`. Null counts mean unavailable, not zero. Alert classes are excluded from accepted counts. GET `/api/v1/materials/alerts?active=true&session_id=...` returns up to 200 newest alert records, including resolution state. No-session alerts have a null session ID. Existing session history includes alert and resolution events.
+
+An already-counted item changing to an alert class produces `review_reason=counted_became_abnormal`; resolve via the existing adjustments endpoint with delta -1 or 0, reason, expected_total and idempotency token. Returns use delta 0/1; class conflicts use 0. Unresolved historical events preserve their model and class metadata. Camera change and outdated material observations invalidate quantities and overlays.
+
+
+### Detection controls and display reset
+
+`PUT /api/v1/settings` accepts `operation: {detection_enabled: boolean}` (default true). Disabling settles the active session as `detection_disabled` and enters protected, overlay-free live preview. No business timing, production inference or counting runs. Privacy detection remains when enabled. Training rejects changes with 409.
+
+`materials.show_confidence` defaults true; it controls label scores in video, snapshots and matching frames without changing filtering or ending sessions.
+
+`POST /api/v1/work/actions` accepts `{action: "reset_display", expected_revision, token}`. Tokens are 8–128 characters and device-persistent idempotency keys. Reset settles with `manual_reset`, retains all historical work and production events, and clears the current display and start confirmation. It does not enable detection. Repeat requests do not reset newer sessions. Conflicts return 409, persistence failures return 500.
+
+Camera, work and observation responses expose `detection_enabled` and `operating_mode` (`business`, `preview`, `training`). `Camera.preview_fresh` describes camera video health independently of accepted business observations. `WorkStatus.display_reset` includes the last device-wide reset token and wall-clock timestamp. `DETECTION_DISABLED` is an explicit work state; current material quantities are unavailable, not zero.
+
+
+### Home totals and conditional package alert
+
+Home renders `materials.pending` and `materials.completed` as single current totals, never `cumulative` and never a product-set conversion. The backend's configured count classes define both totals. The current device uses pending box+part, completed packed, and completed not_packed as alert-only.
+
+The red package card counts distinct active completed-zone alert IDs only when material observations are available and camera/configuration/detection state is valid. It is fully hidden otherwise. Stability (1 second by default) and missing buffering (2 seconds) remain backend-owned. Detailed counts, alert history, diagnostics and manual actions remain accessible from statistics/settings. No new public endpoint or wire field is required.
+
+## 计数防抖与独立直播
+
+物料模型对每个实际处理的新帧连续推理，不再受旧 `sample_hz` 限频；人员模型仍先执行，过载时丢弃旧帧而不堆积。物料类别和区域使用 `stable_seconds + 1/sample_hz` 滚动窗口投票，至少两次支持、支持比例不低于75%且跨度达到稳定时间才确认。短时类别跳变保留已确认状态，漏检缓冲仍使用 missing_seconds。整体观测失效时数量为 null。MaterialStatus 增加 observation_state、actual_sample_hz、degradation_reason；budget 降频在仍有有效观察时不立即丢弃确认数量。
+
+局域网/localhost 使用1920宽、最高20 FPS、4 Mbps，Tailscale 沿用640宽压缩档。隐私关闭时采集独立发布直播，模型结果仅驱动业务和显示证据；显示跟随在结果完成后最多300 ms，来源帧总年龄不超过750 ms；失配或过期立即隐藏，不用于计数或隐私。隐私开启仍由同帧脱敏路径放行。
+
+Camera.capture_fps 是实际采集频率，jpeg_output_fps 与兼容 output_fps 为 JPEG 发布频率；video.encoder_fps 是各语言/清晰度的编码提交频率，不是浏览器解码播放频率。播放器通过 WebRTC 接收统计单独显示实际播放。preview_fresh/live_frame_age_ms 表达播放可用性；algorithm_fresh 表达业务观察有效性，两者不能互换。
+
+MJPEG 支持可选 client_id（32位小写十六进制）。播放端通过既有 DELETE /api/v1/video/sessions/{client_id} 取消实际服务端连接；取消操作幂等，60秒内拒绝同令牌迟到请求，取消标记最多保留1024项。旧客户端不提供令牌时仍可播放。回退只生成被订阅的语言/原画版本。WebRTC使用MediaMTX v1.21.3默认512个出站包队列，避免64包队列丢弃高清关键帧突发；最新图像队列仍只保留1帧。
+
+呈现统计使用requestVideoFrameCallback的presentedFrames计数；跳过的回调不等于视频冻结。回调覆盖不足时显示间隔P95和长停顿计数为不可用，另行显示实际呈现帧率。
+
+`materials.sample_hz` 仅为旧配置兼容保留，用于既有计数窗口的额外跨度和失效时限计算；设置界面不再提供模型检测限频项。`actual_sample_hz` 是当前计数实际接收结果频率，不是视频播放 FPS。运行诊断中的 `material_inference_ms` / `material_result_interval_ms` 可核对持续物料推理的耗时和间隔。连续检测不代表相机每一帧都能被两个模型处理；模型落后时处理最新帧。
+
+
+### Single-station optimization additions
+
+These are additive schema 1.0 fields. Old sessions keep their original meaning.
+
+- `materials.inference_region`: `full` (legacy default) or `workbench` (both configured material polygons plus context, coordinates restored to the source frame).
+- `materials.production_policy`: `legacy` (default) or `verified`. Verified mode requires an observed assembly-area origin and stable completed-area arrival; uncertain identity, reappearance or missing origin creates a review.
+- `MaterialStatus.production_basis`: `completion_events_v1` for new verified events, otherwise `legacy`. `production_total` is null for legacy history. New production excludes initial stock and includes explicit review corrections. `cumulative` retains its legacy definition for compatibility.
+- `WorkStatus.activity`: separate `operation_estimate_v1` estimate with active, idle, absent and unknown seconds. It is experimental, advances only on observations, and does not reinterpret `work_seconds` (presence time). Gaps and unavailable evidence are unknown.
+- Session material event history now contains `evidence_frame_url` and `resolved`. `GET /api/v1/materials/evidence/{event_id}.jpg` serves only stored, exact-frame evidence. Current privacy policy is checked before delivery. `X-Evidence-Config-Revision` identifies the historical capture policy; `X-Config-Revision` identifies the delivery policy. Old unprotected evidence is unavailable when privacy is enabled.
+- Review resolution continues to use the existing session adjustments endpoint, event ID, idempotency token and expected cumulative total. Adjustments without an event retain legacy semantics unless `scope: "production"` is explicit.
+- `inference_backend` reports PyTorch or the validated device-bound FP16 cache. Missing, incompatible or failed cache warmup falls back to the authoritative PT model.
+
+Confirmed event totals remain visible when observation is unavailable. Live inventory and active operation estimation must show unavailable rather than a fabricated zero. Historical inference metrics and same-camera held-out metrics do not establish field accuracy.
+
+`materials.confidence_by_class` optionally sets a class-specific threshold. The effective threshold is the maximum of this value and the global confidence floor. Model changes clear these class-specific settings.

@@ -17,6 +17,7 @@ class SessionEngine:
         self.run_id = run_id
         self.current = None
         self.completed = []
+        self.display_start_index = 0
         self.events = []
         self.cursor = None
         self.last_obs = None
@@ -346,7 +347,8 @@ class SessionEngine:
 
     def snapshot(self, now):
         self.tick(now)
-        session = self.current or (self.completed[-1] if self.completed else None)
+        visible = self.completed[self.display_start_index:]
+        session = self.current or (visible[-1] if visible else None)
         totals = self.totals(session)
         away_elapsed, absent_elapsed = self.away_elapsed, self.absent_elapsed
         # Display fresh time without committing a prediction ahead of the next

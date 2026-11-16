@@ -1,4 +1,4 @@
-import {overlayStyle, visualizationDefaults} from './overlay.js';
+import {overlayStyle, visualizationDefaults, stationFill} from './overlay.js';
 import {LocalizedError} from './i18n.js';
 import {containRect} from './api.js';
 
@@ -226,12 +226,15 @@ export class RoiEditor {
       const color = this.regionColors?.[name] ?? visualization.colors[name];
       context.strokeStyle = color;
       context.fillStyle = color;
-      context.globalAlpha = this.regionOpacity?.[name] ?? visualization[name+'_fill_alpha'];
+      context.globalAlpha = this.regionMasks?.[name]===false?0:(this.regionOpacity?.[name] ?? visualization[name+'_fill_alpha']);
       context.lineWidth = (name === this.region ? 2.5 : 1.5) * displayScale;
       context.setLineDash(name === this.region ? [] : [6 * displayScale, 4 * displayScale]);
       context.beginPath();
       points.forEach(([x, y], index) => index ? context.lineTo(x * scaleX, y * scaleY) : context.moveTo(x * scaleX, y * scaleY));
       if (!(name === this.region && this.draft.length)) context.closePath();
+      if(name==='station'){
+        const opacity=context.globalAlpha;context.globalAlpha=1;context.fillStyle=stationFill(context,points.map(([x,y])=>[x*scaleX,y*scaleY]),color,opacity);
+      }
       context.fill();
       context.globalAlpha = 1;
       context.stroke();

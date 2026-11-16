@@ -1,8 +1,10 @@
 // Explicit mock-only studio data. No fake training results are used by device routes.
 import {readFile} from 'node:fs/promises';
 import {randomUUID} from 'node:crypto';
-export const materialDefaults={enabled:false,class_id:0,confidence:.25,stable_seconds:1,missing_seconds:2,sample_hz:2,configured:false,regions:{pending:[],completed:[]},display:{pending:true,completed:true},colors:{pending:'#fbbf24',completed:'#38bdf8'},opacity:{pending:.12,completed:.12}};
+export const materialDefaults={show_confidence:true,enabled:false,class_id:0,confidence:.25,stable_seconds:1,missing_seconds:2,sample_hz:2,configured:false,regions:{pending:[],completed:[]},display:{pending:true,completed:true},colors:{pending:'#fbbf24',completed:'#38bdf8'},opacity:{pending:.12,completed:.12},rules:{pending:{count:[0],alert:[]},completed:{count:[0],alert:[]}},names:{pending:'',completed:''},masks:{pending:true,completed:true},class_styles:{},binding:null};
 const models=[{id:'builtin-person',name:'YOLO11n Pose',role:'person',task:'pose',classes:{0:'person'},builtin:true,source:'builtin',installed:true,sha256:'mock',revision:1}];
+models.push({id:'mock-assembly',name:'Assembly demo (MOCK)',role:'material',task:'detect',classes:{0:'box',1:'not_packed',2:'packed',3:'part'},builtin:false,source:'upload',installed:true,sha256:'a'.repeat(64),revision:1});
+export function materialStatus(settings){const m=settings.materials,ready=m.enabled&&m.configured;const by_class=Object.fromEntries(['pending','completed'].map(r=>[r,Object.fromEntries((m.rules?.[r]?.count||[m.class_id]).map(c=>[c,2]))]));return {enabled:m.enabled,available:!!ready,initialized:!!ready,pending:ready?Object.values(by_class.pending).reduce((a,b)=>a+b,0):null,completed:ready?Object.values(by_class.completed).reduce((a,b)=>a+b,0):null,cumulative:ready?2:0,initial:ready?2:0,added:0,by_class:ready?by_class:null,region_names:m.names,class_styles:m.class_styles,class_names:models.find(x=>x.id===settings.models.material)?.classes||{},alerts:[],reviews:[],session_id:'mock-work-session',age_ms:0};}
 const datasets=[],images=[],snapshots=[],jobs=[],downloads=[];
 const operations=new Map();
 async function body(req){let value='';for await(const c of req)value+=c;if(value.length>1024*1024)return {};return value?JSON.parse(value):{};}
@@ -27,6 +29,14 @@ export async function studioMock(req,res,url,settings){
  }
  if(p.join('/')==='training/jobs'){if(req.method==='GET')return json({jobs});const b=await body(req);if(operations.has(b.token))return json(operations.get(b.token));if(!snapshots.some(s=>s.id===b.snapshot_id))return error('notFound',404);const job={id:randomUUID(),state:'queued',stage:'queued',epoch:0,progress:0,parameters:{epochs:100,...b.parameters},metrics:{},revision:1};jobs.push(job);operations.set(b.token,job);return json(job);}
  if(p[0]==='training'&&p[1]==='jobs'){const job=jobs.find(j=>j.id===p[2]);if(!job)return error('notFound',404);if(p[3]==='actions'){const b=await body(req);job.state=b.action==='resume'?'queued':b.action==='cancel'?'cancelled':'paused';job.revision++;}return json(job);}
- if(p.join('/')==='materials/status')return json({enabled:settings.materials.enabled,available:settings.materials.configured,pending:settings.materials.configured?3:null,completed:settings.materials.configured?5:null,cumulative:settings.materials.enabled?5:0,reviews:[],session_id:'mock-work-session'});
+ if(p.join('/')==='materials/status')return json(materialStatus(settings));
+ if(p.join('/')==='materials/alerts')return json({alerts:[]});
  return error('notFound',404);
+}
+
+export function assemblyFixture(alert=false){
+ return {enabled:true,available:true,observation_state:'valid',actual_sample_hz:2,degradation_reason:null,initialized:true,pending:2,completed:2,
+ by_class:{pending:{0:1,3:1},completed:{2:2}},initial:2,added:0,cumulative:2,session_id:'mock-work-session',
+ class_names:{0:'box',1:'not_packed',2:'packed',3:'part'},region_names:{pending:'',completed:''},class_styles:{},
+ alerts:alert?[{id:'mock-incomplete-package',config_revision:0,model_id:'mock-assembly',active:true,region:'completed',class_id:1,track_id:'mock-item',timestamp:Date.now()/1000,session_id:'mock-work-session'}]:[],reviews:[],age_ms:0};
 }

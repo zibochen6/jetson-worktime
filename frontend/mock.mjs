@@ -1,10 +1,10 @@
-import {studioMock,materialDefaults} from './studio-mock.mjs';
+import {studioMock,materialDefaults,materialStatus,assemblyFixture} from './studio-mock.mjs';
 import {overlayStyle,visualizationDefaults} from './public/overlay.js';
 import {readFile} from 'node:fs/promises';
 import {validateRegions} from './public/roi-editor.js';
-const scenarios=['idle','start','working','away','rest','done','unknown','offline','algorithm','moved','owner_return'];
+const scenarios=['idle','start','working','away','rest','done','unknown','offline','algorithm','moved','owner_return','assembly','assembly_alert','assembly_stale'];
 let scenario='idle';let review=false;let ownerConfirmed=false;
-let cameraTest=null;
+let cameraTest=null;const resetReceipts=new Set();
 let streamSession='mock-stream';
 const mockDevices=[{device:'/dev/v4l/by-id/mock-usb-camera',name:'Mock USB camera',formats:['yuyv','mjpeg','h264']}];
 const defaultDetection = {person_confidence:.10,keypoint_confidence:.40};
@@ -12,7 +12,7 @@ const defaultTiming = {start_seconds:10, short_away_seconds:60, stop_absent_seco
 const deviceSettings = {
   camera_source:{type:'rtsp',url:'rtsp://192.168.1.100:554/stream',username:'admin',password_set:true,codec:'h265'},
   models:{person:'builtin-person',material:null},materials:structuredClone(materialDefaults),
-  revision:0, privacy:{enabled:true}, display:{...overlayStyle.defaults,station:true,seat:true},
+  operation:{detection_enabled:true},revision:0, privacy:{enabled:true}, display:{...overlayStyle.defaults,station:true,seat:true},
   detection:{...defaultDetection}, visualization:visualizationDefaults(),
   timing:{...defaultTiming}, image_size:[2560,1440], roi_configured:false,
   regions:{station:[[1664,0],[2559,0],[2559,1439],[1664,1439]],seat:[[2125,331],[2559,331],[2559,893],[2125,893]]}
@@ -33,14 +33,14 @@ export function systemMetricsFixture() {
 
 export function fixtures(name=scenario){
   const now=process.uptime(),ns=String(Math.round(now*1e9)),regions=structuredClone(deviceSettings.regions);
-  const mode={idle:'NOT_STARTED',start:'START_PENDING',working:'WORKING',away:'AWAY_PENDING',rest:'REST',done:'NOT_STARTED',unknown:'OBSERVATION_UNKNOWN',offline:'OBSERVATION_UNKNOWN',algorithm:'OBSERVATION_UNKNOWN',moved:'OBSERVATION_UNKNOWN',owner_return:'AWAY_PENDING'}[name];
+  const mode={idle:'NOT_STARTED',start:'START_PENDING',working:'WORKING',away:'AWAY_PENDING',rest:'REST',done:'NOT_STARTED',unknown:'OBSERVATION_UNKNOWN',offline:'OBSERVATION_UNKNOWN',algorithm:'OBSERVATION_UNKNOWN',moved:'OBSERVATION_UNKNOWN',owner_return:'AWAY_PENDING',assembly:'WORKING',assembly_alert:'WORKING',assembly_stale:'WORKING'}[name];
   const behavior=['unknown','offline','algorithm','moved'].includes(name)?'UNKNOWN':['idle','done'].includes(name)?'MISSING':name==='owner_return'?'MISSING':['away','rest'].includes(name)?'NEARBY':'SEATED';
   const person={person_track_id:7,bbox_xyxy:[2020,250,2540,1400],confidence:.93,valid:true,
     upper_body_anchor:[2300,570],keypoints:[[2300,380],[2260,360],[2340,360],[2220,380],[2380,380],[2150,570],[2450,570],[2120,800],[2470,800],[2200,980],[2400,980],[2200,1080],[2400,1080],null,null,null,null].map(p=>({x:p?.[0]??null,y:p?.[1]??null,confidence:p?.[0]!==undefined?.94:.1}))};
-  const active=['working','away','rest','unknown','algorithm','moved','owner_return'].includes(name),has=active||name==='done';
+  const active=['working','away','rest','unknown','algorithm','moved','owner_return','assembly','assembly_alert','assembly_stale'].includes(name),has=active||name==='done';
   const reason_code={SEATED:'reason.seated',NEARBY:'reason.nearby',MISSING:'reason.missing',UNKNOWN:'reason.ambiguous'}[behavior];
   const work={schema_version:'1.0',config_revision:deviceSettings.revision,privacy_applied:deviceSettings.privacy.enabled,state:mode,behavior,reason:'MOCK 模拟情景：'+name,reason_code,reason_params:{},run_id:'mock-run',session_id:has?'mock-work-session':null,active,session_start:has?0:null,session_end:name==='done'?now:null,review,
-    materials:{enabled:deviceSettings.materials.enabled,available:deviceSettings.materials.configured,pending:3,completed:5,cumulative:5,reviews:[]},
+    materials:name.startsWith('assembly')?{...assemblyFixture(name==='assembly_alert'),...(name==='assembly_stale'?{available:false,pending:null,completed:null,alerts:[]}:{} )}:materialStatus(deviceSettings),
     work_seconds:has?1115:0,rest_seconds:has?85:0,unknown_seconds:name==='unknown'?12:0,pending_seconds:name==='away'?25:0,start_pending_seconds:name==='start'?5:0,completed_sessions:name==='done'?1:0,
     thresholds:{...deviceSettings.timing},frame_ref:{session_id:streamSession,receive_sequence:1,pts_ns:ns,receive_monotonic_ns:ns},algorithm_error:name==='algorithm'?'RuntimeError':null,roi_provisional:!deviceSettings.roi_configured,camera_changed:name==='moved',regions,image_size:[2560,1440],last_observation_monotonic_seconds:now,server_monotonic_seconds:now,server_wall_time_ms:Date.now()};
   work.start_confirmation={state:name==='moved'?'BLOCKED':active?'ACTIVE':name==='start'?'CONFIRMING':'WAITING',elapsed_seconds:work.start_pending_seconds,required_seconds:deviceSettings.timing.start_seconds,candidate_track_id:name==='start'?7:null,blocker_code:name==='moved'?'reason.moved':null,blocker_params:{},last_reset:null};
@@ -57,7 +57,8 @@ export function fixtures(name=scenario){
     observation.persons[0].is_session_operator=!waiting;
     observation.persons[0].ownership_zone='SEATED';
   }
-  return {work,camera:{video:{webrtc_available:false,streams:['zh-CN','en','raw']},schema_version:'1.0',config_revision:deviceSettings.revision,privacy_applied:deviceSettings.privacy.enabled,output_fps:name==='algorithm'?0:5,algorithm_error:name==='algorithm'?'RuntimeError':null,regions_match:true,camera_changed:name==='moved',status:name==='offline'?'reconnecting':'online',sequence:1,width:2560,height:1440,jpeg_width:1280,jpeg_height:720,source_fps:20,stream_session_id:streamSession,receive_sequence:1,pts_ns:ns,age_ms:name==='offline'?6000:0,source_type:deviceSettings.camera_source.type,device_name:deviceSettings.camera_source.device||'RTSP',connection_error:null,codec:deviceSettings.camera_source.codec||deviceSettings.camera_source.format,decoder:['yuyv','mjpeg'].includes(deviceSettings.camera_source.format)?'software':'nvv4l2decoder',preview_max_fps:12,preview_has_project_overlay:false},envelope:{schema_version:'1.0',config_revision:deviceSettings.revision,privacy_applied:deviceSettings.privacy.enabled,available:!['offline','algorithm'].includes(name),fresh:!['offline','algorithm'].includes(name),age_ms:name==='offline'?null:0,algorithm_error:name==='algorithm'?'RuntimeError':null,observation:['offline','algorithm'].includes(name)?null:observation}};
+  if(!deviceSettings.operation.detection_enabled){work.active=false;work.operating_mode='preview';work.detection_enabled=false;work.state='DETECTION_DISABLED';work.reason_code='operation.preview';work.start_pending_seconds=0;work.materials.available=false;work.materials.by_class=null;work.materials.pending=work.materials.completed=null;observation.persons=[];observation.inference.accepted=false;observation.detection_enabled=false;}else{work.operating_mode='business';work.detection_enabled=true;}
+  return {work,camera:{detection_enabled:deviceSettings.operation.detection_enabled,operating_mode:deviceSettings.operation.detection_enabled?'business':'preview',preview_fresh:true,capture_fps:20,jpeg_output_fps:5,live_frame_age_ms:30,video:{webrtc_available:false,encoder_fps:{},profiles:{local:{width:1920,max_fps:20,bitrate:4000000},remote:{width:640,max_fps:10,bitrate:600000}},streams:['zh-CN','en','raw']},schema_version:'1.0',config_revision:deviceSettings.revision,privacy_applied:deviceSettings.privacy.enabled,output_fps:name==='algorithm'?0:5,algorithm_error:name==='algorithm'?'RuntimeError':null,regions_match:true,camera_changed:name==='moved',status:name==='offline'?'reconnecting':'online',sequence:1,width:2560,height:1440,jpeg_width:1280,jpeg_height:720,source_fps:20,stream_session_id:streamSession,receive_sequence:1,pts_ns:ns,age_ms:name==='offline'?6000:0,source_type:deviceSettings.camera_source.type,device_name:deviceSettings.camera_source.device||'RTSP',connection_error:null,codec:deviceSettings.camera_source.codec||deviceSettings.camera_source.format,decoder:['yuyv','mjpeg'].includes(deviceSettings.camera_source.format)?'software':'nvv4l2decoder',preview_max_fps:20,preview_has_project_overlay:false},envelope:{schema_version:'1.0',config_revision:deviceSettings.revision,privacy_applied:deviceSettings.privacy.enabled,available:!['offline','algorithm'].includes(name),fresh:!['offline','algorithm'].includes(name),age_ms:name==='offline'?null:0,algorithm_error:name==='algorithm'?'RuntimeError':null,observation:['offline','algorithm'].includes(name)?null:observation}};
 }
 export async function mockReply(req,res,url){
   res.setHeader('Cache-Control','no-store');
@@ -109,11 +110,14 @@ export async function mockReply(req,res,url){
       deviceSettings.camera_source=source;deviceSettings.roi_configured=false;deviceSettings.revision++;scenario='idle';cameraTest=null;streamSession='mock-stream-'+deviceSettings.revision;
       return json(settingsFixture());
     }
-    const allowed=['expected_revision','privacy','display','timing','regions','image_size','reference_frame','detection','visualization','models','materials'];
+    const allowed=['expected_revision','privacy','display','timing','regions','image_size','reference_frame','detection','visualization','models','materials','operation'];
     if(Object.keys(request).some(key=>!allowed.includes(key)))return error('BAD_REQUEST','Unknown field',400);
     const next=structuredClone(deviceSettings);
     try {
-      for(const key of ['privacy','display','timing','regions','image_size','detection','visualization','models','materials']) if(key in request) next[key]=request[key];
+      for(const key of ['privacy','display','timing','regions','image_size','detection','visualization','models','materials','operation']) if(key in request) next[key]=request[key];
+      if(!next.operation || Object.keys(next.operation).length!==1 || typeof next.operation.detection_enabled!=='boolean')throw new Error('Invalid operation');
+      if(typeof next.materials.show_confidence!=='boolean')throw new Error('Invalid confidence display');
+      if(next.materials.enabled){const rules=next.materials.rules;if(!rules||!rules.completed.count.length||['pending','completed'].some(r=>rules[r].count.some(c=>rules[r].alert.includes(c))))throw new Error('Invalid assembly rules');}
       if(!next.privacy || Object.keys(next.privacy).join(',')!=='enabled' || typeof next.privacy.enabled!=='boolean') throw new Error('privacy.enabled 必须为布尔值');
       if(!next.visualization || Object.keys(next.visualization).length!==3 || !next.visualization.colors || Object.keys(next.visualization.colors).length!==6 || Object.keys(visualizationDefaults().colors).some(key=>!/^#[0-9a-f]{6}$/i.test(next.visualization.colors[key]??'')) || ['station_fill_alpha','seat_fill_alpha'].some(key=>!Number.isFinite(next.visualization[key])||next.visualization[key]<0||next.visualization[key]>1))return error('BAD_REQUEST','Invalid palette',400,{message_key:'visualization.invalid'});
       if(!next.display || ![3,5].includes(Object.keys(next.display).length) || ['boxes','regions','keypoints'].some(key=>typeof next.display[key]!=='boolean') || Object.keys(next.display).some(key=>!['boxes','regions','keypoints','station','seat'].includes(key)))throw new Error('显示开关无效');
@@ -151,7 +155,8 @@ export async function mockReply(req,res,url){
   if(url.pathname==='/api/v1/work/actions'&&req.method==='POST') {
     let body='';for await(const chunk of req){body+=chunk;if(body.length>1024)return error('BAD_REQUEST','Body too large',400);}
     let request,action;try{request=JSON.parse(body);action=request.action;}catch{return error('BAD_REQUEST','Invalid JSON',400);}
-    if(!['start','end','review','confirm_camera','confirm_return'].includes(action))return error('BAD_REQUEST','Unknown action',400);
+    if(!['start','end','review','confirm_camera','confirm_return','reset_display'].includes(action))return error('BAD_REQUEST','Unknown action',400);
+    if(action==='reset_display'){if(!resetReceipts.has(request.token)){if(request.expected_revision!==deviceSettings.revision)return error('SETTINGS_CONFLICT','Configuration changed',409);if(typeof request.token!=='string'||request.token.length<8)return error('BAD_REQUEST','Invalid token',400);resetReceipts.add(request.token);scenario='idle';}return json(fixtures().work);}
     if(action==='confirm_return') {
       if(scenario!=='owner_return' || request.session_id!==data.work.session_id || request.observation_id!=='mock-observation'
           || request.stream_session_id!==streamSession || request.config_revision!==deviceSettings.revision || request.track_id!==7)
@@ -163,6 +168,7 @@ export async function mockReply(req,res,url){
     if(action==='review'){if(!data.work.session_id)return error('ACTION_UNAVAILABLE','No mock session',409);review=true;}
     return json(fixtures().work);
   }
+  if(req.method==='DELETE'&&/^\/api\/v1\/video\/sessions\/[a-f0-9]{32}$/.test(url.pathname)){res.writeHead(204);res.end();return;}
   if(url.pathname==='/api/frame.jpg'||url.pathname==='/api/v1/video.jpg'||url.pathname==='/api/v1/observations/frame.jpg'||url.pathname==='/api/v1/video.mjpg'||url.pathname==='/stream.mjpg') {
     if(['offline','algorithm'].includes(scenario))return error('FRAME_UNAVAILABLE','Simulated disconnect',503);
     if(url.pathname.includes('observations/')&&url.searchParams.get('observation_id')!=='mock-observation')return error('FRAME_EXPIRED','Simulated expired frame',410);

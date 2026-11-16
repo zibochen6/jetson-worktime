@@ -42,9 +42,28 @@ export function currentObservation(camera, envelope) {
 
 // Video health is independent of a slower, larger structured-result request.
 export function previewReady(camera, envelope) {
-  const fresh=typeof camera?.algorithm_fresh==='boolean'?camera.algorithm_fresh:currentObservation(camera,envelope);
-  return Boolean(camera?.status==='online' && !camera?.algorithm_error && fresh
-    && (camera.output_fps===undefined || camera.output_fps>0));
+  const fresh=typeof camera?.preview_fresh==='boolean'?camera.preview_fresh:(typeof camera?.algorithm_fresh==='boolean'?camera.algorithm_fresh:currentObservation(camera,envelope));
+  return Boolean(camera?.status==='online' && camera?.operating_mode!=='training' && (!camera?.algorithm_error || (camera?.privacy_applied===false && typeof camera?.preview_fresh==='boolean')) && fresh
+    && (typeof camera.preview_fresh==='boolean' || (camera.output_fps??0)>0));
+}
+
+// Business/session status must never own the lifetime of a live video connection.
+// Keep a peer through brief telemetry/frame gaps; changed media/privacy still stop it.
+export class PreviewContinuity {
+  constructor() { this.identity=null; this.lastReady=-Infinity; }
+  update(camera, envelope, now=performance.now(), mediaFresh=false) {
+    const identity=camera ? JSON.stringify([camera.stream_session_id,
+      camera.video?.epoch ?? camera.config_revision, camera.privacy_applied]) : this.identity;
+    const changed=this.identity!==null && identity!==this.identity;
+    const blocked=Boolean(camera && (camera.status!=='online' || camera.operating_mode==='training'
+      || (camera.algorithm_error && camera.privacy_applied!==false)));
+    const ready=previewReady(camera,envelope);
+    if(changed || blocked)this.lastReady=-Infinity;
+    if(ready)this.lastReady=now;
+    this.identity=identity;
+    const retain=!blocked && (ready || (!changed && (mediaFresh || now-this.lastReady<5000)));
+    return {ready,retain,reset:changed || !retain};
+  }
 }
 
 // Presentation values only. The backend owns session settlement and all timers.
@@ -77,4 +96,10 @@ export function systemMetricsView(metrics) {
     temperature: valid(data.temperature_celsius, -40, 150),
     uptime: valid(data.uptime_seconds, 0),
   };
+}
+
+// randomUUID is unavailable on ordinary LAN HTTP origins; getRandomValues is supported.
+export function operationToken(source=globalThis.crypto) {
+  if(typeof source.randomUUID==='function')return source.randomUUID();
+  return Array.from(source.getRandomValues(new Uint8Array(16)),n=>n.toString(16).padStart(2,'0')).join('');
 }

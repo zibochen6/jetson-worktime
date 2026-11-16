@@ -1,3 +1,4 @@
+import json
 import unittest
 from jetson_worktime.api import ObservationCache, make_observation, work_status
 
@@ -15,6 +16,22 @@ class ApiContractTest(unittest.TestCase):
         s=work_status({'frame_ref':{'pts_ns':None,'receive_monotonic_ns':9007199254740993},'work_seconds':12.5})
         self.assertEqual(s['frame_ref']['receive_monotonic_ns'],'9007199254740993')
         self.assertEqual(s['work_seconds'],12.5)
+
+    def test_model_class_ids_do_not_break_work_status_or_observation_cache(self):
+        # YOLO model.names uses integer keys; enabled assembly counting exposes it.
+        materials={'class_names':{0:'box',1:'not_packed',2:'packed',3:'part'},
+                   'source':{'receive_monotonic_ns':9007199254740993}}
+        snapshot=work_status({'materials':materials,'active':False})
+        payload=json.loads(json.dumps(snapshot))
+        self.assertEqual(payload['materials']['class_names']['2'],'packed')
+        self.assertEqual(payload['materials']['source']['receive_monotonic_ns'],'9007199254740993')
+        observation=self.observation()
+        observation['material_observation']=materials
+        cache=ObservationCache()
+        cache.publish(observation,b'image')
+        result=json.loads(json.dumps(cache.snapshot(9007199254740993)))
+        self.assertTrue(result['fresh'])
+        self.assertEqual(result['observation']['material_observation']['class_names']['0'],'box')
 
     def test_bounded_atomic_pair_and_immutable_public_snapshot(self):
         c=ObservationCache(2)

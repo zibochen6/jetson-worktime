@@ -9,6 +9,10 @@ cd /home/seeed/workspace/jetson-worktime
 ./start.sh
 ```
 
+Jetson 桌面双击“工时统计系统”会调用 `scripts/start_desktop.py`：已有服务时直接打开本机页面；没有服务时后台启动，页面就绪后打开浏览器。桌面入口不会等待前台启动脚本退出，也不会因为启动窗口关闭而停止服务。命令行 `./start.sh` 保持前台管理方式，按 Ctrl+C 可停止服务。
+
+桌面启动失败会保留错误提示，日志位于 `logs/desktop-launcher.log`、`logs/desktop-service.log` 和 `logs/desktop-browser.log`。
+
 脚本以前台方式管理服务，显示本机、局域网和 Tailscale 等可用 IPv4 地址及日志位置。保持终端打开，按 Ctrl+C 会停止本次启动的服务并清理其视频进程。已有本项目服务运行时脚本会连接该服务；按 Ctrl+C 可停止它。能否从其他设备访问取决于网络与防火墙；日志保存在 `logs/preview.log`。
 
 首页的“设置”弹层顶部提供摄像头接入，支持网络／PoE（RTSP）和 USB，另有 ROI、计时阈值、隐私和检测图层。语言及展示模式按浏览器保存，设备设置由所有访问者共享。首次启动从 `.env` 的 `RTSP_URL` 和 `configs/station.m1.yaml` 读取相机来源。前端测试连接后点击“保存并切换摄像头”，成功的来源保存在受限权限的 `configs/behavior.yaml`，后续启动优先加载。切换后需重新划定并保存检测区域。密码留空仅对相同地址和用户名保留原密码。
@@ -17,7 +21,7 @@ cd /home/seeed/workspace/jetson-worktime
 
 | 目录或文件 | 用途 |
 |---|---|
-| `start.sh` | 后台启动入口 |
+| `start.sh` | 命令行前台启动与服务管理入口 |
 | `src/jetson_worktime/` | 视频、推理、隐私、计时、配置和系统指标 |
 | `scripts/` | HTTP 服务入口、环境同步、诊断、离线回放与验证工具 |
 | `frontend/` | 统一首页、设置、素材源文件、Mock、接口副本和前端测试 |
@@ -80,7 +84,7 @@ Mock 默认地址为 `http://127.0.0.1:5173`。前端开发、设备代理和素
 
 Jetson 上运行 `./scripts/install_video_transport.sh` 安装固定版本的 MediaMTX 和 GStreamer RTSP 发布组件，然后运行 `./start.sh`。媒体服务由应用启动并监督，日志为 `logs/mediamtx.log`。安装包的固定 SHA256 写在安装脚本中。
 
-首页优先使用 WebRTC，输出 H.264 Baseline，Tailscale 访问默认 640×360、最高 10 FPS、600 Kbps。localhost、回环地址及私有局域网地址自动使用高清档，最大 1920×1080、12 FPS、4 Mbps，保持原图比例且不超出输入分辨率。媒体通过 UDP/TCP 8189 连接，信令仍使用网页端口 8088。Tailscale 访问规则需允许观看设备访问 Jetson 的这两个端口。信令、RTSP 发布及媒体管理仅监听本机。断流或不支持 WebRTC 时回退到 640×360、最高 5 FPS 的 MJPEG，后台页面释放连接。网络 RTT、视频缓冲和本地处理耗时分别展示。
+首页优先使用 WebRTC，输出 H.264 Baseline，Tailscale 访问默认 640×360、最高 10 FPS、600 Kbps。localhost、回环地址及私有局域网地址自动使用高清档，最大 1920×1080、20 FPS、4 Mbps，保持原图比例且不超出输入分辨率；实际帧率取决于现场负载。媒体通过 UDP/TCP 8189 连接，信令仍使用网页端口 8088。Tailscale 访问规则需允许观看设备访问 Jetson 的这两个端口。信令、RTSP 发布及媒体管理仅监听本机。断流或不支持 WebRTC 时回退到 640×360、最高 5 FPS 的 MJPEG。切换浏览器标签页时保留原视频连接，回到前台恢复播放。网络 RTT、视频缓冲和本地处理耗时分别展示。
 
 设置中的“标注配色”支持区域、人物框、骨架、关键点与判断点分别选色，以及两个区域的蒙版不透明度。0% 为完全透明，100% 为完全不透明。配色保存在设备，点击保存后所有浏览器使用同一配置。只调整配色会重建媒体连接，当前计时会话继续运行。
 
@@ -91,3 +95,11 @@ Jetson 上运行 `./scripts/install_video_transport.sh` 安装固定版本的 Me
 设置弹层新增物料计数、模型管理、训练中心。安装后台训练服务、采集标注、参数、计数规则与恢复说明见 [本地训练指南](docs/local-training.md)。新增功能默认关闭，原人员计时、相机与隐私配置保持不变。
 
 本轮实机验证、性能采样与回退步骤见 [2026-11-12交付报告](reports/studio-20261112/report.md)。
+
+## 2026-11-16 更新
+
+- 加入工作台裁剪、分类别阈值、TensorRT FP16 缓存与一致性验证、事件证据和完成来源校验，见 [单工位优化说明](docs/single-station-optimization.md)。
+- 实时页面移除操作时长估算卡片，保留在岗计时、库存和完成事件；减少成品区外不影响计数的复核记录。现场计数验证结果及尚待完成的验收见 [实机验证记录](docs/field-validation-20261116.md)。
+- 开工、在岗、休息、暂离和完工与视频连接解耦，修复短时状态/心跳失败及清零时间导致的画面丢失；详见 [视频连续性修复](docs/state-video-continuity-20261116.md)。
+
+本轮验证通过 68 项前端和 256 项后端检查。设备配置、模型权重、录像和运行数据库继续作为现场资源管理。
