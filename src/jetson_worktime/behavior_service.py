@@ -435,53 +435,12 @@ class BehaviorService:
         temporary.replace(path)
 
     def guard(self, frame, protected):
-        import cv2
-        import numpy as np
-        now = time.monotonic()
-        if now-self.guard_last < 5:
-            return
-        self.guard_last = now
-        gray = cv2.cvtColor(cv2.resize(frame, (640, 360)), cv2.COLOR_BGR2GRAY)[:, :256]
-        orb = cv2.ORB_create(700)
-        keypoints, descriptors = orb.detectAndCompute(gray, None)
-        points = np.float32([point.pt for point in keypoints]).reshape(-1, 2)
-        reference_path = self.root/'outputs/behavior/position-reference.npz'
-        if self.guard_reference is None or self.guard_reset:
-            if reference_path.exists() and not self.guard_reset:
-                try:
-                    with np.load(reference_path, allow_pickle=False) as reference:
-                        self.guard_reference = (reference['points'].copy(), reference['descriptors'].copy())
-                except (ValueError, OSError, KeyError):
-                    self.guard_reference = None
-            if self.guard_reference is None or self.guard_reset:
-                self.guard_reference = (points, descriptors)
-                if descriptors is not None:
-                    temporary = reference_path.with_suffix('.tmp')
-                    with temporary.open('wb') as handle:
-                        np.savez(handle, points=points, descriptors=descriptors)
-                    temporary.replace(reference_path)
-            self.guard_reset = False
-            cv2.imwrite(str(self.output/'camera-reference.jpg'), protected)
-            return
-        old, old_descriptors = self.guard_reference
-        if descriptors is None or old_descriptors is None or not len(old_descriptors):
-            return
-        pairs = cv2.BFMatcher(cv2.NORM_HAMMING).knnMatch(old_descriptors, descriptors, k=2)
-        matches = [pair[0] for pair in pairs if len(pair) == 2 and pair[0].distance < .7*pair[1].distance]
-        if len(matches) < 20:
-            return
-        matrix, inliers = cv2.estimateAffinePartial2D(
-            np.float32([old[m.queryIdx] for m in matches]),
-            np.float32([points[m.trainIdx] for m in matches]), method=cv2.RANSAC, ransacReprojThreshold=3)
-        if matrix is not None and inliers is not None and inliers.sum() >= 15:
-            angle = abs(float(np.degrees(np.arctan2(matrix[1, 0], matrix[0, 0]))))
-            shift = float(np.hypot(matrix[0, 2], matrix[1, 2]))
-            scale = float(np.hypot(matrix[0, 0], matrix[1, 0]))
-            if shift > 18 or angle > 3 or not .94 < scale < 1.06:
-                if not self.camera_changed:
-                    self.log(dict(event='camera_position_changed', monotonic_seconds=now,
-                        shift_pixels=shift, angle_degrees=angle, scale=scale, matches=len(matches), inliers=int(inliers.sum())))
-                self.camera_changed = True
+        """Keep user calibration until an explicit settings/source change.
+
+        Physical camera movement must not hide detections or suspend the demo.
+        The user owns region placement; no feature matching mutates that state.
+        """
+        return
 
     def worker(self):
         os.environ['YOLO_AUTOINSTALL'] = 'False'

@@ -33,6 +33,18 @@ class OperationTests(unittest.TestCase):
         s.apply_settings(dict(expected_revision=0,operation={'detection_enabled':False}),{})
         self.assertFalse(SettingsStore(self.path).snapshot()['operation']['detection_enabled'])
         self.assertEqual(s.snapshot()['operating_mode'],'preview')
+    def test_camera_motion_preserves_user_regions_and_detection(self):
+        s=self.service;before=deepcopy(s.config)
+        s.guard_reference=(np.zeros((20,2),np.float32),np.zeros((20,32),np.uint8))
+        with patch('cv2.ORB_create',side_effect=AssertionError('automatic motion blocking is disabled')):
+            for frame in [np.zeros((200,200,3),np.uint8),np.full((200,200,3),255,np.uint8)]:
+                s.guard(frame,frame)
+        self.assertFalse(s.camera_changed);self.assertEqual(s.config,before)
+        self.assertTrue(s.snapshot()['detection_enabled'])
+    def test_motion_check_does_not_confirm_an_explicit_camera_source_change(self):
+        s=self.service;s.camera_changed=True
+        s.guard(np.zeros((200,200,3),np.uint8),None)
+        self.assertTrue(s.camera_changed)
     def test_disable_settles_once_and_preserves_history(self):
         s=self.service;ident=self.start()
         s.apply_settings(dict(expected_revision=0,operation={'detection_enabled':False}),{})
